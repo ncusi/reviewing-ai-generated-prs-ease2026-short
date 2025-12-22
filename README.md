@@ -8,7 +8,6 @@ All experiments and analyses are implemented as Jupyter Notebooks to support tra
 
 ## Repository Structure
 * `Data/` # Dataset 
-* `Sankey charts/` # Sankey Charts for type of review
 * `README.md` 
 * `RQ1.ipynb` # Analysis of AI-generated pull request reviews
 * `RQ2.ipynb` # Analysis of human-generated pull request reviews
