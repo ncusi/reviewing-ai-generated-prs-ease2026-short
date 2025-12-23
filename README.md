@@ -11,6 +11,8 @@ All experiments and analyses are implemented as Jupyter Notebooks to support tra
 * `README.md` 
 * `RQ1.ipynb` # Analysis of AI-generated pull request reviews
 * `RQ2.ipynb` # Analysis of human-generated pull request reviews
+* `Table.ipynb` # Prepared tables
+* `Tests.ipynb` # Statistical tests
 
 ## Reseach Questions
 * **RQ1:** What does the human review process look like for AI-generated pull requests?
@@ -19,11 +21,11 @@ All experiments and analyses are implemented as Jupyter Notebooks to support tra
 ## Notebooks Description
 ### `RQ1.ipynb`
 This notebook contains:
-* loading and preprocessing AI-generated PR review data
+* loading and preprocessing AI-generated PR review data for RQ1
 
 ### `RQ2.ipynb`
 This notebook contains:
-* loading and preprocessing human-generated PR review data
+* loading and preprocessing human-generated PR review data for RQ2
 
 ## Reproducibility
 All experiments can be reproduced by executing notebooks cells in sequential order.
@@ -36,6 +38,7 @@ The project was developed using:
 Main dependencies include:
 * numpy
 * pandas
+* scipy
 
 ## Running the Experiments
 1) Clone the repository:
@@ -44,7 +47,7 @@ git clone https://github.com/ncusi/msr-mining-challenge-2026.git
 ```
 2) Install dependencies:
 ```bash
-pip install numpy pandas
+pip install numpy pandas scipy
 ```
 3) Launch Jupyter Notebook:
 ```bash
