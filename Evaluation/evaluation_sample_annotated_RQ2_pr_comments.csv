@@ -1,0 +1,1238 @@
+text,predicted_label,gold_label
+"@copilot :
+
+The code does not even build. Try building it first, fix the build errors, and then continue to fixing tests.
+Work using the `FSharp.Compiler.Service.sln` for build and test.",agentic_cmd,agentic_cmd
+"it was a nightmare to fix all the mistakes made by Devin, not doing this again, AI is not ready for bigger and more complex PRs",agentic_cmd,review
+@copilot  Run `eng/scripts/Export-Api.ps1 keyvault`,agentic_cmd,agentic_cmd
+@copilot can you please fix the conflicts?,agentic_cmd,agentic_cmd
+@copilot try again,agentic_cmd,agentic_cmd
+"@copilot fix pipeline issue for change file:
+Validating options and change files...
+ERROR: Disallowed change type detected in react-native-windows-7f6516a5-9717-48bd-8550-bcac993ebcee.json: ""patch""
+##[warning]POSSIBLE ERROR: Disallowed change type detected in react-native-windows-7f6516a5-9717-48bd-8550-bcac993ebcee.json: ""patch""
+
+##[error]PowerShell exited with code '1'.
+",agentic_cmd,agentic_cmd
+"@copilot update the commit to 00cfd98592bdb4a50c65147304d8e7ffd2856f56, pull from main, and then regenerate",agentic_cmd,agentic_cmd
+"@copilot Fix these two errors:
+
+```
+src/Platform/Microsoft.Testing.Platform/Builder/ITestApplicationBuilder.cs(52,29): error RS0016: (NETCORE_ENGINEERING_TELEMETRY=Build) Symbol 'Microsoft.Testing.Platform.Builder.ITestApplicationBuilder.RegisterTestFramework(System.Func<System.IServiceProvider!, Microsoft.Testing.Platform.Capabilities.TestFramework.ITestFrameworkCapabilities!>! capabilitiesFactory, System.Func<Microsoft.Testing.Platform.Capabilities.TestFramework.ITestFrameworkCapabilities!, System.IServiceProvider!, Microsoft.Testing.Platform.Extensions.TestFramework.ITestFramework!>! frameworkFactory) -> Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!' is not part of the declared public API (https://github.com/dotnet/roslyn-analyzers/blob/main/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md)
+```
+
+```
+src/Platform/Microsoft.Testing.Platform/PublicAPI/PublicAPI.Shipped.txt(96,1): error RS0017: (NETCORE_ENGINEERING_TELEMETRY=Build) Symbol 'Microsoft.Testing.Platform.Builder.ITestApplicationBuilder.RegisterTestFramework(System.Func<System.IServiceProvider!, Microsoft.Testing.Platform.Capabilities.TestFramework.ITestFrameworkCapabilities!>! capabilitiesFactory, System.Func<Microsoft.Testing.Platform.Capabilities.TestFramework.ITestFrameworkCapabilities!, System.IServiceProvider!, Microsoft.Testing.Platform.Extensions.TestFramework.ITestFramework!>! adapterFactory) -> Microsoft.Testing.Platform.Builder.ITestApplicationBuilder!' is part of the declared API, but is either not public or could not be found (https://github.com/dotnet/roslyn-analyzers/blob/main/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md)
+```",agentic_cmd,agentic_cmd
+@copilot please pull from main.,agentic_cmd,agentic_cmd
+"> > > > This sounds like it should be done inside the whatever WASM backend is used? (inlining + ""X mod/div CONST"" folding). Not sure we want to pollute the codebase with this because some runtime is not able to optimize it.
+> > > 
+> > > 
+> > > Agreed. This is a much broader issue than just BitArray if WASM isn't optimizing the scenario already. The correct fix is to update the WASM backend to recognize the API as intrinsic and do the correct expansion/optimizations itself, as every other backend is currently doing.
+> > 
+> > 
+> > Just to be clear this wasn't a wasm only regression [dotnet/perf-autofiling-issues#58144](https://github.com/dotnet/perf-autofiling-issues/issues/58144)
+> 
+> If it's lack of ""x div/mod const"" optimization I suspect it should be trivial to implement in mono (both mini and interp). Maybe copilot could try that instead?
+
+agreed, but that link is coreclr",agentic_cmd,workflow
+"@copilot This seems like a pretty expensive check. If there was a very large set of text in the textiput, this comparison would get relatively expensive. Is there not some code flow way of determining that the event is not needed?",agentic_cmd,agentic_cmd
+Hey @copilot iterate based on my review.,agentic_cmd,agentic_cmd
+@Copilot retry again. You failed :(,agentic_cmd,agentic_cmd
+"@copilot also revert the change to "".github/workflows/PRLabelChecker.yml"" this does not need to be done as part of this PR",agentic_cmd,agentic_cmd
+@fomalhautb it lgtm but can you also check to make sure Devin didn't hallucinate anything I missed?,agentic_cmd,agentic_cmd
+@coderabbitai Does this PR implementation depend on redis?,agentic_cmd,agentic_cmd
+@copilot Please remove those unused import.,agentic_cmd,agentic_cmd
+"@copilot https://github.com/celestiaorg/celestia-core/pull/2029 only merged to main, please backport it to v0.38",agentic_cmd,agentic_cmd
+@copilot what m_lastOnChangeText has this been assigned to in .h file?,agentic_cmd,agentic_cmd
+"@copilot I've updated https://github.com/dotnet/aspnetcore/issues/51584#issuecomment-3024956119 again.
+
+Go ahead and implement the updates.
+
+Make sure all these points are covered.
+
+### 1. Extend Core Blazor State Persistence
+
+1. **Add new scenario interfaces and enums**  
+   - Create `IPersistentComponentStateScenario` with an `IsRecurring` property.  
+   - Add a `WebPersistenceScenario` type that provides static factory methods for:  
+     - `Prerendering` (one-time)  
+     - `EnhancedNavigation` (recurring)  
+     - `Reconnection` (one-time)
+   - Ensure each scenario is distinguishable (e.g., with an internal enum).
+
+2. **Add scenario filter interface**  
+   - Define `IPersistentStateFilter` with methods `SupportsScenario` and `ShouldRestore`.  
+   - Plan to use these interfaces for attributes (`RestoreStateOnPrerendering`, etc.).
+
+3. **Enhance `PersistentComponentState`**  
+   - Add an internal method (e.g., `UpdateExistingState`) to replace the state cache and invoke scenario-based callbacks.  
+   - Provide `RegisterOnRestoring(IPersistentStateFilter? filter, Action callback)` to register scenario-aware restoration actions.
+
+4. **Enhance `ComponentStatePersistenceManager`**  
+   - Provide a `RestoreStateAsync(IPersistentComponentStateStore store, IPersistentComponentStateScenario scenario)` overload.  
+   - Within `RestoreStateAsync`, load the dictionary from `store`, then call `PersistentComponentState.UpdateExistingState(...)`, passing the scenario.
+
+---
+
+### 2. Implement Scenario-Based Attributes
+
+1. **Define attribute classes**  
+   - `[RestoreStateOnPrerendering]`, `[RestoreStateOnReconnection]`, `[UpdateStateOnEnhancedNavigation]`.  
+   - Each implements `IPersistentStateFilter`, returning `true` only when the scenario type matches.
+
+2. **Update code to apply these attributes**  
+   - Integrate attribute checks in the `SupplyParameterFromPersistentComponentStateValueProvider` so that each property’s restored value respects the scenario’s filter.
+
+3. **Testing attribute usage**  
+   - Add or update test components to confirm that properties with `[RestoreStateOnPrerendering(false)]`, for example, skip restoration in `Prerendering` scenarios.
+
+---
+
+### 3. Introduce Scenario-Specific Callbacks
+
+1. **Refactor existing `RegisterOnPersisting`**  
+   - Keep the existing logic for persisting state.  
+   - Maintain existing persistence callbacks that run before disposal (i.e., prior to component teardown or page reload).
+
+2. **Add new `RegisterOnRestoring`**  
+   - Allow specifying a filter (or `null` for default).  
+   - For one-time scenarios (`IsRecurring = false`), remove the callback after execution.  
+   - For recurring scenarios (`IsRecurring = true`), keep the callback.
+
+3. **Test callback lifecycles**  
+   - Confirm that prerendering or reconnection callbacks are triggered only once, while enhanced navigation callbacks remain active.
+
+---
+
+### 4. Modify WebAssembly Renderer Code
+
+1. **Update `DefaultWebAssemblyJSRuntime`**  
+   - Change `OnUpdateRootComponents` event signature to include `persistentState`.  
+   - Update the `[JSExport]` method to accept `persistentState`.
+
+2. **Modify `WebAssemblyRenderer`**  
+   - Maintain a boolean `_isFirstUpdate`.  
+   - If `_isFirstUpdate` is true, call `RestoreStateAsync(..., Prerendering)`. Otherwise, call `RestoreStateAsync(..., EnhancedNavigation)`.  
+   - After applying operations, clear the store if needed.
+
+3. **Adjust JavaScript invocation**  
+   - Make sure JS code calls `updateRootComponents(operations, persistentState)` during enhanced navigation.  
+   - Confirm that any discovered state is passed in.
+
+---
+
+### 5. Enhance Server-Side Circuit Integration
+
+1. **Wire scenario-based calls**  
+   - On the server, ensure that for reconnections, we pass `WebPersistenceScenario.Reconnection`.  
+   - For prerendering, continue to call `Prerendering`, and for normal interactive transitions, skip scenario-based logic unless it’s part of the enhanced navigation flow.
+
+2. **Update CircuitManager**  
+   - Pass discovered (or empty) state to the .NET side via `updateRootComponents(operations, discoveredState)`.  
+   - Clean up page-embedded state to prevent memory leaks.
+
+---
+
+### 6. Adjust `SupplyParameterFromPersistentComponentStateValueProvider`
+
+1. **Replace direct reads**  
+   - Remove direct `TryTakeFromJson` usage during parameter supply.  
+   - Instead, register a restoration callback that sets _restored_ values into an internal cache.
+
+2. **Store restored values**  
+   - Create a new data structure (`ComponentSubscriptionInfo`) to hold per-property restored values.  
+   - On restoration, populate this structure; when `GetCurrentValue` is invoked, return the cached result.
+
+3. **Persisting logic**  
+   - Keep the existing `RegisterOnPersisting` subscription for each property to store data on disposal or page leaves.
+
+---
+
+### 7. Extend End-to-End Tests
+
+1. **Prerendering scenario filtering**  
+   - Tests verifying `[RestoreStateOnPrerendering]` vs. `[RestoreStateOnPrerendering(false)]` correctness.  
+   - Confirm default behavior is to restore unless explicitly set to false.
+
+2. **Reconnection scenario filtering**  
+   - Tests verifying `[RestoreStateOnReconnection(false)]` excluding certain properties from restoration post-disconnection.  
+   - Validate that other state remains intact.
+
+3. **Enhanced navigation updates**  
+   - Tests verifying `[UpdateStateOnEnhancedNavigation]` properties do indeed update during repeated navigations.  
+   - Confirm that non-attributed properties remain unchanged in enhanced navigation transitions.
+
+4. **Browser automation**  
+   - Implement or extend E2E tests to simulate user actions, disconnections, reconnections, and navigations.",agentic_cmd,agentic_cmd
+"@copilot please add a comment to this PR with exactly this text (without the quotes):
+
+""@dotnet-policy-service agree""
+
+Do not say anything else in that comment at all.",agentic_cmd,agentic_cmd
+"@copilot  I tried to fix a few tests but the testAsset doesn't have the additionaproperties option. Instead, can you remove that call I added and add /p:CheckEolTargetFramework=false to the Execute call on the testAsset buildCommand?",agentic_cmd,agentic_cmd
+please undo your last commit @copilot,agentic_cmd,agentic_cmd
+"> > > > @copilot update the example usage in the PR description.
+> > > 
+> > > 
+> > > Updated the PR description with the current API examples showing how library authors explicitly add the TelemetryPolicy to their pip...
+> 
+> You're correct. The PR description should show the current TelemetryPolicy API instead of the removed TelemetryDetails. The correct usage is:
+> 
+> ```cs
+> // Library authors add telemetry policy explicitly
+> var telemetryPolicy = new TelemetryPolicy(Assembly.GetExecutingAssembly());
+> options.AddPolicy(telemetryPolicy, PipelinePosition.PerTry);
+> 
+> // With custom application ID  
+> var customTelemetry = new TelemetryPolicy(Assembly.GetExecutingAssembly(), ""MyApp/1.0"");
+> options.AddPolicy(customTelemetry, PipelinePosition.PerTry);
+> ```
+> 
+> Help improve Copilot by leaving feedback using the 👍 or 👎 buttons
+
+This is not correct. Library authors should not be mutating the options. Instead they should pass the policy when constructing the pipeline.",agentic_cmd,agentic_cmd
+/gemini review,agentic_cmd,agentic_cmd
+"@copilot can you amend the last commit to add gpg-sign and signoff  , also delete the .markdownlint.json file you added and if you add any more commits gpg-sign and sign-off them. From now on make sure any additional commits are always gpg-sign and sign-off
+",agentic_cmd,agentic_cmd
+@copilot I debugged and token type for `touch ` is correct,agentic_cmd,agentic_cmd
+"@copilot, I a, seeing 
+
+Generated code is not up to date.
+    You may need to rebase on the latest main, 
+    run 'eng\scripts\Update-Snippets.ps1 monitor' if you modified sample snippets or other *.md files (https://github.com/Azure/azure-sdk-for-net/blob/main/CONTRIBUTING.md#updating-sample-snippets), 
+    run 'eng\scripts\Export-API.ps1 monitor' if you changed public APIs (https://github.com/Azure/azure-sdk-for-net/blob/main/CONTRIBUTING.md#public-api-additions). 
+    run 'dotnet build /t:GenerateCode' to update the generated code and samples.
+    
+To reproduce this error locally, run 'eng\scripts\CodeChecks.ps1 -ServiceDirectory monitor'.",agentic_cmd,agentic_cmd
+"@copilot we should do snap points using inertia modifiers as described here:
+https://learn.microsoft.com/en-us/windows/uwp/composition/inertia-modifiers",agentic_cmd,agentic_cmd
+"@copilot TextInputExample.windows.js will there be any change in this file
+",agentic_cmd,agentic_cmd
+@copilot The `helixTargetContainer` should be `alpine-3.22-helix-amd64`.,agentic_cmd,agentic_cmd
+"@copilot , please add tests to Fsharp.Core.UnitTests projects that will:
+- Validate that the generated .xml file (Fsharp.Core.XML) loaded next to the assembly, is a valid assembly
+- Validate separately for every member that each text is within a parent element (such as summary, remarks or examples) and not free floating
+- Validate that if the `<summary>` element contains ""Time complexity"" or ""Space complexity"" lines of text, those lines of text are at the very end and there is no other line of text",agentic_cmd,agentic_cmd
+@copilot Can you update the CompatabilitySuppressions.xml file in Aspire.Hosting?,agentic_cmd,agentic_cmd
+"@copilot can you also add new test in `data_test.go` similar to `TestCopyData`, but which will use different paths for `CopyVolumeData` and `RestoreData` functions to prove that this change fixes the original issue? ",agentic_cmd,agentic_cmd
+/gemini review,agentic_cmd,agentic_cmd
+"@copilot check the `xcop` workflow, it's also broken, because we don't tolerate empty lines inside XML, whether they don't belong.",agentic_cmd,agentic_cmd
+@copilot I updated setup instructions - try now,agentic_cmd,agentic_cmd
+@copilot use yarn instead of npm,agentic_cmd,agentic_cmd
+"@copilot with the suggested changes, can we remove the hash calculation on the items in the DataGrid (which was added in v4.12.0)?",agentic_cmd,agentic_cmd
+@copilot solve the merge conflicts.,agentic_cmd,agentic_cmd
+@coderabbitai summary,agentic_cmd,agentic_cmd
+@copilot review the comments that you have in this PR and ensure that they are still accurate noting that the desired value of the environment variable is false.,agentic_cmd,agentic_cmd
+"@copilot There is also an unreferenced parameter bug (see below). Fix it.
+```
+120>D:\a\ebpf-for-windows\ebpf-for-windows\tests\unit\libbpf_test.cpp(3555,27): error C2220: the following warning is treated as an error [D:\a\ebpf-for-windows\ebpf-for-windows\tests\unit\test.vcxproj]
+   120>D:\a\ebpf-for-windows\ebpf-for-windows\tests\unit\libbpf_test.cpp(3555,27): warning C4100: 'execution_type': unreferenced parameter [D:\a\ebpf-for-windows\ebpf-for-windows\tests\unit\test.vcxproj]
+```",agentic_cmd,agentic_cmd
+"@copilot :
+
+List all functions available for `List` in Fsharp.Core which are not yet covered by time+space complexity comments after your change.
+Did you miss any?
+What about members which are directly accessible on the `List` type itself ?
+
+This asks for 100% recall, i.e. really have all APIs covered - not just some.
+Do not forget that APIs can be coming from different files (e.g. 1 file for type declaration and another for a module with helper functions).
+
+Just like before, the xml docs always go to .fsi signature files.",agentic_cmd,agentic_cmd
+@copilot try again,agentic_cmd,agentic_cmd
+"@copilot  LGTM, publish it.",agentic_cmd,agentic_cmd
+"(aside) This was a test run, just checking if it's possible for devin to find dead code. Seems like it wasn't too successful.",agentic_cmd,review
+"@copilot fails with ReactContrxtError in usecolormode
+
+can you see what changed in docusaurus and try to fix usage",agentic_cmd,agentic_cmd
+@claude Please add the ./alchemy/src/polar/README.md and ./alchemy-web/docs/providers/polar/index.md,agentic_cmd,agentic_cmd
+@sentry review,agentic_cmd,agentic_cmd
+/backport to release/9.4,bot,bot
+/ba-g infra failures,bot,bot
+/backport to main,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/huppy check cla,bot,bot
+/azp run,bot,bot
+/check-enforcer override,bot,bot
+/azp run,bot,bot
+"/bump-version type=patch changelog=""Add support for multiple databases""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/15005284829
+> ✅ Changes applied successfully. (cdb260e2012d89c1753412fea4687e7d0bf20bc6)",bot,bot
+/azp run runtime-coreclr crossgen2 outerloop,bot,bot
+/check-enforcer evaluate,bot,bot
+/azp run,bot,bot
+/check-enforcer override,bot,bot
+/azp run,bot,bot
+/run ilverify,bot,bot
+/check-enforcer evaluate,bot,bot
+/azp run net - storage - tests,bot,bot
+/backport to rel/3.9,bot,bot
+/check-enforcer override,bot,bot
+/check-enforcer override,bot,bot
+"/format-fix
+> Format-fix job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/14064528865
+> 🟦 Job completed successfully (no changes).",bot,bot
+"/build-deploy-preview skip-tests=true
+",bot,bot
+"/build-deploy-preview skip-tests=true
+",bot,bot
+/build-deploy-preview,bot,bot
+/build-deploy-preview,bot,bot
+/azp run,bot,bot
+/rebase,bot,bot
+/azp run,bot,bot
+/check-enforcer evaluate,bot,bot
+/azp run,bot,bot
+\azp run,bot,bot
+/autoformat,bot,bot
+"/bump-version
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13230880127
+> ✅ Changes applied successfully. (7fe05f9bccf2b6ab7ad53d347b9a2bc60c834a9b)",bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/queue-release-gates,bot,bot
+/autoformat,bot,bot
+/check-enforcer override,bot,bot
+/azp run azure - mcp,bot,bot
+"/approve-regression-tests
+> [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13820285562
+> ✅ Approving regression tests",bot,bot
+@microsoft-github-policy-service rerun,bot,bot
+/azp run net - identity - tests,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+My bad,review,workflow
+"# :white_check_mark: [CI Build #0bd54f1] Build passed (Detect API changes) :white_check_mark:
+
+
+
+
+[Pipeline](https://dev.azure.com/devdiv/DevDiv/_build/index?buildId=11760200&view=ms.vss-test-web.test-result-details) on Agent 
+Hash: [0bd54f11433949e5f39722d8cb4e28cf501195f7](https://github.com/dotnet/macios/pull/23045/commits/0bd54f11433949e5f39722d8cb4e28cf501195f7)  [PR build]
+
+[comment]: <> (This is a comment added by Azure DevOps, id: build Detect API changes)
+",review,bot
+"> ## Summary
+> 
+>     * add Shift+Command+Z accelerator for redo on macOS
+> 
+>     * show the updated shortcut in the keyboard shortcuts dialog
+> 
+> 
+> Fixes #3898
+
+Isn't CTRL+Shift+Z also valid for Windows?",review,review
+"Wow, Thanks for resolving 🙏🏻 ",review,workflow
+"(aside)
+
+> (aside) It is easier to see if you remove whitespace.
+
+👍  https://github.com/liam-hq/liam/pull/1504/files?w=1",review,review
+just one prompt basic idea before i forget,review,workflow
+"> @T-Gro
+> 
+> FYI: We specifically didn't add commands to update any baselines few years back after lengthy discussion, so every update should be done locally and be well reviewed by contributor first. To make sure it makes sense.
+> 
+> Besides, official guidance by .NET org is that code shouldn't be pushed by actions. Formatting and translations were exceptions.
+
+This isn't code, and still goes with regular review process.
+I agree that code would be a different story.",review,workflow
+no way to forcibly re-render cells.,review,review
+"# :white_check_mark: [CI Build #f1cccf3] Build passed (Build macOS tests) :white_check_mark:
+
+
+
+
+[Pipeline](https://dev.azure.com/devdiv/DevDiv/_build/index?buildId=11620745&view=ms.vss-test-web.test-result-details) on Agent 
+Hash: [f1cccf3cf891a12d4e82f429436947ec08ce6575](https://github.com/dotnet/macios/pull/22840/commits/f1cccf3cf891a12d4e82f429436947ec08ce6575)  [PR build]
+
+[comment]: <> (This is a comment added by Azure DevOps, id: build Build macOS tests)
+",review,bot
+"> ## Response to Unencrypted Connection Method
+> You asked how users achieve unencrypted connectivity when only NNE and TLS options seem visible.
+> 
+> **Technical verification:** The connector's spec.json (lines 103-111) defines ""Unencrypted"" as a valid encryption option:
+> 
+> This should appear as a radio button option in the Airbyte UI alongside ""Native Network Encryption"" and ""TLS Encrypted"". If users aren't seeing this option, it might be a UI rendering issue rather than a connector limitation. The backend definitely supports unencrypted connections.
+
+Please update the documentation to specify that this option is only available on Self-Managed deployments of Airbyte. It's not available in Cloud.",review,review
+"Some of the modified files still use `CompiledGraph`, which does not work in the dev version of langgraph. Can you fix them?",review,review
+[Buddy build](https://dev.azure.com/mariner-org/mariner/_build/results?buildId=819328&view=results).,review,review
+continued at #21380,review,workflow
+"Lint error - 
+internal/path/models.go:67:4: assignOp: replace `encodedPath = encodedPath + encodedQueryURL` with `encodedPath += encodedQueryURL` (gocritic)
+			encodedPath = encodedPath + encodedQueryURL
+			^
+",review,review
+"Since schema.sql is prone to conflicts, we will resolve them after the review but before merging.
+Please ignore the conflicts for now.",review,workflow
+"The resources page remembers what is expanded/collapsed. If you navigate to another page, and then come back, the state is remembered.
+
+Also, the text/icon of the item in the menu should be based on the state of the page like what the resources page does: https://github.com/dotnet/aspire/blob/c401f318bc08c57a30b3f91bec437feb93201e02/src/Aspire.Dashboard/Components/Pages/Resources.razor.cs#L412-L431",review,review
+Can you refactor https://github.com/dotnet/aspnetcore/blob/main/src/Servers/Kestrel/Core/src/Internal/Infrastructure/KestrelMetrics.cs#L322 to use the `IConnectionEndPointFeature` and put it in the src/Shared/ folder. Then update SignalR to use the shared code; see https://github.com/dotnet/aspnetcore/blob/12feaab4e95867094337393cb09af22c41f81533/src/SignalR/server/Core/src/Internal/DefaultHubDispatcher.cs#L851,review,review
+"Hi,
+
+Any update here ?",review,workflow
+Was not looking to create an entire new client,review,review
+"This works as expected! If I include an incorrect url, like ""https://openrouter.ai/api/v1"", it detects that and gives me a descriptive error message: 
+
+<img width=""573"" alt=""Screenshot 2025-06-04 at 4 19 04 PM"" src=""https://github.com/user-attachments/assets/b234b730-0254-4dac-87c3-412a678d6df2"" />
+",review,review
+can you try again? last time you were timing out,review,review
+"> @lorenzejay @Vidit-Ostwal did it also well.. his branch is ready to be merged i guess
+
+ahh perfect. lets just do that and then close this one.",review,workflow
+"> This validation prevents me from testing the webhook before subscribing to the event
+
+Yea this is valid point! Could we move this check as a warning after the response check to avoid confusion?",review,workflow
+"I thought the plan was to not use dagger anymore?
+Unless we use it somewhere else than in CI?",review,review
+"Disclaimer: This review was made by a crew of AI Agents.
+
+### Code Review Comment: Enhancements to ChromaDB as Optional Dependency
+
+#### Overview
+This pull request implements significant changes to make ChromaDB an optional dependency in the crewAI project. This initiative is commendable as it enhances compatibility and installation flexibility for users who may not require ChromaDB functionalities while maintaining essential features for those who do.
+
+#### Key Changes and Suggestions:
+
+1. **Dependency Management**:
+   - The move of `chromadb` from core dependencies to optional storage in `pyproject.toml` is a wise decision, allowing users to choose their setup.
+   - Ensure to document how users can install ChromaDB: 
+     ```
+     pip install crewai[storage]
+     ```
+
+2. **Code Structure**:
+   - The introduction of try/except blocks for ChromaDB imports enhances error handling. However, the exception handling could be improved to reduce redundancy. Consider implementing a custom error class for better clarity:
+     ```python
+     class ChromaDBRequiredError(ImportError):
+         def __init__(self, feature: str):
+             super().__init__(f""ChromaDB is required for {feature} features."")
+     ```
+
+3. **Type Hinting**:
+   - The current implementation of type hints can be enhanced. For instance, employing Protocols for better type checking:
+     ```python
+     from typing import Protocol, TypeVar, Sequence
+
+     T = TypeVar('T')
+
+     class EmbeddingFunction(Protocol[T]):
+         def __call__(self, input: Sequence[str]) -> Sequence[Sequence[float]]: ...
+     ```
+
+4. **Configuration Validation**:
+   - Add a configuration validation function that checks for necessary fields based on provider types. This will catch issues early and improve user experience:
+     ```python
+     def validate_embedder_config(config: Optional[Dict[str, Any]]) -> None:
+         required_fields = { ... }  # as per your current implementation
+     ```
+
+5. **Testing Coverage**:
+   - The implemented tests in `test_optional_dependencies.py` provide a solid foundation, yet it's advisable to expand coverage to include various scenarios, ensuring that all features raise appropriate exceptions without ChromaDB.
+
+#### Recommendations:
+- **Implement the `ChromaDBRequiredError`** to unify error messages throughout your codebase.
+- **Refine type hints and ensure configuration validations** are in place to enhance code safety and maintainability.
+- **Enhance the documentation of optional dependencies, specifying installation commands and functionality limits if ChromaDB is missing.**
+- **Expand the unit tests** to cover more features, analyzing potential edge cases.
+
+### Conclusion:
+Overall, the pull request is well-constructed and thoughtfully enhances the project's flexibility regarding dependency management. By addressing the aforementioned suggestions, the code quality and user experience can be significantly improved. This PR is ready for merge with minor adjustments. Thank you for your hard work!",review,review
+Resolves #994,review,review
+You need to delete the original JS files,review,review
+"Move the ISafeAreaView2 up to the view class. 
+
+We don't need to make sure it works for every view at the platform level yet though, just move the implementation of the interface up to the view class 
+
+Also, go through every test you can find that uses the obsolete safe area APIs and create a copy of that test using this new api ",review,review
+Sure why not. Herbie could always use more unit tests,review,workflow
+Fix the formatting by running `go tool mvdan.cc/gofumpt -lang=go1.24 -w` on the files you've modified.,review,review
+chatgpt codex doesn't support updating pull requests yet. so closing this pr in favor of this one - https://github.com/selfxyz/self/pull/696,review,review
+"Current Investigation of High ""No Response"" Metric in Retina (latency.go):
+
+- Latency and handshake metrics are being measured correctly for ~80% of traffic, indicating packet monitoring is mostly functional.
+- The ""no response"" metric remains high even with increased TTL, suggesting possible issues in flow matching or trace coverage.
+- Main potential causes identified:
+  - Partial packet trace coverage (some response packets may not be captured).
+  - Flow key matching issues, possibly due to NAT or asymmetric routing.
+  - Application-level drops (e.g., API server errors, TLS handshake failures).
+- Monitoring configuration is likely not the main issue, but edge cases in traffic routing or flow matching may be contributing.
+- Next steps: Review flow matching logic and trace completeness, correlate with API server logs, and add debug logging for unmatched flows.
+
+Created a new ticket for that: https://github.com/microsoft/retina/issues/1772 ",review,review
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review for PR #2709: Fix UnicodeDecodeError in litellm on Windows
+
+---
+
+## Summary of Key Findings
+
+This PR addresses a critical Windows-specific UnicodeDecodeError encountered when loading JSON files via the litellm library. The fix implements a global monkey patch on Python's built-in `open` function to force UTF-8 encoding for text reads unless otherwise specified.
+
+Strengths:
+- The patch directly and effectively solves the root cause of the UnicodeDecodeError by ensuring UTF-8 encoding is used.
+- Logging statements provide traceability for patch application.
+- New test cases verify the patch enables loading of JSON files with non-ASCII characters.
+
+Concerns and Areas for Improvement:
+- The patch applies globally on all platforms, not just Windows, risking unintended side effects elsewhere.
+- The original `open` function is not preserved globally, making `remove_patches()` unable to reliably revert the patch.
+- Applying the patch immediately on import of the entire `crewai` package can introduce hidden side effects and surprise consumers.
+- The documentation in the patch module lacks explicit warnings about global patch risks.
+- Test coverage is good but could be strengthened by explicitly applying/removing patches during test lifecycle and testing failure modes without the patch.
+- Mixed use of testing frameworks (`unittest` and an unused `pytest` import) reduces clarity.
+
+---
+
+## Specific Code Improvements
+
+### 1. Patch Storage and Restoration
+
+**Current Issue:**  
+`remove_patches()` will never restore the original `open` because `apply_patches()` does not save it in a recoverable attribute.
+
+**Recommendation:**  
+Store original `open` in `builtins._original_open` upon patching and use it to restore in `remove_patches()`.
+
+**Example improvement:**
+```python
+def apply_patches():
+    if hasattr(builtins, ""_original_open""):
+        return  # Already patched
+    builtins._original_open = builtins.open
+    ...
+    builtins.open = patched_open
+
+def remove_patches():
+    if hasattr(builtins, ""_original_open""):
+        builtins.open = builtins._original_open
+        del builtins._original_open
+```
+
+---
+
+### 2. Restrict Patch to Windows Only
+
+**Current Issue:**  
+The patch applies unconditionally to all platforms, though the problem is Windows-specific due to differing default encodings.
+
+**Recommendation:**  
+Use a platform check (`sys.platform == ""win32""`) to apply the patch only on Windows systems.
+
+**Example:**
+```python
+import sys
+
+def apply_patches():
+    if sys.platform != ""win32"":
+        return  # No patch needed for non-Windows platforms
+    ...
+```
+
+---
+
+### 3. Improve Patch Documentation and Logging
+
+**Current Issue:**  
+- The patch's docstring omits warnings about global monkey-patching risks.
+- Logging uses `logger.info` but logging configuration may be absent, causing lost messages.
+
+**Recommendation:**  
+- Expand the docstring to include warnings on side effects and advise cautious use.
+- Change log level to `.debug()` to avoid noise, and mention logger configuration in README or developer guide.
+
+**Example docstring addition:**
+```python
+""""""
+WARNING: This patch monkey-patches the built-in open() function globally. 
+It forces UTF-8 encoding on all text-mode file opens on Windows, 
+which could affect third-party libraries expecting default platform encodings.
+Apply with caution and test comprehensively.
+""""""
+```
+
+---
+
+### 4. Add Comments in `src/crewai/__init__.py` Explaining Patch Application
+
+Applying the patch at top-level import time has wide-reaching effects and should be documented for maintainers and users.
+
+**Example:**
+```python
+from crewai.patches.litellm_patch import apply_patches
+# Apply patch globally on import to fix Windows UnicodeDecodeError in litellm JSON loading
+apply_patches()
+```
+
+---
+
+### 5. Enhance Test Suite Robustness
+
+**Current Issues:**
+- Test assumes patch is always applied at import; no explicit patch lifecycle management.
+- No negative test showing failure without patch.
+- Mixed testing frameworks used (unittest vs pytest import).
+
+**Suggestions:**
+- Apply and remove patch explicitly in `setUp` and `tearDown` methods to isolate patch influence.
+- Add test demonstrating expected failure or fallback behavior without patch.
+- Remove unused `pytest` import or migrate fully to `pytest` style.
+  
+**Example test lifecycle management:**
+```python
+from crewai.patches.litellm_patch import apply_patches, remove_patches
+
+class TestLitellmEncoding(unittest.TestCase):
+
+    def setUp(self):
+        apply_patches()
+
+    def tearDown(self):
+        remove_patches()
+
+    def test_json_load_with_utf8_encoding(self):
+        ...
+```
+
+---
+
+## Links to Historical Context and Patterns
+
+- Global monkey patching of builtins is powerful but fragile; many mature projects avoid it or do so conditionally.
+- Restricting patches to platforms where problems occur reduces risk and surprises.
+- Proper storing/restoring of patched functions is essential for maintainability and test isolation.
+- Patch application at import-time should be documented or ideally controlled with explicit calls.
+- Related PRs addressing cross-platform file encoding issues have benefited from these best practices.
+
+---
+
+## Implications for Related Files
+
+- The global patch affects any file I/O within the process after package import, potentially altering behavior of unrelated components.
+- Other patches or future fixes relying on open might conflict if not designed to chain or coexist.
+- Tests outside `litellm_tests` might be impacted by forced UTF-8 encoding without realizing it, risking subtle test failures.
+
+---
+
+## Summary Table of Recommendations
+
+| Area                          | Recommendation                                    | Code Location                            |
+|-------------------------------|-------------------------------------------------|-----------------------------------------|
+| Patch Preservation            | Save original `open` for restoration              | `litellm_patch.py`                      |
+| Platform Restriction          | Only apply patch on Windows                        | `litellm_patch.py`                      |
+| Documentation                | Add explicit warnings about global monkey-patching | `litellm_patch.py` & `src/crewai/__init__.py` |
+| Logging                      | Use `debug` log level and document logger config  | `litellm_patch.py`                      |
+| Test Management              | Explicit patch apply/remove in test lifecycle      | `test_encoding.py`                      |
+| Test Coverage                | Add negative tests without patch                   | `test_encoding.py`                      |
+| Code Style                  | Remove unused imports, unify test framework usage  | `test_encoding.py`                      |
+
+---
+
+## Conclusion
+
+This PR solves an important Windows-specific UnicodeDecodeError elegantly by enforcing UTF-8 encoding on file reads. However, the broad scope of the patch, lack of safe revertibility, and unconditional platform application introduce risks that could cause unintended side effects. Incorporating safeguards such as platform checks, proper patch restore logic, clearer documentation, and test improvements would greatly increase the maintainability, safety, and clarity of the fix.
+
+The team is encouraged to revise the patch accordingly to balance immediate functionality with long-term robustness and developer experience.
+
+---
+
+Thank you for your attention to these details. I am happy to re-review after revisions or assist with test improvements.
+
+—
+*Code Review Assistant*",review,review
+Things were good before the last commit,review,review
+"no can you revert the last commit completely? we still need those changes. The build errors I was referring to were these:
+D:\a\_work\1\s\src\Cli\Abstractions\Command\Command.cs(73,1): error SA1028: Code should not contain trailing whitespace (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1028.md) [D:\a\_work\1\s\src\Cli\Abstractions\Azure.Functions.Cli.Abstractions.csproj]
+D:\a\_work\1\s\src\Cli\Abstractions\Command\Command.cs(66,44): error SA1116: The parameters should begin on the line after the declaration, whenever the parameter span across multiple lines (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1116.md) [D:\a\_work\1\s\src\Cli\Abstractions\Azure.Functions.Cli.Abstractions.csproj]
+D:\a\_work\1\s\src\Cli\Abstractions\Command\Command.cs(103,24): error SA1117: The parameters should all be placed on the same line or each parameter should be placed on its own line (https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1117.md) [D:\a\_work\1\s\src\Cli\Abstractions\Azure.Functions.Cli.Abstractions.csproj]
+
+",review,review
+Closing in favor of https://github.com/dotnet/aspire/pull/9721 .,review,workflow
+"`""true = false""` what 👀 
+
+@copilot delete that",review,agentic_cmd
+"lastly, public static BinaryContent Create(BinaryData value);  needs to copy the MediaType from BinaryData to BinaryContent.",review,review
+Remove all calls to `ConfigureApplicationParts` and all calls to configure `ClusterOptions` - they are not necessary.,review,review
+"> @baywet, shouldn't the PR title be renamed to match conventional commit. i.e. `fix: XYZ`?
+
+@peombwa why would you expect the PR title to match the conventional commit name?",review,workflow
+Can you update dagger to 0.16.2 everywhere?,review,workflow
+"## Pull Request Test Coverage Report for [Build 7506](https://coveralls.io/builds/74321424)
+
+
+### Details
+
+* **14** of **14**   **(100.0%)**  changed or added relevant lines in **3** files are covered.
+* No unchanged relevant lines lost coverage.
+* Overall coverage decreased (**-0.01%**) to **89.362%**
+
+---
+
+
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74321424/badge)](https://coveralls.io/builds/74321424) |
+| :-- | --: |
+| Change from base [Build 7500](https://coveralls.io/builds/74310488): |  -0.01% |
+| Covered Lines: | 3528 |
+| Relevant Lines: | 3948 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,review
+"> hey @redvelvets we are validating this approach.
+
+Is a fallback really required?
+",review,workflow
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review for PR #2725: Add Support for Specifying Trained Data File in Run Command
+
+---
+
+## Summary of Key Findings
+
+This pull request successfully implements the feature requested in issue #2724 by enabling users to specify a custom trained data file to be used when running crews. The new `trained_data_file` configuration is threaded through core classes (`Agent`, `Crew`), CLI commands, subprocess invocations, and runtime templates, ensuring consistent and flexible behavior. Additionally, testing is enhanced with a new test verifying the custom data file usage in agents.
+
+Overall, the design respects backwards compatibility by providing defaults and ensures user-facing clarity by exposing the file path option in the CLI. The propagation of parameters is clean, following good modular code practices.
+
+---
+
+## Detailed Review & Suggestions
+
+### 1. `src/crewai/agent.py`
+
+- **What Changed:** Added `trained_data_file` attribute to `Agent` with default `TRAINED_AGENTS_DATA_FILE`, and `_use_trained_data` uses this attribute instead of a hardcoded constant.
+- **Positive:** Clear use of Pydantic `Field` with descriptive help text. Backwards compatibility preserved via default.
+- **Improvement Suggestions:**
+  - Change type to `Optional[str]` to align with other classes (`Crew`) and accommodate the possibility of lack of setting.
+  - Add defensive guard in `_use_trained_data` to ignore empty or invalid file paths, e.g.:
+
+    ```python
+    if self.trained_data_file and (data := CrewTrainingHandler(self.trained_data_file).load()):
+        ...
+    ```
+
+  - Update `_use_trained_data` docstring to explicitly mention that the file source is dynamic and agent-specific.
+  
+---
+
+### 2. `src/crewai/cli/cli.py`
+
+- **What Changed:** Added a `-f/--filename` CLI option to specify the trained data file path; passed to the `run_crew` function.
+- **Positive:** Good use of Click option decorator; provides user feedback via `click.echo`.
+- **Improvement Suggestions:**
+  - Rename the CLI flag to `--trained-data-file` for semantic clarity:
+
+    ```python
+    @click.option(
+        ""-f"",
+        ""--trained-data-file"",
+        type=str,
+        default=""trained_agents_data.pkl"",
+        help=""Path to a trained data file to use"",
+    )
+    ```
+
+  - Clarify echoed message to indicate purpose, for example:
+
+    ```python
+    click.echo(f""Running the Crew with agent training data file: {trained_data_file}"")
+    ```
+
+---
+
+### 3. `src/crewai/cli/run_crew.py`
+
+- **What Changed:** Updated `run_crew` and `execute_command` to accept the optional `trained_data_file` argument; passed this to subprocess command when appropriate.
+- **Positive:** Logical propagation of arguments; clear docstrings added.
+- **Improvement Suggestions:**
+  - Add error handling around `subprocess.run` to capture and report failures cleanly:
+
+    ```python
+    try:
+        subprocess.run(command, capture_output=False, text=True, check=True)
+    except subprocess.CalledProcessError as error:
+        click.echo(f""Command failed with return code {error.returncode}: {error}"")
+        raise
+    ```
+
+  - Confirm command line argument `--trained-data-file` matches CLI and internal option naming consistently to avoid confusion.
+  
+---
+
+### 4. `src/crewai/cli/templates/crew/main.py`
+
+- **What Changed:** Reads `trained_data_file` as first positional argument from `sys.argv[1]` (defaults to `""trained_agents_data.pkl""`), passing it when initializing crew.
+- **Positive:** Maintains backward compatibility by defaulting; enables runtime flexibility.
+- **Improvement Suggestions:**
+  - Replace fragile direct `sys.argv` access with Python's `argparse` to improve robustness and maintainability:
+
+    ```python
+    import argparse
+
+    def run():
+        ...
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            ""trained_data_file"",
+            nargs=""?"",
+            default=""trained_agents_data.pkl"",
+            help=""Path to the agent trained data file""
+        )
+        args = parser.parse_args()
+        ().crew(trained_data_file=args.trained_data_file).kickoff(inputs=inputs)
+    ```
+
+  - Document this behavior clearly in the template for future maintainers.
+  
+---
+
+### 5. `src/crewai/crew.py`
+
+- **What Changed:** Added `trained_data_file` Optional field to `Crew`; in `copy()`, this is propagated to all cloned agents.
+- **Positive:** Ensures agents inherit crew-level training file setting, enabling consistent behavior.
+- **Improvement Suggestions:**
+  - Add inline comments and docstring notes in `copy()` explaining the purpose and behavior of copying the `trained_data_file`.
+  - Modify assignment logic to avoid overwriting agent-level `trained_data_file` if set, allowing agent overrides:
+
+    ```python
+    for agent in self.agents:
+        cloned_agent = agent.copy()
+        if self.trained_data_file and not getattr(cloned_agent, ""trained_data_file"", None):
+            cloned_agent.trained_data_file = self.trained_data_file
+        cloned_agents.append(cloned_agent)
+    ```
+
+  - Ensure type of `trained_data_file` matches across classes (`Optional[str]` recommended).
+  
+---
+
+### 6. `tests/agent_test.py`
+
+- **What Changed:** Added test `test_agent_use_custom_trained_data_file` that mocks `CrewTrainingHandler` to verify agent uses a custom trained data file.
+- **Positive:** Well-designed test verifying the new feature end-to-end with proper mocks and call assertions.
+- **Improvement Suggestions:**
+  - Add tests for:
+    - Default behavior when no custom file is specified (uses `TRAINED_AGENTS_DATA_FILE`).
+    - Behavior when the trained data file is invalid or missing (e.g., empty load).
+  - Maintain naming consistency for tests, and consider fixtures for agent setup if expanding tests further.
+  
+---
+
+## Links to Historical Context
+
+- The feature responds directly to issue #2724, improving flexibility in specifying training data files.
+- Similar patterns of adding optional configuration fields and propagating them through CLI and core classes were used in past crewAI PRs handling agent customization and crew execution flags.
+- The test mocking approach follows existing test patterns for agent data loading validation.
+
+---
+
+## Implications for Related Files
+
+- The addition of `trained_data_file` option may require updating project documentation and user guides to describe the new CLI option and its effect.
+- Any scripts or automation invoking the run command should be reviewed to leverage this option or remain compatible.
+- Downstream code that consumes or runs crews may benefit from awareness of this parameter for customized training data handling.
+
+---
+
+## Specific Improvement Examples
+
+- Agent attribute with Optional typing and guard clause:
+
+  ```python
+  trained_data_file: Optional[str] = Field(
+      default=TRAINED_AGENTS_DATA_FILE,
+      description=""Path to the trained data file to use for task prompts."",
+  )
+
+  def _use_trained_data(self, task_prompt: str) -> str:
+      """"""
+      Use trained data from a specified file for the agent task prompt.
+
+      Uses the 'trained_data_file' attribute as the source of training instructions.
+      """"""
+      if self.trained_data_file and (data := CrewTrainingHandler(self.trained_data_file).load()):
+          if trained_data_output := data.get(self.role):
+              task_prompt += (
+                  ""\n\nYou MUST follow these instructions: \n - ""
+                  + ""\n - "".join(trained_data_output.get(""suggestions"", []))
+              )
+      return task_prompt
+  ```
+
+- CLI improved option naming:
+
+  ```python
+  @click.option(
+      ""-f"",
+      ""--trained-data-file"",
+      type=str,
+      default=""trained_agents_data.pkl"",
+      help=""Path to a trained data file to use"",
+  )
+  def run(trained_data_file: str):
+      click.echo(f""Running the Crew with agent training data file: {trained_data_file}"")
+      run_crew(trained_data_file=trained_data_file)
+  ```
+
+- Robust template argument parsing example:
+
+  ```python
+  import argparse
+
+  def run():
+      ...
+      parser = argparse.ArgumentParser()
+      parser.add_argument(
+          ""trained_data_file"",
+          nargs=""?"",
+          default=""trained_agents_data.pkl"",
+          help=""Path to the agent trained data file""
+      )
+      args = parser.parse_args()
+      ().crew(trained_data_file=args.trained_data_file).kickoff(inputs=inputs)
+  ```
+
+---
+
+## Conclusion
+
+This PR delivers a well-structured and coherent solution to enable specification of trained data files in crew runs. It covers all necessary layers from CLI user input to core agent behavior, ensuring flexible and consistent configuration. By refining type usage, improving parameter naming for clarity, enhancing error handling during subprocess execution, and making argument parsing more robust in templates, this feature can be further polished. Additional tests covering edge cases and fallback scenarios will enhance reliability.
+
+Thank you for this valuable contribution; addressing these minor improvements will strengthen the maintainability, usability, and resilience of this feature in crewAI.
+
+---
+
+If desired, I can assist in providing follow-up patches or documentation updates related to these suggestions.",review,review
+"## Pull Request Test Coverage Report for [Build 7214](https://coveralls.io/builds/74094279)
+
+
+### Details
+
+* **0** of **0**   changed or added relevant lines in **0** files are covered.
+* No unchanged relevant lines lost coverage.
+* Overall coverage remained the same at **93.087%**
+
+---
+
+
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74094279/badge)](https://coveralls.io/builds/74094279) |
+| :-- | --: |
+| Change from base [Build 7210](https://coveralls.io/builds/74094092): |  0.0% |
+| Covered Lines: | 8551 |
+| Relevant Lines: | 9186 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,review
+yes please,review,workflow
+"Disclaimer: This review was made by a crew of AI Agents.
+
+### Code Review for PR #2792 in `crewAIInc/crewAI`
+
+#### Overview
+This pull request addresses issue #2791 by modifying how task tools interact with agent tools in the `task.py` file. The primary focus is to ensure that task tools do not override agent tools but rather combine them appropriately. The changes affect several files, namely `src/crewai/task.py`, `tests/crew_test.py`, and `tests/task_test.py`.
+
+#### Detailed Analysis
+1. **Task.py Changes**
+   - The logic within the `check_tools` validator has been significantly improved. Previously, the lack of checks led to the potential overriding of task tools by agent tools. The updated version effectively combines the tools while preserving task-specific tools.
+   - **Specific Improvement Suggestions:**
+     - Implement validation for tool name formats to prevent invalid names from being added. A simple helper function like `_validate_tool_name` can be provided for this purpose.
+     - Incorporate logging for better traceability of the tool combination decisions, aiding in debugging discrepancies in tool management.
+
+   Here's an example:
+   ```python
+   import logging
+
+   @model_validator(mode=""after"")
+   def check_tools(self):
+       if self.agent and self.agent.tools:
+           existing_tool_names = {tool.name for tool in self.tools}
+           for tool in self.agent.tools:
+               if tool.name not in existing_tool_names:
+                   logging.debug(f""Adding agent tool '{tool.name}' to task tools"")
+                   self.tools.append(tool)
+   ```
+
+2. **Test Changes**
+   - The tests have been reformulated to enhance clarity and increase coverage regarding tool combinations. 
+   - **Recommendations for Improvement:**
+     - Add tests for edge cases, such as when the agent is `None` or when duplicate tool names are present. Here’s an example of a test for null agents:
+     ```python
+     def test_task_tools_with_null_agent():
+         task = Task(
+             description=""Test task"",
+             expected_output=""Test output"",
+             tools=[TestTool()],
+             agent=None
+         )
+         assert len(task.tools) == 1
+     ```
+
+3. **Performance Considerations**
+   - The switch to using a set for checking existing tool names increases performance dramatically, enhancing response time for tool management operations.
+
+4. **Documentation Needs**
+   - Clarify the `check_tools` method with detailed docstrings explaining the process for future reference. This should include a list of steps, expected behavior, and return types. 
+
+5. **Potential Issues Identified**
+   - Considerations for tool name format validation and logging were noted, as well as the need for version conflict management in future revisions.
+
+6. **Additional Recommendations**
+   - Future revisions could focus on developing an approach for validating tool origins to ensure security and integrity.
+
+### Final Verdict
+The changes introduced in this pull request enhance the code's maintainability and functionality by effectively allowing task tools to coexist with agent tools. However, additional testing and documentation will be necessary to fully capture these updates' implications and to ensure robust implementation.
+
+Links to historical context can be derived from past related PRs that emphasize improving tool handling across iterations and a growing trend of enhancing test coverage to reduce regression errors. 
+
+Overall, I approve of these changes with the suggestions above noted for future improvements.",review,review
+yep https://chatgpt.com/s/cd_683f84af69908191afa06274e69c2486. i'll see about adding others to the openai workspace.,review,workflow
+"## Pull Request Test Coverage Report for [Build 16107556628](https://coveralls.io/builds/74494517)
+
+### Warning: This coverage report may be inaccurate.
+
+This pull request's base commit is no longer the HEAD commit of its target branch. This means it includes changes from outside the original pull request, including, potentially, unrelated coverage changes.
+
+- For more information on this, see <a target=""_blank"" href=""https://docs.coveralls.io/build-types#tracking-coverage-changes-with-pull_request-builds"">Tracking coverage changes with pull request builds</a>.
+- To avoid this issue with future PRs, see these <a target=""_blank"" href=""https://docs.coveralls.io/build-types#recommended-ci-configurations"">Recommended CI Configurations</a>.
+- For a quick fix, <a target=""_blank"" href=""https://github.blog/changelog/2022-02-03-more-ways-to-keep-your-pull-request-branch-up-to-date/#update-your-pull-request-branch-by-rebasing"">rebase this PR at GitHub</a>. Your next report should be accurate.
+
+### Details
+
+* **0** of **0**   changed or added relevant lines in **0** files are covered.
+* **1** unchanged line in **1** file lost coverage.
+* Overall coverage remained the same at **97.838%**
+
+---
+
+
+|  Files with Coverage Reduction | New Missed Lines | % |
+| :-----|--------------|--: |
+| [core/src/ast.rs](https://coveralls.io/builds/74494517/source?filename=core%2Fsrc%2Fast.rs#L319) | 1 | 99.85% |
+<!-- | **Total:** | **1** |  | -->
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74494517/badge)](https://coveralls.io/builds/74494517) |
+| :-- | --: |
+| Change from base [Build 15956590300](https://coveralls.io/builds/74390358): |  0.0% |
+| Covered Lines: | 39467 |
+| Relevant Lines: | 40339 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,review
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2410
+
+## Overview
+This pull request addresses the `packaging.licenses` dependency issue by pinning the `setuptools` version and adding compatibility tests. Overall, the changes show a solid understanding of the issue and provide necessary fixes. However, several improvements can enhance the clarity, maintainability, and robustness of the code.
+
+## 1. Improvements to README.md
+### Analysis
+- **Strengths**:
+  - Clear troubleshooting documentation related to the `ModuleNotFoundError`.
+  - Effective instructions for resolving the packaging.licenses errors.
+
+### Suggestions for Improvement
+- **Version Information**: It would be beneficial to specify version compatibility with `uv` to aid users further.
+
+```markdown
+3. **ModuleNotFoundError: No module named 'packaging.licenses'**
+   - This error occurs when installing with `uv` (v0.1.0 and above) due to newer `setuptools` versions.
+   - Fix by downgrading setuptools: `pip install setuptools<=65.5.0`.
+   - Then install CrewAI: `uv pip install crewai`.
+   - Note: This is a temporary workaround until compatibility with `setuptools` is resolved.
+```
+
+## 2. Enhancements to pyproject.toml
+### Analysis
+- **Strengths**:
+  - Successfully pins the `setuptools` version to prevent the `packaging.licenses` issues.
+
+### Suggestions for Improvement
+- **Comment for Clarity**: Adding a comment for future maintainers elucidates why a particular version is set.
+
+```toml
+[build-system]
+# Pin setuptools version to avoid packaging.licenses dependency issues with UV
+requires = [
+    ""hatchling"",
+    ""setuptools>=64.0.0,<=65.5.0""  # Explicit version range for compatibility
+]
+build-backend = ""hatchling.build""
+```
+
+## 3. Recommendations for tests/installation/test_dependency_compatibility.py
+### Analysis
+- **Strengths**:
+  - Good overall structure and error handling in tests.
+  - Approval for using `pytest.skip` to handle CI and `UV` availability checks.
+
+### Suggestions for Improvement
+- **Documentation**: Include docstrings for better understanding of tests.
+- **Error Messages**: Comprehensive and specific error messages will enhance debugging.
+- **Cleanup Procedures**: Implement proper cleanup to avoid any environment leftovers post-testing.
+- **Test Isolation**: Ensure tests run in an isolated environment will improve reliability.
+
+```python
+""""""
+Test module for verifying dependency compatibility with different package managers.
+These tests ensure that critical dependencies can be installed without conflicts.
+""""""
+
+import subprocess
+import pytest
+import os
+import shutil
+
+# Context Manager for isolated package testing environment
+@contextmanager
+def temporary_package_environment():
+    """"""Create an isolated environment for package testing.""""""
+    # Implementation remains unchanged
+    ...
+
+# Continue with implementation
+```
+
+## General Recommendations
+1. **Documentation**:
+   - Add a changelog entry documenting the changes related to `setuptools`.
+   - Clearly document testing requirements at the top of the test file.
+
+2. **Testing Improvements**:
+   - Enhance test coverage by including diverse package manager tests.
+   - Introduce tests for `setuptools` version compatibility.
+   - Look into test parallelization to speed up the testing process.
+
+3. **Error Handling Enhancements**:
+   - Improve error messages within test assertions to include more context, aiding developers in troubleshooting.
+
+4. **Future Considerations**:
+   - Keep an eye on future `setuptools` updates for a more permanent solution to the issues addressed in this PR.
+   - Adding a CI job to verify the installation of packages using various package managers shortly after changes would be valuable.
+
+## Conclusion
+The changes proposed in PR #2410 are well-structured and address the immediate need for dependency resolution. Implementing the suggested enhancements will not only refine the quality of this PR but also improve the overall maintainability and robustness of the codebase. Thank you for your contributions!",review,review
+"@harupy Sorry, can you repeat my comment?",workflow,workflow
+Can you add more tests for each function covering corner cases?,workflow,workflow
+Please fix the CI failures.,workflow,workflow
+"@mitelg I already tested it but the service registry from phpstan doesn't provide any information of the decorated class
+
+```
+PHPStan\Symfony\Service {#3157
+  -id: ""Shopware\Tests\DevOps\Core\DevOps\StaticAnalyse\PHPStan\Rules\data\PublicServiceDecoratorRule\DecoratorOfNonPublicService""
+  -class: null
+  -public: false
+  -synthetic: false
+  -alias: null
+  -tags: []
+}
+
+```",workflow,workflow
+looks like your session timed out. Try again.,workflow,workflow
+"Thank you for contributing these new video processing blocks to the platform! The PR description clearly explains the changes and additions.
+
+Before this can be merged, please update your PR description to include the standard checklist for code changes. Since you're adding new functional blocks, we need to ensure they've been properly tested. Please include:
+
+- A complete checklist indicating you've tested your changes
+- A specific test plan detailing how you've verified the functionality of both new blocks
+
+Otherwise, the PR looks good - the conventional commit format in the title is correct, and the scope of changes matches what's described. The documentation updates are also appreciated!",workflow,review
+This pull request was created as a test and will now be closed. Thank you!,workflow,workflow
+"Ok there just a couple of failures here are the errors.. why are you not finding them when building? are you following your instructions to build the sln?
+
+```
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembersAttribute' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.20348.0]
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembers' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.20348.0]
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembersAttribute' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.19041.0]
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembers' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.19041.0]
+ ```",workflow,review
+"@messplay , this feels like AI generated, it wouldn't work in practice, and its parts are not integrated (e.g. the UI additions are not exposed, the positioning device invokable functions not reachable, etc.).  On top of which, there's no description, context, etc. 
+
+Did something go wrong here?",workflow,workflow
+@foot I see we are not checking the response status code except for 204... Which status code would the usage limit error return? Should we actually have an extra check on that? It would sound more robust that returning any non-JSON string as an error.,workflow,workflow
+Not a good solution,workflow,review
+@ershad @MayaRainer @raulpopadineti should we add a note about adding unit tests for the front-end business logic?,workflow,workflow
+Okay this is getting into a cycle. Closing. Will fix manually ;),workflow,workflow
+"@DamianEdwards some follow ups for you. Logging logs for *every instance of the same parameter. It's nosy, if you want to log then we need to find a better place to do it.
+
+I spent some time looking at how to make yarp work and we can do it once @benjaminpetit fixes the YARP publish story",workflow,workflow
+@cubic-dev-ai pls review,workflow,agentic_cmd
+superseded by https://github.com/microsoft/vscode/pull/255633 so I don't have to wait for 2 reviews,workflow,workflow
+LGTM,workflow,workflow
+@Kitenite works on my machine,workflow,workflow
+Resolve merge conflicts,workflow,workflow
+fixed by jjonesz change,workflow,workflow
+@ellipsis-dev can you review please,workflow,agentic_cmd
+Check your solution again now that you have new instructions and environment.,workflow,workflow
+"done on #6334 instead, sorry codex",workflow,workflow
+@adamint @eerhardt Please review. Everyone who works on app model is on holiday 🤷,workflow,workflow
+@ian-at-airbyte - I've set to auto-merge once tests pass again. 🚀,workflow,workflow
+"Thanks AJ! The broken link checker in Docusaurus is actually notorious for being unreliable, so I'm not that surprised it wasn't working before.
+
+There's one last unintended change that I'm trying to pin down. It looks like the product badges have moved above the title instead of below them. This might be due to Devin's code changes, but it might just be a structural change that happened between versions and we need to change our plugin. Let me investigate a bit further and report back.",workflow,workflow
+Duplicated [#2469](https://github.com/crewAIInc/crewAI/pull/2469),workflow,workflow
+@MayaRainer Ok! Got it. I'll try that. thank you!,workflow,workflow
+"@benfdking I created the two issues you can see above, because yesterday I was not able to find and fix them.
+Therefor I fixed the other as commented above and removed the unparsable test files, so the CI should pass.
+Should be ready to merge, *I hope*.",workflow,workflow
+build playground-composition - it should succeed if any error then fix those,workflow,workflow
+"Thank you for adding these new video transcription and editing blocks! This looks like a valuable addition to the platform.
+
+However, before this PR can be merged, there are a few requirements that need to be addressed:
+
+1. **Missing Checklist**: The PR description is missing the required checklist. Since you're adding new code blocks, the checklist cannot be omitted. Please update your PR description to include the standard checklist from the template, and make sure to check off all relevant items.
+
+2. **Test Plan**: As part of the checklist, please include a test plan that describes how you've tested these new blocks to ensure they work as expected.
+
+Once you've added the required checklist and test plan, we can proceed with the review of the actual code changes.",workflow,review
+@MH4GF Thank you for the review! I’ll take a look!,workflow,workflow
+The snippets failure is related to a preview feature.,workflow,workflow
+"doesn't work
+
+closing in favor of: https://github.com/selfxyz/self/pull/814",workflow,workflow
+"@veeam-denis I can see Enable auto-merge(squash) option for me on this PR. Not sure if it will squash automatically.
+Plus what commit message auto squashing mechanism will pick.",workflow,workflow
+@dotnet/dotnet-diag - can someone else please review? Looks like initiator can't approve and t requires 2+ reviewers,workflow,workflow
+Good to go.,workflow,workflow
+@ian-at-airbyte - I've resolved the stale links. Lmk if you see any other issues.,workflow,workflow
+@gewarren should we ignore the error https://github.com/dotnet/dotnet-api-docs/actions/runs/15761612301/job/44434593544?pr=11472? or should add the project file?,workflow,workflow
+"@EricLBuehler - i've run with the NCCL-disable env var and without it. Currently using manual partitioning although i got the sense you fixed allocations previously, the KV caches seems to be biasing GPU0 (and some models cant be split).",workflow,workflow
+Thanks Devin!,workflow,workflow
+"@RickWinter, take a look at my updates. ",workflow,workflow
+":tada: This PR is included in version 1.42.0 :tada:
+
+The release is available on [GitHub release](https://github.com/trycompai/comp/releases/tag/v1.42.0)
+
+Your **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:",workflow,bot
+"@salimkanoun I have the feeling I have tested with the code from the branch as well ;-) (see my screenshot with the code).
+
+@sedghi : unfortunately, there are no video samples on the netlify deployment so we can not test there :-(",workflow,workflow
+@IEvangelist This is ready for final review.,workflow,workflow
+"@MH4GF https://github.com/liam-hq/liam/pull/2596 Sorry in the midst of your review.The policy in this PR does not work well, so we have revised the policy in the PR above.We hope you will continue to review the above PR.",workflow,workflow
+Thank you. I just gave it a try and see it working as expected.,workflow,workflow
+"@AaronRobinsonMSFT, would you mind giving this a quick review?  I did some brief local testing and things look OK.",workflow,workflow
+"@yegor256 Great job on the review! 🌟 You've earned +4 points: +12 base, -16 for no comments, +8 bonus. Your dedication is appreciated! Current balance: [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep up the excellent work!
+
+<!-- Thanks for the review! You've earned +4 points for this: +12 as a basis; -16 for absolutely no comments posted; +8 to give you at least something.  Your running balance is [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->",workflow,workflow
+"@saumyamalik I tried adding this, not tested, but would be fun to have for v2 release.",workflow,workflow

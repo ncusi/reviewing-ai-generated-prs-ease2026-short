@@ -1,0 +1,2423 @@
+text,predicted_label,gold_label
+@copilot check all other CI workflows and make sure they all pass,agentic_cmd,
+@copilot - the queue release gates comment trigger is not working.,agentic_cmd,
+@copilot Please try again,agentic_cmd,
+@copilot squash commit and push force,agentic_cmd,
+"@copilot the completions already work for `code-tunnel.exe` and other `.exe`. However, the detail property is not provided",agentic_cmd,
+@copilot There's a built in [AsyncEnumerable.Empty Method](https://learn.microsoft.com/en-us/dotnet/api/system.linq.asyncenumerable.empty?view=net-9.0-pp) you don't need EmptyAsyncEnumerable.,agentic_cmd,
+@copilot Let's fix tests,agentic_cmd,
+"@copilot your repeated analysis wasn't correct. After accounting for changes in this PR, the following functions are no longer used: _monodroid_get_network_interface_state and java_classes_init
+
+Remove _monodroid_get_network_interface_state and java_classes_init functions, then remove the monodroid-networkinfo.cc file, since it no longer contains any usable code. Make sure to properly remove the file from CMakeFiles.txt",agentic_cmd,
+@copilot try again,agentic_cmd,
+"@copilot check the new pipeline again, if it looks ok.",agentic_cmd,
+@copilot 请使用v3的签名实现参考文档 https://help.aliyun.com/zh/sdk/product-overview/v3-request-structure-and-signature,agentic_cmd,
+@copilot don't vendor dependencies,agentic_cmd,
+"Not super useful, a lot of the new yaml file is nonsensical.
+
+@copilot thanks for the attempt, I will try again on a more well-defined task. Do not make further changes.",agentic_cmd,
+This is outside of the scope of copilot until it can actually run tests and modify the code based on the results.,agentic_cmd,
+@copilot please resolve merge conflict with main,agentic_cmd,
+@copilot you should revert [this change](https://github.com/dotnet/aspire/commit/5ac9cf76f2a3c3702c56ec1857d52b2340a34d44) - I'm pretty sure it's a product-level constraint for Aspire that they need 9.0.3xx. I was just noting the impact this constraint has on the user base.,agentic_cmd,
+"@copilot, merge main into this feature branch so you are able to use the new firewall rules and then implement the integration tests that are currently commented as unavailable because of firewall rules:
+func TestAcc_DataSourcesIntegration(t *testing.T) {
+	// Skip this test if we can't access external network resources
+	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
+	t.Skip(""Skipping acceptance test - requires network access to Terraform CLI"")
+func TestAcc_ErrorHandling(t *testing.T) {
+	// Skip this test if we can't access external network resources
+	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
+	t.Skip(""Skipping acceptance test - requires network access to Terraform CLI"")
+
+etc. ",agentic_cmd,
+@copilot limit avatar size to 200x200 px,agentic_cmd,
+@copilot Build is failing,agentic_cmd,
+@copilot make it shorter without losing any meaning.,agentic_cmd,
+@copilot try again,agentic_cmd,
+@copilot still working?,agentic_cmd,
+"@copilot use this url format instead https://github.com/coturn/coturn/archive/%{version}.tar.gz
+",agentic_cmd,
+/gemini review,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+"@claude, please review changes in this PR, they should cover comment on PR for 
+
+Code Review for Custom Database Storage Location Feature
+PR Title: 163/customize db storage location
+Tech Stack: Tauri (Rust + TypeScript/React), SQLite, Diesel ORM
+Scope: 48 files, 4464 additions, 1284 deletions
+
+Review Progress
+ Read repository guidelines and understand codebase structure
+ Review backend Rust changes (database, settings, commands)
+ Review frontend React/TypeScript changes (settings UI, stores)
+ Check translation files for consistency across languages
+ Assess security implications and error handling
+ Evaluate architecture and design patterns
+ Provide comprehensive feedback with severity levels
+🔍 Summary
+This PR implements a comprehensive custom database storage location feature that allows users to store PasteBar's data in a custom directory instead of the default application data folder. The implementation includes UI components, backend services, path transformation logic, and multi-language support.
+
+✅ Strengths
+Excellent Architecture & Design
+Well-structured separation of concerns: Clean separation between frontend UI, state management, backend commands, and database layer
+Robust path transformation system: The {{base_folder}} placeholder system elegantly handles relative/absolute path conversion for images
+Comprehensive user experience: Thoughtful handling of edge cases (existing data, empty directories, permissions)
+Good error handling: Extensive validation and user feedback throughout the process
+Code Quality
+Consistent patterns: Follows established codebase conventions for Tauri commands, state management, and UI components
+Type safety: Proper TypeScript types and Rust enums for path status checking
+Internationalization: Complete translation support across 7 languages
+State management: Well-designed Zustand store integration with proper loading states
+⚠️ Issues & Recommendations
+Critical Issues
+🔴 Security - Path Traversal Vulnerability (Critical)
+File: src-tauri/src/commands/user_settings_command.rs:95-140
+
+The path validation function doesn't adequately protect against path traversal attacks:
+
+pub fn cmd_validate_custom_db_path(path_str: String) -> Result<bool, String> {
+  let path = Path::new(&path_str);
+  // Missing: Path canonicalization and traversal checks
+Recommendation: Add path canonicalization and restrict to safe directories:
+
+let path = Path::new(&path_str).canonicalize()
+  .map_err(|e| format!(""Invalid path: {}"", e))?;
+  
+// Ensure path doesn't traverse outside allowed directories
+if path.ancestors().any(|p| p.ends_with("".."")) {
+  return Err(""Path traversal not allowed"".to_string());
+}
+🔴 Data Loss Risk - Insufficient Backup Strategy (Critical)
+File: src-tauri/src/commands/user_settings_command.rs:143-214
+
+The cmd_set_and_relocate_data function lacks proper backup mechanisms before moving data:
+
+""move"" => {
+  // Direct move without backup - risk of data loss if operation fails
+  fs::rename(&source_path, &dest_path)
+}
+Recommendation: Implement backup strategy and atomic operations:
+
+// Create backup before any destructive operations
+let backup_path = create_backup(&source_path)?;
+match fs::rename(&source_path, &dest_path) {
+  Ok(_) => remove_backup(backup_path),
+  Err(e) => {
+    restore_from_backup(backup_path, &source_path)?;
+    return Err(format!(""Move failed: {}"", e));
+  }
+}
+Major Issues
+🟠 Concurrency - Database Connection Pool Issues (Major)
+File: src-tauri/src/db.rs:75-93
+
+The database connection pool is initialized at application start and doesn't handle dynamic path changes:
+
+lazy_static! {
+  pub static ref DB_POOL_CONNECTION: Pool = init_connection_pool();
+}
+Recommendation: Implement connection pool reinitialization or use a dynamic connection strategy for custom paths.
+
+🟠 Error Recovery - Incomplete Rollback Logic (Major)
+File: packages/pastebar-app-ui/src/pages/settings/CustomDatabaseLocationSettings.tsx:199-216
+
+Error handling doesn't provide rollback mechanisms if database relocation fails partially:
+
+try {
+  await applyCustomDbPath(selectedPathForChangeDialog, dbOperationForChangeDialog)
+  relaunchApp()
+} catch (error: any) {
+  setOperationError(error.message) // No rollback of partial changes
+}
+Recommendation: Implement proper transaction-like rollback for failed operations.
+
+Minor Issues & Suggestions
+🟡 Performance - Unnecessary File Operations (Minor)
+File: src-tauri/src/commands/user_settings_command.rs:94-140
+
+Validation creates and deletes temporary directories unnecessarily:
+
+// Creates directory just to validate, then removes it
+fs::create_dir_all(&path)?;
+fs::remove_dir(&path)?;
+Recommendation: Use parent directory write permissions check instead.
+
+🟡 Code Duplication - Path Selection Logic (Minor)
+File: packages/pastebar-app-ui/src/pages/settings/CustomDatabaseLocationSettings.tsx
+
+The path selection logic is duplicated across multiple functions (handleBrowseForChangeDialog, handleSetupPathSelection, chooseAndSetCustomPath).
+
+Recommendation: Extract common path selection logic into a reusable function.
+
+🟡 UI/UX - Loading States (Minor)
+File: packages/pastebar-app-ui/src/pages/settings/CustomDatabaseLocationSettings.tsx:497
+
+Multiple loading states could be simplified:
+
+const isLoading = dbRelocationInProgress || isProcessing || isApplyingChange
+Recommendation: Consider a unified loading state machine for better UX.
+
+🏗️ Architecture Assessment
+Positive Patterns
+Command Pattern: Clean separation of Tauri commands from business logic
+State Management: Well-structured Zustand store with clear actions
+Error Boundaries: Comprehensive error handling at multiple layers
+Internationalization: Complete i18n support with fallbacks
+Areas for Improvement
+Transaction Management: Need atomic operations for data migration
+Validation Consistency: Backend validation should match frontend expectations
+Testing: No visible test coverage for critical path operations
+🧪 Testing Recommendations
+Critical Test Cases Missing:
+
+Path traversal attack prevention
+Partial migration failure recovery
+Concurrent access during migration
+Cross-platform path handling (Windows/macOS/Linux)
+Large database migration performance
+Disk space validation before migration
+📝 Translation Quality
+Excellent Coverage: All 7 languages properly updated with consistent terminology
+Minor Issue: Some translations could be more concise (e.g., German tends to be verbose)
+
+🎯 Overall Assessment
+This is a well-architected feature with comprehensive functionality. The code quality is high and follows established patterns. However, there are critical security and data safety concerns that must be addressed before production deployment.
+
+Recommendation: Address the critical security vulnerabilities and implement proper backup/rollback mechanisms before merging.
+
+🔧 Priority Actions:
+
+✅ Fix path traversal vulnerability
+✅ Implement backup strategy for data migration
+✅ Add transaction-like rollback capabilities
+⚡ Consider adding integration tests for critical paths
+Overall Rating: 7.5/10 - Excellent foundation with critical security fixes needed.",agentic_cmd,
+"Copilot post-mortem: (Lots of learning on this change)
+ - The initial code diff that copilot provided wasn't quite right, so I had to be more perspective about how I wanted it to structure the msbuild conditions for including the files.
+ - What really blew me away and was a huge time saver is that copilot is able to test the changes by building the NuGet package locally, creating a test app, creating a NuGet.config to point at the local package, and then doing a single-file publish for each RID and looking at the output directory to see what files are present.  I didn't have to provide great prompting on how to do this testing, and the first time around copilot got it right.
+ - There is a future question of how we make it clearer to users of the copilot coding agent that the results are trustworthy.  I spent a few minutes digging through the logs to double-check copilot's work, which worked for me because I know how I would want to test this change.  For those that might not, it would be interesting to see how we can bring up the level of confidence in our ability to trust or not trust copilot's testing results.
+ - After copilot reported results, it pointed out a couple more binaries that I thought would be nice to remove, but further prompting didn't result in the kind of change I wanted.  I believe this is because I was actually sending copilot down the wrong path, and so while it couldn't tell me this in a way that I recognized it, it did become clear to me that I was coaching it down the wrong path, and so I went ahead and just undid the changes and asked it for one final test validation.",agentic_cmd,
+"@copilot This still doesn't look right. Let me provide you with more details to help here.
+
+- When done correctly, there should be new tests in https://github.com/dotnet/aspnetcore/blob/a9e40df376d35df921efd5dc740ed3cd73d2b39c/src/Http/Http.Abstractions/test/Validation/ValidatableTypeInfoTests.cs that validate that when the service collection is configured with JsonSerializerOptions then the PropertyNamePolicy on the serializer options is respected.
+- The code that builds validation errors in here: https://github.com/dotnet/aspnetcore/blob/main/src/Http/Http.Abstractions/src/Validation/ValidateContext.cs
+- The `ValidationContext` property has access to a ServiceProvider you can use to resolve the JsonOptions.",agentic_cmd,
+"@copilot Can you address this build error:
+
+vbc : error BC30420: 'Sub Main' was not found in 'Project'. [D:\a\dotnet-api-docs\dotnet-api-docs\snippets\visualbasic\System.Collections.Generic\SortedListTKey,TValue\Constructor\Project.vbproj]",agentic_cmd,
+"@copilot could you add a newsfragment for this change? just a short summary of what has been fixed and what should now work. you can find information on how to write a newsfragment in the qcodes documentation, in the contributors guide section.",agentic_cmd,
+@copilot please update the `cpu` and `cswitch` events in `UniversalEventsTraceEventParser` to properly use the registered dynamic events.,agentic_cmd,
+"@copilot finally update the version in the const.ts, const.py, package.json and manifest.json files and rebuild the js",agentic_cmd,
+@claude adapt this PR to forward other tracking data such as ip/region to posthog from the API. adapt so that it works on both GCP and cloudflare.,agentic_cmd,
+"@copilot 
+
+We might need to make the registration in another project. The error seems to persist. It’s likely in Wasm.Minimal
+
+2025-07-03T21:41:37Z] [Warning] http://127.0.0.1:35589/subdir/_framework/blazor.web.nt15gxxvjs.js 0:42409 ""[2025-07-03T21:41:37.200Z] Warning: Initializer 'http://127.0.0.1:35589/subdir/JSInitializers/Classic/BasicTestApp.j2kfp6tx1s.lib.module.js' will be ignored because multiple runtimes are available. Use 'before(Web|WebAssembly|Server)Start' and 'after(Web|WebAssembly|Server)Started' instead.""
+[2025-07-03T21:41:37Z] [Info] http://127.0.0.1:35589/subdir/_framework/blazor.web.nt15gxxvjs.js 0:167352 ""Debugging hotkey: Shift+Alt+D (when application has focus)""
+[2025-07-03T21:41:40Z] [Severe] http://127.0.0.1:35589/subdir/_framework/blazor.web.nt15gxxvjs.js 0:170184 ""crit: Microsoft.AspNetCore.Components.WebAssembly.Rendering.WebAssemblyRenderer[100]\n      Unhandled exception rendering component: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\nSystem.Text.Json.JsonException: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\n ---> System.Text.Json.JsonReaderException: ExpectedStartOfValueNotFound, C LineNumber: 0 | BytePositionInLine: 0.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   Exception_EndOfInnerExceptionStack\n   at System.Text.Json.ThrowHelper.ReThrowWithPath(ReadStack& state, JsonReaderException ex)\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   at System.Text.Json.JsonSerializer.ReadAsObject(Utf8JsonReader& reader, JsonTypeInfo jsonTypeInfo)\n   at System.Text.Json.JsonSerializer.Deserialize(Utf8JsonReader& reader, Type retu
+",agentic_cmd,
+@copilot can you check my previous review: https://github.com/dotnet/android/pull/10300#pullrequestreview-3030155323,agentic_cmd,
+"> The bbox param comment is due to my review. If bbox_params is set and there isn't a geometric transform, Albumentations issues a warning (bit pointless as it's a no-op). So for the simple cases where we only do a ToTensor, we should omit it.
+> 
+> Otherwise this warning will pop up whenever un-modified data is prepped via the dataloader
+> 
+> Based on this info we could change the comment, don't have a preference on what though (mainly as a note for developers that there's a reason it's omitted in some cases).
+
+Thanks for clarifying @jveitchmichaelis. I think my confusion is that I don't see how that is implemented. It gets added at the end, but it's in the main body of the function, so it reads like it's always going to be always added and then had a comment suggesting that it wouldn't be. It seems like we want the condition check (which maybe I'm just missing) but Copilot just changed the words instead?",agentic_cmd,
+"@copilot, we have to document the changes.
+
+Candidates for placing documentation:
+- https://learn.microsoft.com/en-us/aspnet/core/blazor/performance/webassembly-runtime-performance#runtime-relinking (PR to https://github.com/dotnet/AspNetCore.Docs)
+- src/mono/browser/README.md for browser
+```
+## Properties That Trigger Relinking
+
+### What is Relinking?
+
+Relinking is the process of rebuilding the native WebAssembly runtime (`dotnet.native.js`, `dotnet.native.wasm`, etc.) with updated or trimmed content, often resulting in a smaller or more optimized output. This is necessary when certain configuration properties or source changes require regeneration of the native artifacts.
+
+### Properties That Trigger Relinking in `browser.proj`
+
+The following MSBuild properties and build flags will trigger a relinking (full rebuild of native artifacts) during the browser/wasm build process:
+
+- **RunAOTCompilation**  
+  - `/p:RunAOTCompilation=true`  
+  - Enables Ahead-of-Time (AOT) compilation. Changing this from false to true (or vice versa) requires relinking to produce the correct output.
+
+- **WasmBuildNative**  
+  - `/p:WasmBuildNative=true`  
+  - Forces a fresh build of the native runtime components.
+
+- **WasmRelinkNative**  
+  - `/p:WasmRelinkNative=true`  
+  - Explicitly requests relinking, even if not otherwise required by other property changes.
+
+- **WasmBuildArgs**  
+  - Any change to arguments passed via `/p:WasmBuildArgs=...` (such as enabling/disabling additional features or options) will trigger a relink.
+
+- **Configuration/Target Architecture**  
+  - Changing `/p:Configuration=Debug|Release` or `/p:RuntimeIdentifier=browser-wasm`, etc., can require relinking for correct native output.
+
+- **Source Changes**  
+  - Any modification to native code (C/C++/Emscripten sources) in `src/mono/browser` or dependent directories will naturally trigger a relink.
+
+#### Notes
+
+- Relinking ensures that the produced WebAssembly binaries reflect the current set of build options and runtime features.
+- For incremental developer workflows, minimizing unnecessary relinks speeds up build times.
+- The relink process is managed by MSBuild targets in `browser.proj`—refer to that file for the most up-to-date logic.
+
+For questions or advanced scenarios, see the [WebAssembly build instructions](../../../docs/workflow/building/libraries/webassembly-instructions.md) or reach out to the .NET runtime maintainers.
+```
+- src/mono/wasi/README.md for WAS
+```
+## Properties That Trigger Relinking
+
+### What is Relinking?
+
+Relinking in WASI builds refers to regenerating the native WASI runtime artifacts (such as `dotnet.native.wasi`, supporting JS, etc.) to reflect changes in configuration, features, or source. This process is essential for producing correct, optimized binaries for WASI environments.
+
+### Properties That Trigger Relinking in `wasi.proj`
+
+The following MSBuild properties and build flags will trigger a relinking during the WASI build process:
+
+- **RunAOTCompilation**  
+  - `/p:RunAOTCompilation=true`  
+  - Enables AOT compilation for WASI. Changing this property requires relinking for correct WASI output.
+
+- **WasiBuildNative**  
+  - `/p:WasiBuildNative=true`  
+  - Forces a rebuild of all native WASI binaries, regardless of detected changes.
+
+- **WasiRelinkNative**  
+  - `/p:WasiRelinkNative=true`  
+  - Explicitly requests relinking of native WASI artifacts.
+
+- **WasiBuildArgs**  
+  - Any change to `/p:WasiBuildArgs=...` (custom build flags or feature toggles) can trigger a relink.
+
+- **Configuration/Target Architecture**  
+  - Changing `/p:Configuration=Debug|Release` or `/p:RuntimeIdentifier=wasi-wasm`, etc., may require relinking.
+
+- **Source Changes**  
+  - Modifying native sources in `src/mono/wasi` or related directories will always trigger a relink.
+
+#### Notes
+
+- Correct relinking ensures WASI binaries are up-to-date and accurately reflect the intended configuration.
+- Avoid unnecessary relinking for faster incremental builds.
+- The relink logic is defined in `wasi.proj` and supporting MSBuild files.
+
+For more detailed WASI build and configuration guidance, see the [WASI build documentation](../../../docs/workflow/building/libraries/webassembly-instructions.md) or consult with the .NET runtime community.
+```",agentic_cmd,
+@copilot only modify files in `packages/http-specs`. Remove your change to `packages/compiler`,agentic_cmd,
+"Issue is still reproducible, will teach Devin to test against the example repo, closing for now.",agentic_cmd,
+"@copilot keep left too 
+
+ --- 
+
+ TITLE: Removal of Resize Terminal Actions with Exception for ""Left"" Action
+USER INTENT: The user wants to remove specific resize terminal actions while retaining the ""left"" resize terminal action.
+TASK DESCRIPTION: The user is iterating on the removal of resize terminal actions in the codebase, specifically aiming to keep the ""left"" action intact.
+EXISTING: The user has initiated the process to remove resize terminal actions and has referenced a pull request (#253385) related to this task.
+PENDING: The assistant needs to modify the code to ensure that all resize terminal actions are removed except for the ""left"" action.
+CODE STATE: The conversation references a pull request (#253385) on GitHub related to the terminal actions in the VSCode repository. Specific code snippets or details about the terminal actions were not provided in the conversation.
+RELEVANT CODE/DOCUMENTATION SNIPPETS: No specific code snippets were shared, but the assistant indicated it would check the current state of terminal actions before proceeding with modifications.
+OTHER NOTES: The user has repeated the request multiple times, indicating a strong emphasis on the need to keep the ""left"" resize action while removing others. The assistant's responses suggest it is actively working on understanding and implementing the user's requirements.",agentic_cmd,
+@copilot you can use dummy DA instead of mock DA,agentic_cmd,
+@copilot please fix this,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+"Claude code also used the paper reference with it's PMC URL, however I believe the preference is to use the PMID URL.",agentic_cmd,
+"@copilot You don't need to fix this issue. Instead, quarantine this test using the `QuarantinedTest` attribute and use the original issue as the url. Also, do not close the issue when this is done, so exclude any messages like `Fixes ...` in the commit messages or PR descriptions.",agentic_cmd,
+@Copilot That broke things - it needs to be on file service bc dynamic import is not acceptable. ,agentic_cmd,
+@copilot Can you fix the build warnings in [this report](https://buildapi.docs.microsoft.com/Output/PullRequest/500c749d-de78-3d4a-00e4-269d599bf9ec/202506201124310954-11490/BuildReport?accessString=2746a967f6ec008b094151fdfef1f3b6aeb4c996292464804c759ff2c35cab69)?,agentic_cmd,
+@copilot that's not picked up as a pylint error. overreach.,agentic_cmd,
+@copilot looks like there's errors in the tests post-rebasing the branch. Please fix.,agentic_cmd,
+@copilot still working?,agentic_cmd,
+"@copilot firewall issues should be addressed, try again fixing pipelines https://github.com/aztfmod/terraform-provider-azurecaf/actions/runs/15989026171/job/45098884939?pr=337
+",agentic_cmd,
+@sentry review,agentic_cmd,
+@copilot gpg-sign and sign-off all commits,agentic_cmd,
+"@adamint can you review -- the person that requested copilot do a job cannot sign off on it.
+
+this seems reasonable, but I see there's another place we log the same thing and I'm not sure whether that one should be removed.
+
+https://github.com/dotnet/aspire/blob/5044bb2e2068f5db4f64ac92c0a23e34eab3b8af/src/Aspire.Dashboard/DashboardWebApplication.cs#L322",agentic_cmd,
+"> Warning
+> 
+> Firewall rules blocked me from connecting to one or more addresses
+> I tried to connect to the following addresses, but was blocked by firewall rules:
+> 
+> https://api.github.com/repos/dependabot/fetch-metadata/releases/latest
+> Triggering command: curl -s REDACTED (http block)
+> If you need me to access, download, or install something from one of these locations, you can either:
+> 
+> Configure [Actions setup steps](https://gh.io/copilot/actions-setup-steps) to set up my environment, which run before the firewall is enabled
+> Add the appropriate URLs or hosts to the custom allowlist in this repository's [Copilot coding agent settings](https://github.com/Skyscanner/backpack-ios/settings/copilot/coding_agent) (admins only)
+
+@copilot The firewall issue has been resolved. Please try again",agentic_cmd,
+@copilot the resources are resolved in `TerminalCompletionService.ts`,agentic_cmd,
+"@copilot we should do snap points using inertia modifiers as described here:
+https://learn.microsoft.com/en-us/windows/uwp/composition/inertia-modifiers",agentic_cmd,
+@copilot try again,agentic_cmd,
+(aside) It may make sense to have Devin try this one again and focus on one component at a time - this one would take a lot of manual effort to fix as it touches a lot of them and leaves things very broken. It also doesn't seem to have used `canary` for the new components.,agentic_cmd,
+@Copilot Go ahead and make the changes necessary in OpenApiDocumentService to support processing multiple content-types on the same status code in the `GetResponsesAsync` method.,agentic_cmd,
+"@copilot has warming here, is it ok?
+
+```bash
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/helper@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)                                             
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.55
+npm warn node_modules/@vuepress/helper
+npm warn   @vuepress/helper@""2.0.0-rc.55"" from @vuepress/plugin-back-to-top@2.0.0-rc.55    
+npm warn   node_modules/@vuepress/plugin-back-to-top
+npm warn   5 more (@vuepress/plugin-docsearch, ...)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.55
+npm warn   node_modules/@vuepress/helper
+npm warn     @vuepress/helper@""2.0.0-rc.55"" from @vuepress/plugin-back-to-top@2.0.0-rc.55  
+npm warn     node_modules/@vuepress/plugin-back-to-top
+npm warn     5 more (@vuepress/plugin-docsearch, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/highlighter-helper@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/highlighter-helper@2.0.0-rc.54
+npm warn node_modules/@vuepress/highlighter-helper
+npm warn   @vuepress/highlighter-helper@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn   node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn   1 more (@vuepress/plugin-prismjs)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/highlighter-helper@2.0.0-rc.54       
+npm warn   node_modules/@vuepress/highlighter-helper
+npm warn     @vuepress/highlighter-helper@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn     node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn     1 more (@vuepress/plugin-prismjs)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-active-header-links@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-active-header-links@2.0.0-rc.55 
+npm warn node_modules/@vuepress/plugin-active-header-links
+npm warn   @vuepress/plugin-active-header-links@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-active-header-links@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-active-header-links
+npm warn     @vuepress/plugin-active-header-links@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-back-to-top@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-back-to-top@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-back-to-top
+npm warn   @vuepress/plugin-back-to-top@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-back-to-top@2.0.0-rc.55       
+npm warn   node_modules/@vuepress/plugin-back-to-top
+npm warn     @vuepress/plugin-back-to-top@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-container@2.0.0-rc.28
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-container@2.0.0-rc.28
+npm warn node_modules/@vuepress/plugin-container
+npm warn   @vuepress/plugin-container@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.9
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-container@2.0.0-rc.28
+npm warn   node_modules/@vuepress/plugin-container
+npm warn     @vuepress/plugin-container@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-docsearch@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-docsearch@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-docsearch
+npm warn   @vuepress/plugin-docsearch@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-docsearch@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-docsearch
+npm warn     @vuepress/plugin-docsearch@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-external-link-icon@2.0.0-rc.28
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-external-link-icon@2.0.0-rc.28   
+npm warn node_modules/@vuepress/plugin-external-link-icon
+npm warn   @vuepress/plugin-external-link-icon@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.9
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-external-link-icon@2.0.0-rc.28 
+npm warn   node_modules/@vuepress/plugin-external-link-icon
+npm warn     @vuepress/plugin-external-link-icon@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-git@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-git@2.0.0-rc.54
+npm warn node_modules/@vuepress/plugin-git
+npm warn   @vuepress/plugin-git@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-git@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-git
+npm warn     @vuepress/plugin-git@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26       
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-medium-zoom@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-medium-zoom@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-medium-zoom
+npm warn   @vuepress/plugin-medium-zoom@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-medium-zoom@2.0.0-rc.55       
+npm warn   node_modules/@vuepress/plugin-medium-zoom
+npm warn     @vuepress/plugin-medium-zoom@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-nprogress@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-nprogress@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-nprogress
+npm warn   @vuepress/plugin-nprogress@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-nprogress@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-nprogress
+npm warn     @vuepress/plugin-nprogress@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-palette@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-palette@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-palette
+npm warn   @vuepress/plugin-palette@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26     
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-palette@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-palette
+npm warn     @vuepress/plugin-palette@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-prismjs@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-prismjs@2.0.0-rc.54
+npm warn node_modules/@vuepress/plugin-prismjs
+npm warn   @vuepress/plugin-prismjs@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn   node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn   1 more (vuepress-theme-reco)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-prismjs@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-prismjs
+npm warn     @vuepress/plugin-prismjs@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn     node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn     1 more (vuepress-theme-reco)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-register-components@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-register-components@2.0.0-rc.54 
+npm warn node_modules/@vuepress/plugin-register-components
+npm warn   @vuepress/plugin-register-components@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-register-components@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-register-components
+npm warn     @vuepress/plugin-register-components@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-search@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-search@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-search
+npm warn   @vuepress/plugin-search@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26      
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-search@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-search
+npm warn     @vuepress/plugin-search@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26    
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-theme-data@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-theme-data@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-theme-data
+npm warn   @vuepress/plugin-theme-data@""2.0.0-rc.55"" from @vuepress-reco/shared@2.0.0-rc.94
+npm warn   node_modules/@vuepress-reco/shared
+npm warn   3 more (@vuepress-reco/vuepress-plugin-bulletin-popover, ...)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-theme-data@2.0.0-rc.55        
+npm warn   node_modules/@vuepress/plugin-theme-data
+npm warn     @vuepress/plugin-theme-data@""2.0.0-rc.55"" from @vuepress-reco/shared@2.0.0-rc.94
+npm warn     node_modules/@vuepress-reco/shared
+npm warn     3 more (@vuepress-reco/vuepress-plugin-bulletin-popover, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/helper@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.54
+npm warn node_modules/@vuepress/plugin-prismjs/node_modules/@vuepress/helper
+npm warn   @vuepress/helper@""2.0.0-rc.54"" from @vuepress/plugin-prismjs@2.0.0-rc.54        
+npm warn   node_modules/@vuepress/plugin-prismjs
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-prismjs/node_modules/@vuepress/helper
+npm warn     @vuepress/helper@""2.0.0-rc.54"" from @vuepress/plugin-prismjs@2.0.0-rc.54      
+npm warn     node_modules/@vuepress/plugin-prismjs
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated balalaika@1.0.1: Please use tsimmes instead https://www.npmjs.com/package/tsimmes
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated formidable@1.2.6: Please upgrade to latest, formidable@v2 or formidable@v3! Check these notes: https://bit.ly/2ZEqIau
+npm warn deprecated balajs@1.0.10: The library is renamed https://www.npmjs.com/package/tsimmes
+npm warn deprecated uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+npm warn deprecated superagent@8.1.2: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
+npm warn deprecated superagent@3.8.3: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
+npm warn deprecated superagent@5.3.1: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
+```",agentic_cmd,
+@copilot please close this PR,agentic_cmd,
+@coderabbitai review again,agentic_cmd,
+"@copilot, did you look at the Aurora and Moose docs too?",agentic_cmd,
+@coderabbitai review,agentic_cmd,
+"@copilot we are looking at wrong PR, for this issue the fix we tried is this one https://github.com/open-metadata/OpenMetadata/pull/22203",agentic_cmd,
+"@Copilot , looks like your session timed out. Try again.",agentic_cmd,
+"@copilot let's make sure that these new settings only take affect when running a local server. The online system uses this same class to host servers, so let's keep the signature the same for the online server, but have an optional bool arg set when running a local server, like 'local_server = false' that when set to true, will use all the new local reuse settings.
+This way we keep the same behavior on the server, and optionally use the new behavior locally.",agentic_cmd,
+"> > @copilot update the example usage in the PR description.
+> 
+> Updated the PR description with the current API examples showing how library authors explicitly add the TelemetryPolicy to their pipelines. ([c483a12](https://github.com/Azure/azure-sdk-for-net/commit/c483a127e78e28b87af11141f3f6576cc8d4c32d))
+> 
+> Help improve Copilot by leaving feedback using the 👍 or 👎 buttons
+
+No you didn't. It still shows the use of TelemetryDetails.",agentic_cmd,
+@claude take this over and respond to @tobimori 's request. ,agentic_cmd,
+@sentry review,agentic_cmd,
+@copilot 现在点击字体却不能选中了，请修复,agentic_cmd,
+"@copilot you don't need this part
+
+This pull request was created by the [GitHub Copilot coding agent](https://docs.github.com/en/copilot/using-github-copilot/coding-agent)",agentic_cmd,
+"@copilot can you fix this?
+Changes detected. Please run 'make dockerfiles' locally to update the base images.
+Error: Process completed with exit code 1.",agentic_cmd,
+"@copilot it's still not passing linting, run `pnpm turbo lint` please and resolve the errors",agentic_cmd,
+@coderabbitai summary,agentic_cmd,
+@copilot make the changes needed so that the connection dialog returns the newly created connection profile when the connection dialog closes instead of using the listener currently being used.,agentic_cmd,
+"@copilot don't create new test files, like you did with MjPhiIssueTest. Instead, put your new test into the existing `MjIssueTest.java` file. Also, don't put empty lines or comments into method bodies -- it's a bad practice.",agentic_cmd,
+@copilot You actually didn't revert the unrelated changes with your last commit 👀,agentic_cmd,
+@copilot still working?,agentic_cmd,
+"@copilot Using the same approach, generate a new file in [https://github.com/microsoft/Generative-AI-for-beginners-dotnet/tree/main/03-CoreGenerativeAITechniques] named '05-ImageGenerationOpenAI.md'
+
+The code sample is in [https://github.com/microsoft/Generative-AI-for-beginners-dotnet/blob/main/03-CoreGenerativeAITechniques/src/ImageGeneration-01/Program.cs], and the official documentation is on [https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/dall-e?tabs=gpt-image-1]",agentic_cmd,
+"@claude 
+Please investigate and fix the following CI failures:
+
+[https://github.com/liam-hq/liam/actions/runs/15873322130/job/44754903485?pr=2204](https://github.com/liam-hq/liam/actions/runs/15873322130/job/44754903485?pr=2204)
+
+> **Error:** command finished with error:
+> command (/home/runner/work/liam/liam/frontend/internal-packages/jobs) /home/runner/setup-pnpm/node\_modules/.bin/pnpm run deploy --env preview --branch devin/1750839783-implement-validate-schema-node exited with code 1
+
+[https://vercel.com/liambx/liam-app/CkpqQ8Y7AT7ynK5ieEnVac7dgLwR?filter=errors](https://vercel.com/liambx/liam-app/CkpqQ8Y7AT7ynK5ieEnVac7dgLwR?filter=errors)
+
+> **Build Failed**
+> Command `cd ../../../ && pnpm build --force --filter @liam-hq/app` exited with code 1
+",agentic_cmd,
+@copilot Organize the keys into namespaces. Update to use `Localization.Frontend.BrowserNotifyModal.<key>`,agentic_cmd,
+@copilot update PR title,agentic_cmd,
+"@marcpopMSFT I was waiting to poke it until that Copilot configuration PR got merged, then I was gonna rebase this on top so that Copilot would be able to actually build and fix issues like that^",agentic_cmd,
+"@claude No, still SPM integration is not working. Legacy CocoaPods based code is broken now.",agentic_cmd,
+"@copilot Please go ahead with the checkbox approach instead of the current ""Select All"" behavior.
+",agentic_cmd,
+@copilot still working?,agentic_cmd,
+"@copilot This seems like a pretty expensive check. If there was a very large set of text in the textiput, this comparison would get relatively expensive. Is there not some code flow way of determining that the event is not needed?",agentic_cmd,
+@sentry review,agentic_cmd,
+@copilot fix the ci error,agentic_cmd,
+@copilot an issue is the non copilot terminals aren't stored in run in terminal. add a new tool for getting terminal output for non-copilot terminals that takes the id and check isCopilotTerminal in terminalAndTaskState using GetTerminaloutput tool for those and the new tool for the others. the new tool should just call ,agentic_cmd,
+"Thank you @gemini-code-assist for the review\! I'm glad the fix and test coverage meet the quality standards. The PR addresses the parsing bug as described and ensures all INSERT INTO syntax variations are properly tested.
+
+Current CI status:
+- ✅ Code format check passed
+- ✅ Scala 3 tests passed  
+- ✅ Playground build passed
+- ✅ Native builds (macOS, Linux x64) passed
+- ⏳ Waiting for remaining CI checks (Scala.js, Scala Native, Ubuntu ARM)
+
+The PR is ready for human review once all CI checks complete.",agentic_cmd,
+@copilot update the FIRST comment (which is the PR message) in this PR to reflect actual code changes,agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+"@copilot also consider these comments:
+https://github.com/celestiaorg/celestia-core/issues/2139#issuecomment-3036262661
+and 
+https://github.com/celestiaorg/celestia-core/issues/2139#issuecomment-3036261805",agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+"Copilot post-mortem:
+ - I know very little about WPF, and so this would have been a heavier lift for me.
+ - All I had to do was a bit of testing locally to see that this worked.",agentic_cmd,
+"@copilot 
+
+OpenQA.Selenium.BrowserAssertFailedException : Xunit.Sdk.EqualException: Assert.Equal() Failure: Values differ
+Expected: WebAssembly
+Actual:   Server
+   at Xunit.Assert.Equal[T](T expected, T actual, IEqualityComparer`1 comparer) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 154
+   at Microsoft.AspNetCore.E2ETesting.WaitAssert.<>c__DisplayClass20_0.<WaitAssertCore>b__0() in /home/vsts/work/1/s/src/Shared/E2ETesting/WaitAssert.cs:line 91
+   at Microsoft.AspNetCore.E2ETesting.WaitAssert.<>c__DisplayClass21_0`1.<WaitAssertCore>b__0(IWebDriver _) in /home/vsts/work/1/s/src/Shared/E2ETesting/WaitAssert.cs:line 109
+Screen shot captured at '/home/vsts/work/1/s/artifacts/TestResults/Release/Microsoft.AspNetCore.Components.E2ETests/2c9bff0828744e3e82235d35eb1079d9.png'
+Encountered browser errors
+[2025-07-03T19:36:47Z] [Warning] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:42409 ""[2025-07-03T19:36:47.416Z] Warning: Initializer 'http://127.0.0.1:34127/subdir/BasicTestApp.vpc4xa0l6h.lib.module.js' will be ignored because multiple runtimes are available. Use 'before(Web|WebAssembly|Server)Start' and 'after(Web|WebAssembly|Server)Started' instead.""
+[2025-07-03T19:36:47Z] [Warning] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:42409 ""[2025-07-03T19:36:47.419Z] Warning: Initializer 'http://127.0.0.1:34127/subdir/JSInitializers/Classic/BasicTestApp.j2kfp6tx1s.lib.module.js' will be ignored because multiple runtimes are available. Use 'before(Web|WebAssembly|Server)Start' and 'after(Web|WebAssembly|Server)Started' instead.""
+[2025-07-03T19:36:49Z] [Info] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:167352 ""Debugging hotkey: Shift+Alt+D (when application has focus)""
+[2025-07-03T19:36:50Z] [Severe] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:170184 ""crit: Microsoft.AspNetCore.Components.WebAssembly.Rendering.WebAssemblyRenderer[100]\n      Unhandled exception rendering component: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\nSystem.Text.Json.JsonException: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\n ---> System.Text.Json.JsonReaderException: ExpectedStartOfValueNotFound, C LineNumber: 0 | BytePositionInLine: 0.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   Exception_EndOfInnerExceptionStack\n   at System.Text.Json.ThrowHelper.ReThrowWithPath(ReadStack& state, JsonReaderException ex)\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   at System.Text.Json.JsonSerializer.ReadAsObject(Utf8JsonReader& reader, JsonTypeInfo jsonTypeInfo)\n   at System.Text.Json.JsonSerializer.Deserialize(Utf8JsonReader& reader, Type returnType, JsonSerializerOptions options)\n   at Microsoft.AspNetCore.Components.PersistentComponentState.TryTakeFromJson(String key, Type type, Object& instance) in /home/vsts/work/1/s/src/Components/Components/src/PersistentComponentState.cs:line 170\n   at Microsoft.AspNetCore.Components.Infrastructure.PersistentStateValueProvider.GetCurrentValue(Object key, CascadingParameterInfo& parameterInfo) in /home/vsts/work/1/s/src/Components/Components/src/PersistentStateValueProvider.cs:line 60\n   at Microsoft.AspNetCore.Components.Infrastructure.PersistentStateValueProvider.Microsoft.AspNetCore.Components.ICascadingValueSupplier.GetCurrentValue(Object key, CascadingParameterInfo& parameterInfo)\n   at Microsoft.AspNetCore.Components.ParameterView.CascadingParameterEnumer
+
+I think we forgot to register the IPersistentComponentStateSerializer on the Webassembly project",agentic_cmd,
+"Devin, resolve merge conflicts please",agentic_cmd,
+/azp run,bot,
+/backport to release/9.4,bot,
+/ba-g Helix Queue Insights stuck on doc-only change,bot,
+/run ilverify,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+"
+[![Coverage Status](https://coveralls.io/builds/74152565/badge)](https://coveralls.io/builds/74152565)
+
+coverage: 82.256% (+0.6%) from 81.683%
+when pulling **74cdefd56875ef1493f748e06dae03b7393fd4a2 on codex/identify-methods-missing-documentation**
+into **c4b377468db50ba8e10ec01ac683271a0ab10c8f on master**.
+",bot,
+/azp run,bot,
+/azp run,bot,
+/azp run net - identity - tests,bot,
+"/poetry-lock
+> `poetry lock` job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/PyAirbyte/actions/runs/13336533707
+> ✅ `poetry lock` applied successfully.",bot,
+"/azp run azure - mcp
+",bot,
+/azp run,bot,
+"/bump-version type=""patch"" changelog=""Dependency updates""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13602071415
+> ✅ Changes applied successfully. (dbbbf050a10e049e75a008ac56b5997e3db1e112)",bot,
+/azp run azure - mcp,bot,
+/ci-test-limit-count run_count=30 update_snapshot=false specs_to_run=cypress/e2e/Regression/ServerSide/ApiTests/API_MultiPart_Spec.ts,bot,
+/azp run,bot,
+"/bump-version type=patch changelog=""Add support for multiple databases""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/15005284829
+> ✅ Changes applied successfully. (cdb260e2012d89c1753412fea4687e7d0bf20bc6)",bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/backport to release/8.0,bot,
+"/poe connector destination-motherduck lock
+> **Running `poe connector destination-motherduck lock`...**
+>
+> [Link to job logs.](https://github.com/airbytehq/airbyte/actions/runs/16063703590)
+>
+❌ Poe command `connector destination-motherduck lock` failed. Please inspect the logs.",bot,
+/autoformat,bot,
+"/format-fix
+> Format-fix job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13606352696
+> ❌ Job failed.",bot,
+/ba-g Build ios-arm64 Release AllSubsets_Mono timeout,bot,
+"/azp run
+",bot,
+/azp run net - storage - tests,bot,
+/check-enforcer override,bot,
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/5c18516a-57a6-45bb-b29a-8165fe6a4723?refs=497d00c369996c022e6e4cc16c91106506573612&source=prChecksComment)
+
+
+",bot,
+/azp run,bot,
+/azp run typespec pr-tools,bot,
+/azp run,bot,
+/ba-g unrelated timeout in android job,bot,
+/check-enforcer evaluate ,bot,
+/cherrypick release-1.33,bot,
+/azp run Azure Container Networking PR,bot,
+/run ilverify,bot,
+/spinwick create --env MM_FEATUREFLAGS_ExperimentalCrossTeamSearch=true,bot,
+/azp run,bot,
+"/approve-regression-tests
+> [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13820285562
+> ✅ Approving regression tests",bot,
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/7f2eb5d3-5de8-4165-9c46-1d8df104d288?refs=4c382b37ccea295dd75ae3837d5fd6442a2e13f9&source=prChecksComment)
+
+
+",bot,
+/check-enforcer override,bot,
+/azp run Azure Container Networking PR,bot,
+/check-enforcer evaluate,bot,
+":tada: This PR is included in version 1.26.0 :tada:
+
+The release is available on [GitHub release](https://github.com/trycompai/comp/releases/tag/v1.26.0)
+
+Your **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:",bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/build-deploy-preview,bot,
+/azp run,bot,
+/format,bot,
+/check-enforcer override,bot,
+/test-force-approve 6b61b58,bot,
+"/poe connector destination-motherduck lock
+> **Running `poe connector destination-motherduck lock`...**
+>
+> [Link to job logs.](https://github.com/airbytehq/airbyte/actions/runs/16063759460)
+>
+🤖 Auto-commit successful: 64c60f3c1a10cac72280756a732d9feb041c051a
+>  🟦 Poe command `connector destination-motherduck lock` completed successfully.",bot,
+/azp run ,bot,
+/azp run net - identity - tests,bot,
+/check-enforcer override,bot,
+/azp run azure - mcp,bot,
+/check-enforcer override,bot,
+"/format-fix
+
+> Format-fix job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13606401213
+> 🟦 Job completed successfully (no changes).",bot,
+/azp run,bot,
+/build-deploy-preview,bot,
+/test cc9529d,bot,
+/ci authorize https://github.com/ethereum-optimism/optimism/pull/16408/commits/a65f60c11272c6340fa9ce8adb955fe0e1e8723c,bot,
+/backport to release/9.4,bot,
+/easycla,bot,
+/easycla,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run host.public,bot,
+@microsoft-github-policy-service rerun,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/backport to release/9.4,bot,
+/azp run,bot,
+/azp run,bot,
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/3d0c4e0a-3bb1-4320-967f-0fc7c9e6fae9?refs=6b7fe57c1775545e79672ab270e9026ce6ba9761&source=prChecksComment)
+
+
+",bot,
+/azp run MAUI-public,bot,
+/test 647e657,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/test 8dacb56,bot,
+/azp run,bot,
+/azp run,bot,
+"/bump-version type=""minor""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13607925890
+> ✅ Changes applied successfully. (55a4632114108139a85c5dc03836d5c66edf2d68)",bot,
+/build-deploy-preview,bot,
+/rebase,bot,
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/1a071232-fc81-43b8-a79f-3769ef0f6a4e?refs=8e0fbf90e5fdf9a14a6d84e87786ec4da3a67711&source=prChecksComment)
+
+
+",bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run MAUI-public,bot,
+/test 9bb916e,bot,
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/3b1dc385-ecf2-42e1-bccd-57dbeb0198a1?refs=9d5d0ec7568921d2a13f1e5d167e3d2fda3a7021&source=prChecksComment)
+
+
+",bot,
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/e8f062ba-09d0-4c88-b037-e41f6c5c2ab4?refs=3248cc6b89c95c09b6ff4bb4a1e20861e7139e61&source=prChecksComment)
+
+
+",bot,
+"aside: note to myself: I need to test this locally.
+
+update: done",review,
+"> @zou3519 I'm not sure what the risk here is. `gc.freeze()` just means it won't scan the objects that were originally in the heap when doing all of the gc's during graph capture (which are likely almost all ""permanent"" anyhow). Those gc's still run and collect anything allocated/freed since capturing started.
+> 
+> So IMO the env var shouldn't be necessary but I guess also not causing any harm.
+
+Fair enough, I was being conservative. I'm fine with dropping the envvar",review,
+"> @jychp Yeah I'm a bit confused by the schema as well. Since this is a refactor, I think we should try to keep everything functionally the same and then change later
+
+Got it, may be we can just open an issue and working on that later if this is not a blocker for your daily usage",review,
+This ,review,
+"See related:
+* https://github.com/open-telemetry/community/issues/2851",review,
+Closing in favor of https://github.com/okteto/okteto/pull/4722 to make the CI pass as CI secrets are not injected on PRs coming from a fork,review,
+try harder to reproduce the original issue,review,
+"I understand... we can make it back compatible with some converters, I am
+just saying this is not what I would prioritize right now since nobody
+wants to write those codes and I had to resort to Codex to do the job...
+which is really not ideal but what can I do... In any case doing the
+electron gas with the new interface is relatively simple, maybe I'll need
+to add examples. Maybe the right thing to do at this point is to do an
+external library to allow for faster developments
+
+On Mon, Jun 30, 2025, 12:14 Jannes Nys ***@***.***> wrote:
+
+> *jwnys* left a comment (netket/netket#2064)
+> <https://github.com/netket/netket/pull/2064#issuecomment-3018583960>
+>
+> The point about the 2nd quantization is that it takes time to design and
+> get feedback on these things, and now all code from the last 4 years will
+> break for continuous space. I agree that the code was limited and not
+> compatible with the discrete case, but it was a good starting point at
+> least.
+>
+> Unless we have some simpler method to go from a very modular Hilbert
+> space, to something that is manageable when building models, this might
+> become a nightmare. *For example, I'd make at least some functions
+> available that make the electron gas code work*, given that it's one of
+> the main success stories of the already existing code. This will probably
+> give you some pointers on which functions to include to make this all
+> manageable in the part that the user needs to mainly focus on, which is
+> building potentials and models. So, I'd at least partly keep that part in
+> mind for the systems we've studied up to now: pure electrons, pure Helium,
+> etc., and I currently feel light this will become more challenging.
+> Flexibility is great, but it also requires that it remains easy to do
+> something simple.
+>
+> —
+> Reply to this email directly, view it on GitHub
+> <https://github.com/netket/netket/pull/2064#issuecomment-3018583960>, or
+> unsubscribe
+> <https://github.com/notifications/unsubscribe-auth/AGWYRBGKEGKKJDFFBN6STPT3GEEXXAVCNFSM6AAAAAB7XXW6DKVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTAMJYGU4DGOJWGA>
+> .
+> You are receiving this because you authored the thread.Message ID:
+> ***@***.***>
+>
+",review,
+"lol, didn't know it'd immediately create a PR and start working :p",review,
+"Great! Now please rebase/squash this commit down to a single commit, with the commit date set as the author date, with a well-crafted commit message, whose subject line starts with `[meta] `. Extended commit message contents may, but are not required to, contain lists of individual changes, but remember that a single commit's message should always speak as if there never were multiple commits in the first place.",review,
+Merging to `develop` due to release still in progress.,review,
+"I have a fix, I will update this PR once the CDK PR is merged.
+
+https://github.com/airbytehq/airbyte-python-cdk/pull/402",review,
+"Maybe we can combine it with some kine of API design example. Something like
+
+```c++
+template<typename TAcc, typename TQueueProperty, typename TBuffer, typename TElem /* = getElementTypeFromBuffer<TBuffer */>
+void gemm(alpaka::Queue<TAcc, TQueueProperty> queue, TBuffer A, TBuffer B, TBuffer C, TElem alpha, TElem beta){
+// generic alpaka kernel
+}
+
+#ifdef ALPAKA_ACC_GPU_CUDA_ENABLED
+template<typename TQueueProperty, typename TBuffer, typename TElem /* = getElementTypeFromBuffer<TBuffer */>
+void gemm(alpaka::Queue<alpaka::AccGpuCudaRt, TQueueProperty> queue, TBuffer A, TBuffer B, TBuffer C, TElem alpha, TElem beta){
+// use cuBlas
+}
+#endif
+```
+
+Would be pretty cool, if we have an example that shows how alpaka can be used for libraries and with specialization. This gives use also feedback, if we do API changes/extensions.",review,
+I don't think you know what you are talking about ,review,
+This is bad. Lost so many good patches,review,
+"Worth noting that Codex didn't pick up the MISRA failure since `./test.sh` doesn't cover it!
+
+https://github.com/commaai/opendbc/issues/2268",review,
+This does not resolve the issue. Creating the project using Visual Studio still results in 2 solution files. Closing this PR.,review,
+"yes, you are right. well done and thank you @copilot !",review,
+We want to remove this event.,review,
+Please also update test expectations in the `.github` dir which contains some e2e tests.,review,
+"## Pull Request Test Coverage Report for [Build 7396](https://coveralls.io/builds/74247857)
+
+
+### Details
+
+* **1** of **1**   **(100.0%)**  changed or added relevant line in **1** file are covered.
+* No unchanged relevant lines lost coverage.
+* Overall coverage remained the same at **89.886%**
+
+---
+
+
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74247857/badge)](https://coveralls.io/builds/74247857) |
+| :-- | --: |
+| Change from base [Build 7394](https://coveralls.io/builds/74247570): |  0.0% |
+| Covered Lines: | 8505 |
+| Relevant Lines: | 9462 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,
+FYI @BwL1289,review,
+"Please also add
+
+    staticcheck ./...
+
+to test.bash.",review,
+"the pylint and black are failing for the changes that you have made. Also, this comment is not fixed yet: https://github.com/Azure/azure-sdk-for-python/pull/41715#issuecomment-3011975453",review,
+"Can you run black and fix any black related error ?
+",review,
+"<del>@JoshLove-msft autorest.csharp side has some unresolved changes. We will resolve it and then merge this </del>
+changes have been resolved there.",review,
+"This will need a squash when merging, but I think it covers what I asked for.",review,
+THIS IS AMAZING!!!!!! OH WOUW!!!!!,review,
+Could you try to fix the failing `append_redirect_whitespace_test` test?,review,
+"Fix shadow transformer to use the new syntax
+",review,
+"Adding my support for this PR - this looks well put together with additional testing, and a looser dependency spec which allows for higher versions to be used.
+
+In our team we hit a similar issue with the pinned dependency version. This clashed with another library we had which used liteLLM. We can't address with our poetry install, though with a manual pip install of a specific version (we used the latest 1.67.0.post1) our crewAI code worked well. This however is painful and another step for users to get wrong.
+
+",review,
+sorry it a mistake I just make PR for my forked repo,review,
+"~~Is there a way to take a look at this in ""rendered"" form? I find it hard just looking at raw adoc 😅~~
+
+Found it",review,
+Update the github actions workflows to run this specific test 40 times so we can be sure it's no longer failing.,review,
+What is this for? are those services enough? what about production where we're not using memory-store service?,review,
+"the only *very* minor comment to this is using `bunx bun-pr <pr num>` can be cool to find where issue regressed but i suppose the actual building of bun probably would have been done, and a chance the commit on main works instead",review,
+Can you run the lint with --fix?,review,
+"mhhh:
+
+![CleanShot 2025-06-04 at 09 53 33@2x](https://github.com/user-attachments/assets/33261da7-046f-46e8-853e-c430efb7d584)
+
+and:
+
+![CleanShot 2025-06-04 at 09 53 52@2x](https://github.com/user-attachments/assets/e33f8d0c-f31d-4c7f-aef6-3f87517f659d)
+
+https://codspeed.io/facet-rs/facet/runs/compare/683ff5d6b5fda6032e453d36..683ffa92b5fda6032e453d47
+
+cc @ThouCheese ",review,
+"I don't really prefer this, but defer to you @konstin ",review,
+I try a native approach and use rate limiting directly from APIs,review,
+blocked by aptos example error,review,
+session requires code execution at backend and requires cache misses. I don't see any benefit doing this at the backend,review,
+Merge the secondes to duration and ms to duration transfomers and tests into one and update the initial message in the PR.,review,
+Test server destroyed,review,
+Closing this to move to its own repo if you want it to persist,review,
+The JS tests are still failing,review,
+"> in the tubes that connect the pumps to the channel heads?
+
+Yeah. I dont have the air LiHa and I dont have the wash/flush protocol, so I am just running the syringes/pumps dry at the moment. I am not sure if that is bad for the machine (lubrication?) and if that has an effect on volume at fast flow rates. That is why I slowed it down.",review,
+So my issue is how to build the `Sign` param.,review,
+Will the tag be created as well?,review,
+I'll get this tested today.,review,
+" 
+> Sumneko Lua translate bot         
+----    
+The submission is too big. Hopefully each feature point is a separate PR.
+This time I will change it manually first, and try AI in the next version  
+      ",review,
+"GSYGithubAPP\node_modules\react-native-scrollable-tab-view-fix-guo 下存在 Text.propTypes.style 这类问题也会导致 TypeError: Cannot read property 'style' of undefined,  把这类问题也解决了",review,
+And please update the PR description too with current state 🙏🏼 ,review,
+"Hi, I took the latest update and try to generate client from openAPIspec. still I see same error in VS2022. 
+String cannot be of zero length.
+Parameter name: oldValue
+Severity	Code	Description	Project	File	Line	Suppression State
+Error (active)		String cannot be of zero length.
+Parameter name: oldValue	WebApplication1	WebApplication1\WebApplication1\APIClient	1	
+
+Severity	Code	Description	Project	File	Line	Suppression State
+Error (active)		OpenApiCSharpCodeGenerator	WebApplication1	WebApplication1\WebApplication1\APIClient	1
+
+If i try the same in VS2019 i get below error
+6/8/2025 10:55:12 AM: System.ArgumentException: String cannot be of zero length.
+Parameter name: oldValue
+   at System.String.ReplaceInternal(String oldValue, String newValue)
+   at System.String.Replace(String oldValue, String newValue)
+   at Rapicgen.Core.Generators.OpenApi.OpenApiCSharpCodeGenerator.GenerateCode(IProgressReporter pGenerateProgress) in D:\a\apiclientcodegen\apiclientcodegen\src\Core\ApiClientCodeGen.Core\Generators\OpenApi\OpenApiCSharpCodeGenerator.cs:line 84
+   at Rapicgen.CustomTool.SingleFileCodeGenerator.Generate(String wszInputFilePath, String bstrInputFileContents, String wszDefaultNamespace, IntPtr[] rgbOutputFileContents, UInt32& pcbOutput, IVsGeneratorProgress pGenerateProgress)
+6/8/2025 10:55:12 AM: System.ArgumentException: String cannot be of zero length.
+Parameter name: oldValue
+   at System.String.ReplaceInternal(String oldValue, String newValue)
+   at System.String.Replace(String oldValue, String newValue)
+   at Rapicgen.Core.Generators.OpenApi.OpenApiCSharpCodeGenerator.GenerateCode(IProgressReporter pGenerateProgress) in D:\a\apiclientcodegen\apiclientcodegen\src\Core\ApiClientCodeGen.Core\Generators\OpenApi\OpenApiCSharpCodeGenerator.cs:line 84
+   at Rapicgen.CustomTool.SingleFileCodeGenerator.Generate(String wszInputFilePath, String bstrInputFileContents, String wszDefaultNamespace, IntPtr[] rgbOutputFileContents, UInt32& pcbOutput, IVsGeneratorProgress pGenerateProgress)
+6/8/2025 10:55:13 AM: Unable to generate code",review,
+"Please ignore and revert changes to the following projects
+
+TestCases.Android.Tests 
+TestCases.Mac.Tests 
+TestCases.iOS.Tests 
+TestCases.WinUI.Tests
+DualScreen.UnitTests
+Compatibility.Android.UnitTests
+Compatibility.iOS.UnitTests 
+Compatibility.Windows.UnitTests",review,
+"Let me close this until we're ready, we're still figuring out some stuff(https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/41131) before promoting the feature flag.",review,
+Squashed @copilot 's PRs into one as they were not Verified and could not be merged.,review,
+Remove this file: An error occurred while loading ./spec/services/onboarding_state/worker_without_company_spec.rb.,review,
+Replaced by https://github.com/go-vikunja/vikunja/pull/868,review,
+"The build gave this linter error:
+`/Users/runner/work/gh-gei/gh-gei/src/Octoshift/Services/AdoApi.cs(9,1): warning IDE0005: Using directive is unnecessary.`
+
+Always run `dotnet format` before committing.",review,
+Reformat code with `./sbt scalafmtAll` to pass the CI,review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2403: Handle Missing Templates Gracefully
+
+## Overview
+This pull request addresses issue #2402 by implementing improved handling of missing templates in the crewAI framework. Significant changes span across three files, enhancing error handling and increasing the robustness of template processing.
+
+## Code Quality Findings
+
+### 1. src/crewai/utilities/prompts.py
+#### Positive Aspects
+- The implementation of error handling for missing templates is robust and ensures backward compatibility with previous versions. 
+- A clear conditional logic is presented for template presence checks.
+
+#### Specific Improvements
+1. **Condition Logic Improvement**:
+   - **Current**:
+     ```python
+     if not system_template or not prompt_template:
+     ```
+   - **Recommended**:
+     ```python
+     if not all([system_template, prompt_template]):
+     ```
+
+2. **Template Validation Enhancement**:
+   - Introducing a validation method can help in isolating validation logic and improve readability.
+   ```python
+   def _validate_templates(self, system_template, prompt_template, response_template):
+       """"""Validates template configurations and returns appropriate defaults.""""""
+       ...
+   ```
+
+3. **String Concatenation Optimization**:
+   - **Current**:
+     ```python
+     prompt = f""{system}\n{prompt}\n{response}""
+     ```
+   - **Recommended**:
+     ```python
+     prompt = '\n'.join(filter(None, [system, prompt, response]))
+     ```
+
+### 2. test_fix_2402.py
+#### Positive Aspects
+- The test file covers multiple cases and maintains a clear structure.
+
+#### Specific Improvements
+1. **Test Organization**:
+   - Moving tests into class structure can enhance organization and reusability.
+   ```python
+   class TestTemplateHandling:
+       ...
+   ```
+
+2. **Error Handling Tests**:
+   - It is critical to add tests for specific error cases to improve coverage and ensure future reliability.
+   ```python
+   def test_invalid_template_combination(self):
+       ...
+   ```
+
+### 3. tests/test_templates.py
+#### Positive Aspects
+- Well-structured tests covering edge cases effectively.
+
+#### Specific Improvements
+1. **Test Data Separation**:
+   - Consider creating test data fixtures for better manageability and clarity.
+   ```python
+   @pytest.fixture
+   def template_test_data():
+       return ...
+   ```
+
+2. **Assertion Enhancement**:
+   - More specific assertions could improve test reliability and clarity of pass/fail conditions.
+   ```python
+   assert result is not None
+   ```
+
+## Historical Context and Related PRs
+- Previous patterns in handling templates have leaned towards improved error checks and handling for missing values. Notably, past pull requests have demonstrated a focus on robustness within the template processing logic. This trend indicates a move towards systematic error management, which is crucial for maintaining application stability.
+
+## Implications for Related Files
+The changes in this PR hint at a broader architectural alignment towards more comprehensive error handling across templates. Future maintenance should consider revisiting these files to ensure continuity and compatibility as new features or templates are added.
+
+## General Recommendations
+1. **Documentation**:
+   - Enhance docstring documentation for all methods introduced or modified, especially for the new template handling behaviors and expected errors.
+
+2. **Error Messages**:
+   - Implement clear, user-friendly error messages to guide future developers or users facing issues with template handling.
+
+3. **Logging**:
+   - Introduce logging at critical functionality points to aid diagnostics where unexpected behaviors arise.
+
+4. **Test Coverage**:
+   - Increase the breadth of test coverage to encapsulate all conceivable usage patterns, particularly around edge cases and invalid inputs.
+
+## Summary
+Overall, this pull request successfully enhances error handling for missing templates while maintaining substantial test coverage. Implementing the recommended changes would further increase the robustness, maintainability, and clarity of both the core functionality and associated tests. These improvements will ensure that the crewAI framework can gracefully manage template availability while providing clear feedback in case of issues. 
+
+Thank you for your hard work on this PR!",review,
+Closing since no changes found.,review,
+"So I think the problem is that you are not linting before committing your changes. Please follow the current guidelines in the instructions for linting. You MUST LINT BEFORE COMMITTING CHANGES.
+
+It did not work, you have not committed the changes for some reason: So I'm not sure what keeps happening, but I think something went wrong in your last session, it seems like your changes weren't committed. Let's try again: Please verify all of your changes and that the code works by running the JSON tests in stable and experimental mode",review,
+"I want to use GH models, not openai so set up the permission and params",review,
+Merge from main please. We moved to vitest. Take a look at the other tests and make sure you comply. ,review,
+"The accordian seem accessible, but I am not able to click Enter or even click manually. The accordian just does not open even when I click on it manually.
+
+
+I should be able to open the accordian like this after I press Enter:
+<img width=""216"" alt=""image"" src=""https://github.com/user-attachments/assets/30c78bb8-f709-4d37-9d97-57f2f65bf15b"" />
+",review,
+Looks like tests are failing because the non-string values were being asserted in the test suites,review,
+"sporadic failures have been observed in github actions, e.g. https://github.com/microsoft/ApplicationInsights-Java/actions/runs/15774617106/job/44472161407?pr=4235",review,
+"All csproj files should include a single top-level element, and that should be a `<Project>` element. Move the `<ItemGroup>` elements inside the `<Project>` elements.",review,
+Making the toggle into a dropdown named 'Shape' with options 'Square' and 'Source' would be better IMO,review,
+"> > Can you review any PRs already open for this issue and see how your solution compares? And which solution you like more?
+> 
+> I've reviewed PR #30242 by @KarthikRajaKalaimani which addresses the same issue. After analysis, I believe their approach is superior - reordering the property mappers to ensure MaxLength runs before IsPassword globally is simpler and more robust than my conditional approach.
+> 
+> However, PR #30242 needs better test coverage for the specific IsPassword + long text crash scenario. I'm adopting their mapper reordering approach but with comprehensive tests that specifically verify the IsPassword functionality works correctly with long text.
+> 
+> The simpler solution is more maintainable and addresses the root cause directly without runtime conditional logic.
+> 
+> > Please process all new comments
+> 
+> Processed both comments. I've reviewed the existing PR #30242 and adopted their superior mapper reordering approach instead of my conditional fix. The changes have been implemented and tested. Commit [e082959](https://github.com/dotnet/maui/commit/e082959a1d0918377464f95cd45687b323e97b39) implements the simpler solution while keeping comprehensive test coverage.
+> 
+> Help improve Copilot by leaving feedback using the 👍 or 👎 buttons
+
+My one worry about that solution is that it depends on the logical ordering inside the dictionary. 
+
+If the code changes at all anywhere that changes the ordering this is going to crash again. Is there a solution that achieves the same thing but is slightly more deterministic?",review,
+"> > > Going to hijack this PR to add `cookie.Secure = true` if `SameSite=None` Per:
+> > > Mozilla Docs: [developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie?utm_source=chatgpt.com#non](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie?utm_source=chatgpt.com#non)...
+> > 
+> > 
+> > Implemented automatic `Secure=true` enforcement when `SameSite=None` is used, per RFC 6265bis and browser requirements. The change ensures compliance with Mozilla and Chrome documentation while maintaining backward compatibility for other SameSite values. Fixed in commit [309bc89](https://github.com/gofiber/fiber/commit/309bc89955e58dfb8055a5835341bfad8444cb4a).
+> > Help improve Copilot by leaving feedback using the 👍 or 👎 buttons
+> 
+> Should we document that change, for example in `ctx.md` or `whats_new.md`?
+
+We should reference the links from Mozilla and Chrome",review,
+"just wanted to see what codex would do, but it's not as good",review,
+"```
+ERROR TypeError: Cannot read property 'style' of undefined, js engine: hermes
+LOG Running ""GSYGithubApp"" with {""rootTag"":11}
+```
+
+为了解决和这个问题，你需要先 npm install 把第三方包同步安装后，在进行诊断。
+
+这个问题似乎和 https://github.com/react-native-community/upgrade-support/issues/321 有关系，主要涉及 ViewPropTypes 和 propTypes 等，在项目代码和库代码都可能导致的问题，需要确定好问题和解决思路",review,
+"Hi @danieltprice can you check this commit please? https://github.com/neondatabase/website/pull/3161/commits/f7a9344a5c1282f085ad978bd75ebc9f6448767a
+
+We have the prop `pagesToShow` to show the modal on different pages. However I noticed that you're probably trying to show one modal for the section of pages. That also works for the children pages, so we can shorten the llst.
+
+So now `Collaborate in Slack` modal shows on the full [Organizations](https://neon-next-git-devin-1741977272-add-intro-popup-neondatabase.vercel.app/docs/manage/organizations) section and `Track usage in Slack` shows on the full [Plans and billing](https://neon-next-git-devin-1741977272-add-intro-popup-neondatabase.vercel.app/docs/introduction/about-billing) section. Please let me know if that's correct 🙌 
+
+![image](https://github.com/user-attachments/assets/f4f1939c-67ca-4c15-82ca-5329b1e267a5)
+",review,
+"Seems yes, but not completely.
+What i had in mind was to simply replace all extensions of `WritebaleBitmap` into extensions of `BitmapContext`. (as stated in #76 and maybe other issues).
+
+Although the BitmapContext does not allocated every time `bmp.GetBitmapContext()` is called (because a caching mechanism is there), but this would make it a little more robust I think.
+
+If you are OK with this idea, I can make a pull request.
+
+Thanks",review,
+"(aside) This Pr is blocked because this connection pool config setting is today available only for business and enterprise users and we are discussing whether to make it available to all users and what would be the consequences of it
+Ref: https://theappsmith.slack.com/archives/C040LHZN03V/p1739262773078169?thread_ts=1738938692.414539&cid=C040LHZN03V ",review,
+"Just testing this new copilot integration, I have low expectations.",review,
+Workflow run id 16620208380 approved.,review,
+"> Also would like to ask if it has been tested or not ? If yes, I am OK.
+
+I have not done manual testing beyond what the tests do.",review,
+"Alright, take your time",review,
+This seems reasonable. It does req,review,
+Do not merge. This is a test.,review,
+"The build is failing, take a look at the test please.",review,
+"the last error was not fixed properly. now its saying: TypeError: Field.__init__() got an unexpected keyword argument 'unknown'
+",review,
+All that is left in this PR is to do some manual testing to ensure it works properly.,review,
+the newly created interface should be re-exported from aisku as well,review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment: Hierarchical Agent Delegation Implementation
+
+## Overview
+This pull request introduces an **`allowed_agents`** parameter essential for establishing hierarchical delegation among agents in the Crew AI ecosystem. The implementation demonstrates solid efforts in validation and error handling, but several improvements can enhance the overall code quality, readability, and performance.
+
+## Detailed Findings
+
+### 1. **File: `base_agent.py`**
+#### Strengths:
+- The validation logic for **`allowed_agents`** is well-conceived, ensuring entries are properly checked before use.
+- Clear and concise field descriptions and type hints contribute to understanding the intended usage.
+
+#### Improvements:
+- **Docstring Addition**: The **`allowed_agents`** parameter would benefit from a detailed docstring to clarify validation rules. Suggested enhancement:
+    ```python
+    allowed_agents: Optional[List[str]] = Field(
+        default=None,
+        description=""List of agent roles that this agent is allowed to delegate tasks to."",
+        # Suggested docstring: ""This list must contain role names as strings and cannot be empty if delegation is enabled.""
+    )
+    ```
+- **Validation Method Extraction**: The validation logic should be encapsulated within a separate method to promote separation of concerns:
+    ```python
+    def _validate_allowed_agents(self):
+        """"""Validate allowed_agents configuration.""""""
+        # Implementation here...
+    ```
+
+### 2. **File: `base_agent_tools.py`**
+#### Strengths:
+- The error handling mechanism is proficient, capturing delegation missteps effectively.
+
+#### Improvements:
+- **Performance Enhancement**: The **_get_agent_by_id** function can be streamlined for efficiency:
+    ```python
+    def _get_agent_by_id(self, agent_id: UUID4) -> Optional[BaseAgent]:
+        """"""Helper method to find agent by ID.""""""
+        return next((a for a in self.agents if a.id == agent_id), None)
+    ```
+- **Extract Authorization Check**: Delegation authorization logic should be refactored for improved readability:
+    ```python
+    def _check_delegation_authorization(self, delegating_agent: BaseAgent, target_agent: BaseAgent) -> Optional[str]:
+        """"""Verify if delegation is authorized.""""""
+        # Implementation here...
+    ```
+
+### 3. **File: `en.json`**
+#### Strengths:
+- Effective structuring of error messages ensures users understand the nature of errors.
+
+#### Improvements:
+- **Enhanced Error Messaging**: Provide more context in error messages for unauthorized delegation:
+    ```json
+    {
+      ""agent_tool_unauthorized_delegation"": ""Authorization Error: Cannot delegate task to {coworker}.\nThis agent is only authorized to delegate to:\n{allowed_agents}\nPlease select an authorized agent for delegation.""
+    }
+    ```
+
+### 4. **File: `test_delegation.py`**
+#### Strengths:
+- Comprehensive tests cover a range of scenarios effectively, showcasing a strong testing foundation.
+- Tests are logically structured, facilitating ease of understanding and modification.
+
+#### Improvements:
+- **Edge Case Testing**: Implement tests that check the behavior when **`allowed_agents`** is an empty list:
+    ```python
+    def test_delegate_work_with_empty_allowed_agents():
+        """"""Test delegation fails with empty allowed_agents list.""""""
+        # Setup and test expectations here...
+    ```
+- **Parameterization for Flexibility**: Utilize parameterized tests to streamline various delegation scenarios:
+    ```python
+    @pytest.mark.parametrize(""allowed_agents,target_agent,should_succeed"", [
+        # Test scenarios...
+    ])
+    def test_delegation_scenarios(allowed_agents, target_agent, should_succeed):
+        """"""Test various delegation scenarios.""""""
+    ```
+
+## General Recommendations
+1. **Documentation**: Comprehensive documentation for the hierarchical delegation feature will significantly enhance understanding and usability across the team.
+2. **Logging**: Introduce logging mechanisms to capture both successful and failed delegation attempts, aiding debugging and operational audits.
+3. **Consistency**: Ensure that type hints are uniformly applied throughout new code for improved maintainability.
+4. **Delegation Tracking**: Implement a mechanism to track delegation history for potential debugging and performance insights.
+
+## Performance Considerations
+1. Implement caching strategies for agent lookups to optimize performance.
+2. Investigate utilizing sets over lists for **`allowed_agents`** to improve lookup performance.
+3. Batch validation approaches could streamline multiple delegation checks concurrently, enhancing efficiency.
+
+## Conclusion
+The implementation represents a strong foundation for hierarchical agent delegation, with notable strengths in validation and error management. By addressing the highlighted concerns and incorporating the suggestions, the code can achieve higher maintainability, performance, and developer experience.",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2799: Fix Tool Result Duplication
+
+## Overview
+This pull request successfully addresses issue #2798 by removing duplicate tool results in messages and adding comprehensive test coverage. Noteworthy modifications include:
+
+1. **File Modified**: 
+   - `src/crewai/utilities/agent_utils.py`
+   - `tests/test_tool_result_duplication.py` (newly created)
+
+## Detailed Analysis
+
+### 1. Changes in `agent_utils.py`
+- **Modifications**: 
+  - The code responsible for appending tool results to messages has been removed to prevent duplication. This change effectively streamlines the message handling process.
+  
+- **Quality Assessment**:
+  - ✅ The code is concise and focused directly on resolving the stated issue.
+  - ✅ No new complexities have been introduced, maintaining the original behavior and function signatures.
+
+- **Improvement Suggestion**: 
+  - Adding a comment to clarify the rationale behind the removal can prevent future misunderstandings. For example:
+    ```python
+    # Tool results are already included in the formatted answer, 
+    # Duplication in messages is unnecessary and leads to token bloat.
+    ```
+
+### 2. Changes in `test_tool_result_duplication.py`
+- **Strengths**:
+  - Robust coverage and clear structure with well-documented test cases.
+  - Effective use of mocking demonstrates high-quality test practices.
+  
+- **Code Quality Observation**:
+  - The docstrings provide excellent context, linking back to issue #2798, and enhance clarity.
+  
+- **Improvement Suggestions**:
+  1. **Add Type Hints**:
+     - To ensure better readability and maintainability, consider adding type hints to the test functions: 
+       ```python
+       def test_tool_result_not_duplicated_in_messages() -> None:
+       ```
+  
+  2. **Implement Parameterized Test Cases**: 
+     - This will facilitate testing various inputs efficiently:
+       ```python
+       @pytest.mark.parametrize(""tool_result"", [
+           ""Sample tool result"",
+           ""Test with special characters: @$%^&*()"",
+           ""Long multi-line\nresult""
+       ])
+       def test_tool_result_with_various_inputs(tool_result: str) -> None:
+       ```
+
+  3. **Edge Case Scenarios**:
+     - Include additional tests for empty inputs and special characters:
+       ```python
+       def test_tool_result_with_empty_message() -> None:
+           # Add implementation for testing empty messages
+
+       def test_tool_result_with_special_characters() -> None:
+           # Add implementation for testing special characters handling
+       ```
+
+## Overall Assessment
+- The PR effectively tackles the duplication issue and enhances the reliability of message handling through robust test coverage.
+- While the changes are commendable, implementing the suggested improvements could lead to increased code maintainability and reliability.
+
+## Recommendations
+1. **Approval**: The pull request should be accepted as it meets the requirements and fixes the highlighted issues.
+2. **Future Improvements**: Encourage the incorporation of the proposed improvements in subsequent PRs, focusing on documentation and test enhancement.
+
+## Security Considerations
+- No security vulnerabilities were identified in this PR. Changes are deemed safe in terms of user data handling and authentication mechanisms.
+
+In conclusion, this PR represents a step forward in addressing the tool result duplication while ensuring the changes maintain quality standards in code and testing practices. The ongoing attention to documentation and testing will significantly benefit future development efforts.",review,
+不是有 https://www.npmjs.com/package/@types/react-native-i18n  ？ 这个可以替换吗？,review,
+Will fix this on a separate branch. Devin was a bad intern :(,review,
+"**Closing this PR after investigation.**
+
+✅ **Root Cause Found:** The validation functions are **redundant** - FastMCP already validates  enum types automatically at the protocol level.
+
+✅ **Current Solution Works:** Enum types (, , ) in tool parameters provide:
+- Type safety at development time
+- Automatic runtime validation via MCP protocol  
+- Clean service method signatures
+
+✅ **Testing Confirmed:** MCP server properly validates enum values and returns clear error messages for invalid inputs.
+
+**No changes needed** - the enum approach is the optimal solution. The type mismatch mentioned in the issue is resolved by using enum types consistently throughout the stack.",review,
+Looks good but please remove the stray comment about constants,review,
+"
+
+<!-- Reviewable:start -->
+This change is [<img src=""https://reviewable.io/review_button.svg"" height=""34"" align=""absmiddle"" alt=""Reviewable""/>](https://reviewable.io/reviews/cockroachdb/cockroach/150695)
+<!-- Reviewable:end -->
+",review,
+"This is great. Some notes:
+
+1. don't include ""Usage"" in the docs - we rely on `<Preview />` to show how the code works.
+2. in `gantt-multi-items.tsx` - use faker.js for `sampleItems` - see the other Gantt examples on how to use this.",review,
+As far as I can tell this is reasonable and ready for review.,review,
+Local runs of this change show that we are now able to build and run benchmarks against net462.,review,
+Closing this in favor of #401.,review,
+"Merge from latest main branch, and update nullability for IJsonModel.Create and IPersistable.Create",review,
+"@shgtkshruch 
+改めて修正＆コメントしました。
+よろしくおねがいします！",workflow,
+"Thanks to everyone who helped fix this bug.
+
+I know my bug report was terrible.  It is the first one I have ever made on an open source project. 
+
+I love the CrewAI documentation.  When I ran into this bug, I just wanted to find a way to let the project know.
+
+I opened the Bug and quickly realized I did not know what I was doing, so I just tried to convey the problem and the fix I found in a way that someone would understand.",workflow,
+@arronjukas thanks!,workflow,
+try again,workflow,
+@toyamarinyon Could you review codes when you have a time?,workflow,
+@TomeHirata Thanks for the investigation! I like the OpenAI's approach (the test endpoint doesn't have any event validation but the UI displays a warning). I'll close this PR.,workflow,
+"@darcyclarke I'm confused about how this is being specified and personally, I don't think `:path()` has the same appeal to vlt client users as it has to npm cli users.
+
+IMO `:path()` makes a lot more sense in a npm cli world, in which users are made aware of the potential location of artifacts in their `node_modules` folder, so it might be more reasonable to have users wanting to query for `:path(""node_modules/a/node_modules/b"")` to filter a package but even in that view of the world, packages are often hoisted and those paths might not match the user expectation.
+
+To my point, let's go over the vlt folder structure, e.g:
+
+```
+$ mkdir test-minimalistic
+$ vlt init
+$ vlt i which abbrev
+$ vlt ls '*'
+test-minimalistic
+├─┬ which@5.0.0
+│ └── isexe@3.1.1
+└── abbrev@3.0.1
+
+# Let's peak at the folder structure 👀
+tre node_modules/
+node_modules
+├── .bin
+│   └── node-which -> ../which/bin/which.js
+├── .vlt
+│   ├── node_modules
+│   │   ├── abbrev -> ../··abbrev@3.0.1/node_modules/abbrev
+│   │   ├── isexe -> ../··isexe@3.1.1/node_modules/isexe
+│   │   └── which -> ../··which@5.0.0/node_modules/which
+│   ├── ··abbrev@3.0.1
+│   │   └── node_modules
+│   │       └── abbrev
+│   │           ├── ...
+│   │           ├── package.json
+│   │           └── README.md
+│   ├── ··isexe@3.1.1
+│   │   └── node_modules
+│   │       └── isexe
+│   │           ├── ...
+│   │           ├── package.json
+│   │           └── README.md
+│   └── ··which@5.0.0
+│       └── node_modules
+│           ├── isexe -> ../../··isexe@3.1.1/node_modules/isexe
+│           └── which
+│               ├── ...
+│               ├── package.json
+│               └── README.md
+├── .vlt-lock.json
+├── abbrev -> .vlt/··abbrev@3.0.1/node_modules/abbrev
+└── which -> .vlt/··which@5.0.0/node_modules/which
+```
+
+Our folder structure was designed to have a store that is designed to be opaque to the end user, we mostly avoid bubbling up `node_modules/.vlt/<dep-id>/node_modules/<name>` paths to the end user as those are not only unreadable but also from experience not something that the vast majority of end users care about (i.e: it's an implementation detail).
+
+From our view of the world, if we were to implement a `:path()` filter, what value should it even use?
+- The `node.location` value as originally proposed here in this PR by Copilot? e.g: `node_modules/.vlt/<dep-id>/node_modules/<name>`
+- An `edge` location equivalent? That would be somewhat more straightforward for direct deps since it would yield paths like `node_modules/<name>` but for nested deps it would still bubble up store values, e.g: `node_modules/.vlt/<dep-id>/node_modules/<nested-dep-name>`
+- Or maybe we want a third option that normalizes and creates some form of virtual paths consisting only on the symlinks that can generate readable fictitious paths, e.g: `node_modules/a/node_modules/b` but that sounds like a lot of extra work for a benefit that I'm failing to understand
+
+Ref (`edge.location` equivalent): https://github.com/vltpkg/vltpkg/blob/9cc1c56d6a3d97968bfea6b758476b97c79a5019/src/graph/src/reify/add-edge.ts#L60-L63
+
+---
+
+That said, what is really the problem we're solving or the use case we're trying to enable to the end-user by adding this `:path()` selector?
+",workflow,
+"Please test your latest changes by seeing if you're able to build
+
+src/Core/src/Core.csproj",workflow,
+"@KyleAMathews this is ready for another review, I have added back the tests that were accidentally deleted.
+
+The electric sync now returns the unsubscribe function for cleanup:
+
+https://github.com/TanStack/db/blob/d7cdf3d45b24ad08eaad097f9343a23904bd71ab/packages/db-collections/src/electric.ts#L300-L301
+
+And the query sync already did:
+
+https://github.com/TanStack/db/blob/d7cdf3d45b24ad08eaad097f9343a23904bd71ab/packages/db-collections/src/query.ts#L253",workflow,
+Nope,workflow,
+"@harupy Sorry, can you repeat my comment?",workflow,
+Thank you for reviewers! 🚀 ,workflow,
+"@augustjohnson I _think_ this is gtg now, based on some local testing it appears to be behaving, and all the new data appears to be present. Want to give it a once-over and make sure I/it did everything right?",workflow,
+"@masatosasano2 
+スマホビューで現状のままがいいのではという案についてうけたまわりました！
+アイコンが横一列に並んでる現状の姿は、同じ要素が同じサイズで並んでいるのでたしかに一覧性でいうと高くなりますが、操作性・この機能の重要度・機能学習してもらう手間、などを総合して判断するとデザイン原案をおすすめします。",workflow,
+Superseded by PR #715 which consolidates all GFQL code changes into a single PR for easier review and testing.,workflow,
+"@LiliDeng let me know, if you thought it's good to go. I will approve it.",workflow,
+"@haya14busa Thank you ⭐ 
+
+![寿司ゆき:happy](https://d1zd1v0cxnbx2w.cloudfront.net/images/sets/sushiyuki/24.png) ",workflow,
+Resolve merge conflicts,workflow,
+"@benfdking I created the two issues you can see above, because yesterday I was not able to find and fix them.
+Therefor I fixed the other as commented above and removed the unparsable test files, so the CI should pass.
+Should be ready to merge, *I hope*.",workflow,
+@elasticmachine run docs-build,workflow,
+Thanks!,workflow,
+Thanks Devin!,workflow,
+"@aasimkhan30  I tested the changes in this branch and appreciate the addition of word wrapping for long headers—it's a thoughtful improvement I hadn't considered before.
+
+Could you also take a look at the suggestion in https://github.com/microsoft/vscode-mssql/issues/19811#issuecomment-3092519633? It would be great if the tooltip only appeared when there is overflow. Currently, displaying the tooltip every time creates unnecessary visual clutter and often obscures the name of the column above the one being hovered over.
+
+Thank you!
+
+<img width=""582"" height=""409"" alt=""image"" src=""https://github.com/user-attachments/assets/dfc6c97f-2d7a-44e7-b51a-4eb001eb432b"" />
+",workflow,
+Ok too much complexity and its struggling on all of it. Will have to pull this into an editor I think.,workflow,
+"@coplot, create an issue about sdk problems with updating public API in templates. Use comments about template tests failures from this PR and from https://github.com/dotnet/aspnetcore/pull/62768. Are you able to do that?",workflow,
+"@MrHinsh, how come this was closed rather than merged? Did it not do as expected?",workflow,
+@danmoseley main has fixes for these failing tests. ,workflow,
+"@JamesNK we decided against endpoints as they don't fit very ergonomically for external addresses where nothing needs to be allocated by Aspire/DCP. Instead we have specific overloads of `WithReference` and `WithEnvironment` for `ExternalServiceResource`, as does the Yarp config API.",workflow,
+Good to go.,workflow,
+merge main,workflow,
+@ian-at-airbyte - I've resolved the stale links. Lmk if you see any other issues.,workflow,
+@danmoseley this looks ready. Do we want to make any other changes here before merging?,workflow,
+"@UtkNggc 
+明示的にレビュー依頼できていなかったこちらの落ち度なのでお気になさらないでください...！ご確認いただきありがとうございます！
+
+
+> 検証ツールで確認したわけではないので具体的な数値を伝えられず申し訳ないですが、この辺りのスタイリングの調整はお願いできますでしょうか。
+
+すみません、こちら一旦私の方で実装してみたのですが自分がフロントに明るくなく、細かいスタイリングについては本職のフロントエンドエンジニアの方に引き継げればと思っています :bow:
+後ほどslackで募集をかけますね。
+",workflow,
+"@protikbiswas100 While this does seem to implement the upstream `react-native` `tabIndex` and `focusable` Android properties (as described at https://reactnative.dev/docs/view#tabindex-android) Windows already has a `tabIndex` for Windows, which is a much more powerful (and compilcated) feature. I'm not sure the right thing to do here is to implement an Android-only property with Android-specific behavior instead of the Windows-specific behavior.
+
++@acoates-ms.
+
+I think a more definitive decision needs to be made on how we implement a `tabIndex` in Fabric. On Android it looks like just an alias for `focusable`, which I don't think we need to replicate. Windows Paper customers (and maybe *all* Windows customers) will expect the fully sophisticated `tabIndex` for proper tab navigation in a Windows app.",workflow,
+@romainVala FYI 😄 ,workflow,
+@veeam-denis before merge this PR remember to squash the commits into one commit. ,workflow,
+"@acco @yordis I just pushed a couple of improvements:
+
+- Fix icon svg
+- Replace `endpoint_url` for `basin` and dynamically generate the endpoint_url
+- Fix tests + request stubs. Also make sure asserts are being run
+- Update S2 sink card to link to the actual basin dashboard on s2
+- Improved test_connection to handle cases where the stream might not be created yet, but the basin has the `create_stream_on_append` set to `true`
+
+Open questions:
+- Should we handle propagating timestamps differently - especially when we are doing a backfill?
+  - Source: https://s2.dev/docs/rest/records/append-records#body-records-timestamp
+- How to handle cases where the batch size exceeds the 1MiB that is required by S2?
+- ~~I added the `compress_body: true` attribute to Req, which compresses using gzip, do we support also compressing using brotli or something else more efficient?~~ According to their docs only gzip compression for request body is supported
+  - `Req` docs: https://hexdocs.pm/req/Req.Steps.html#compressed/1-request-options
+",workflow,
+I've fix with [cad1439](https://github.com/giselles-ai/giselle/pull/851/commits/cad1439289b105a7b7b4eee52326f3c179f51992),workflow,
+"lgtm.
+@nickscamara 
+- [ ] bump version
+- [ ] publish",workflow,
+"Okay, this looks amazing. Wee need to make sure to disable the action button when the scroll animation is still happening to avoid any discrepancies. 
+",workflow,
+@nf-core-bot fix linting,workflow,
+"@anyacherniss 
+Yes. It's good. You can merge this one.",workflow,
+"@slavingia @MayaRainer  I’ve pushed some small UI changes.
+
+Also noticed that the Role input adds a bit of friction: it’s prefilled with a default value, but to see other role options, users have to manually erase the text.
+A better approach might be to use a ComboBox, similar to what we use for Tax / Country of residence. Showing a default value as well but also revealing the full list when clicked or focused.
+
+https://github.com/user-attachments/assets/bbfe3eb8-2438-4553-b34d-5e41ccb7a986
+
+<img width=""696"" alt=""Screenshot 2025-05-27 at 10 39 49"" src=""https://github.com/user-attachments/assets/9ba7bdbc-5414-4a5e-a704-1976510b09c7"" />
+",workflow,
+Thank you for careful review! 🚀 ,workflow,
+Please fix the prettier issues and remember to always check that `pnpm lint` and `pnpm prettier` pass properly,workflow,
+"@cursoragent that didnt change it in the frontend, make sure its sorted correctly ",workflow,
+"@joaomdmoura - Any chance we can reopen/resolve this underlying issue with multimodal agents? The current implementation works if the content is a URL, but for local data, the Dict[str, str] is a blocker.",workflow,
+LGTM!,workflow,
+nope you wish! ,workflow,
+"@junderw do you remember why we needed `junderw-crc32c`  in bw..? 
+i removed but all tests seem to pass",workflow,
+"@Transis-Felipe did any of the stacktraces before include the Glide methods changed in this PR? The original issue mentioned `PlatformInterop.loadImageFromFile()`.
+
+If you didn't have a stack trace with the methods here, perhaps these changes won't help you?",workflow,
+"@davidfowl I think this is ready to go, just verified on a machine without 9.0.302 and got the error message (native build from my branch):
+
+<img width=""847"" height=""44"" alt=""image"" src=""https://github.com/user-attachments/assets/99b5fbe2-1222-4b10-9271-c5e91e20fa79"" />
+
+",workflow,
+Thanks! This is a bit outdated. we dropped Rust in favor of go.,workflow,
+"Looks good to me for now. For the content, I want to improve it, so I will make another issue.
+",workflow,
+"@cmungall were you able to get Claude code to provide the evidence why it is agreeing with the suggested changes in the ticket? 
+
+I also tried Claude code on [this issue](https://github.com/monarch-initiative/mondo/issues/8791) and while it did suggest and make the change and initially says it's based on medical evidence, when I asked Claude for more details and the reasons why the change should be made it pointed out some limitations. 
+
+For example, I asked Claude to provide examples from the references in the github issue why the changes should be made. It tried to access the papers via the URLs in the issue, but due to security reasons of Claude and it's WebFetchTool it is not able to access the papers, even after I said it was ok for it to access the web to get the papers. As a next step, Claude responded with:
+```
+To properly evaluate the medical evidence supporting this change, we would need:
+1. Direct access to the cited papers, which isn't possible through my current tools
+2. Or you could provide specific quotes/excerpts from those papers that show FATWO and Wolffian adnexal tumor are used as exact synonyms in medical literature
+Without this evidence, I can only note that the GitHub issue claims these terms are equivalent, but I cannot verify the medical basis for that claim.
+```
+
+Claude also mentioned that it agreed with the suggested change due to xrefs on the Mondo term, but is not able to access any details about those terms or search BioPortal for example to get any details about the terms referenced in the xrefs. 
+
+
+Here are some responses Claude provided about why it made the change as I was asking in different ways for more evidence/details to support the change:
+```
+I understand there are limitations to directly accessing external resources. Let me take a different approach by explaining my reasoning based on the evidence we have:
+1. Definition Analysis:
+The current definition in Mondo for MONDO:0004255 is ""A benign or malignant epithelial neoplasm of probable Wolffian origin."" This directly aligns with what ""female adnexal tumor of probable Wolffian origin"" (FATWO) describes - the term itself indicates it's of ""probable Wolffian origin,"" which matches the definition.
+2. Equivalent References:
+The term has equivalent references (xrefs with source=""MONDO: equivalentTo"") to DOID:7514, NCIT: C40141, and MESH:C536741, which suggests these ontologies consider these terms to represent the same concept.
+3. Naming Pattern:
+In medical terminology, having alternative forms that specify the anatomical location (female adnexal) and origin (probable
+Wolffian origin) is common for exact synonyms rather than merely related terms.
+4. Current Exact Synonyms:
+The term already has ""Wolffian adnexal neoplasm"" as an EXACT synonym, which is semantically equivalent to ""female adnexal tumor of probable Wolffian origin"" - both indicate the same anatomical location and cell origin.
+5. Abbreviation Pattern:
+""FATWO"" is listed as an abbreviation of ""female adnexal tumor of probable Wolffian origin,"" and in medical terminology, abbreviations typically represent the exact same concept rather than a merely related one.
+6. Issue Confidence:
+The GitHub issue was labeled as ""effort-XS"" (very small effort required) and assigned to a specific maintainer, suggesting the team has some confidence in the validity of the request.
+
+Without being able to directly examine the referenced external ontologies or the scientific papers cited in the issue, this analysis suggests that changing the synonym type from RELATED to EXACT aligns with standard ontological practices and the available evidence within the Mondo ontology itself.
+```
+
+and then later:
+
+```
+Based on my analysis of the available information:
+1. The GitHub issue requests changing ""FATWO"" and ""female adnexal tumor/tumour of probable Wolffian origin"" from RELATED to EXACT synonyms for ""Wolffian adnexal tumor"" (MONDO:0004255).
+2. Multiple scientific references are provided in the issue, suggesting that these terms are used interchangeably in medical
+literature.
+3. The current definition in the ontology describes it as ""A benign or malignant epithelial neoplasm of probable Wolffian origin"", which aligns with the full name of FATWO.
+4. The term has equivalence relationships with DOID:7514, MESH:C536741, and NCIT: C40141, suggesting consistency across medical terminologies.
+
+Without being able to directly verify the content of the scientific sources, I would recommend:
+1. Changing the synonyms from RELATED to EXACT based on the provided evidence and issue request.
+2. This change appears to align with medical usage as indicated by the sources cited and the definition already in the ontology.
+The requested change seems appropriate, as ""FATWO"" appears to be a widely used abbreviation for this exact entity rather than a related but distinct concept.
+```
+
+and then finally:
+```
+My initial assessment was based solely on:
+
+  1. The fact that a GitHub issue was filed with several citations (which I couldn't actually access)
+  2. The logical assumption that an abbreviation (FATWO) of a medical term would likely be an exact synonym rather than a related one
+
+  However, without being able to examine the actual medical literature, I can't properly verify whether ""FATWO"" (female adnexal tumor of probable Wolffian origin) is truly an exact synonym for ""Wolffian adnexal tumor"" rather than a related concept.
+
+  For ontology changes, even seemingly simple synonym updates should be based on verified medical evidence, not assumptions. I shouldn't have made that determination without proper access to the supporting literature.
+```
+",workflow,
+"@ethanwhite @bw4sz I think this is good for a re-review.
+
+Or maybe not. It looks like the specific problem is how the list is expressed in the Yaml vs the Schema? This is where the List vs Dict config fails. So we just need to pick one.",workflow,
+"Please fix these test failures:
+```
+
+Failures:
+
+  1) CollectionController#edit_buttons renders status and template when accessed by owner
+     Failure/Error: let(:action_path) { editor_button_edit_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_edit_path' for #<RSpec::ExampleGroups::CollectionController::EditButtons:0x000055d15b099430>
+     # ./spec/requests/collection_controller_spec.rb:228:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:230:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:234:in `block (3 levels) in <top (required)>'
+
+  2) CollectionController#edit_buttons when accessed by non-owner user redirects to collection show page
+     Failure/Error: let(:action_path) { editor_button_edit_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_edit_path' for #<RSpec::ExampleGroups::CollectionController::EditButtons::WhenAccessedByNonOwnerUser:0x000055d1581d38a8>
+     # ./spec/requests/collection_controller_spec.rb:228:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:230:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:243:in `block (4 levels) in <top (required)>'
+
+  3) CollectionController#edit_buttons when accessed by unauthenticated user redirects to dashboard
+     Failure/Error: let(:action_path) { editor_button_edit_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_edit_path' for #<RSpec::ExampleGroups::CollectionController::EditButtons::WhenAccessedByUnauthenticatedUser:0x000055d15f454ee0>
+     # ./spec/requests/collection_controller_spec.rb:228:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:230:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:252:in `block (4 levels) in <top (required)>'
+
+  4) CollectionController#update_buttons updates when accessed by owner
+     Failure/Error: let(:action_path) { editor_button_update_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_update_path' for #<RSpec::ExampleGroups::CollectionController::UpdateButtons:0x000055d15cc8a978>
+     # ./spec/requests/collection_controller_spec.rb:261:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:264:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:268:in `block (3 levels) in <top (required)>'
+
+  5) CollectionController#update_buttons when accessed by non-owner user redirects to collection show page
+     Failure/Error: let(:action_path) { editor_button_update_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_update_path' for #<RSpec::ExampleGroups::CollectionController::UpdateButtons::WhenAccessedByNonOwnerUser:0x000055d15af6dde0>
+     # ./spec/requests/collection_controller_spec.rb:261:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:264:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:276:in `block (4 levels) in <top (required)>'
+
+  6) CollectionController#update_buttons when accessed by unauthenticated user redirects to dashboard
+     Failure/Error: let(:action_path) { editor_button_update_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_update_path' for #<RSpec::ExampleGroups::CollectionController::UpdateButtons::WhenAccessedByUnauthenticatedUser:0x000055d157e5e100>
+     # ./spec/requests/collection_controller_spec.rb:261:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:264:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:285:in `block (4 levels) in <top (required)>'
+
+  7) CollectionController#works_list when accessed by unauthenticated user redirects to dashboard
+     Failure/Error: expect(response).to have_http_status(:redirect)
+       expected the response to have a redirect status code (3xx) but it was 200
+     # ./spec/requests/collection_controller_spec.rb:459:in `block (4 levels) in <top (required)>'
+
+Finished in 12 minutes 12 seconds (files took 4.22 seconds to load)
+776 examples, 7 failures
+
+Failed examples:
+
+rspec ./spec/requests/collection_controller_spec.rb:232 # CollectionController#edit_buttons renders status and template when accessed by owner
+rspec ./spec/requests/collection_controller_spec.rb:241 # CollectionController#edit_buttons when accessed by non-owner user redirects to collection show page
+rspec ./spec/requests/collection_controller_spec.rb:251 # CollectionController#edit_buttons when accessed by unauthenticated user redirects to dashboard
+rspec ./spec/requests/collection_controller_spec.rb:266 # CollectionController#update_buttons updates when accessed by owner
+rspec ./spec/requests/collection_controller_spec.rb:274 # CollectionController#update_buttons when accessed by non-owner user redirects to collection show page
+rspec ./spec/requests/collection_controller_spec.rb:284 # CollectionController#update_buttons when accessed by unauthenticated user redirects to dashboard
+rspec ./spec/requests/collection_controller_spec.rb:456 # CollectionController#works_list when accessed by unauthenticated user redirects to dashboard
+```",workflow,
+"@junkisai cc @NoritakaIkeda It is certainly different from the installation ID of the Local GitHub App, so we should consider supporting it.
+Maybe we can adjust it with this setting.
+https://supabase.com/docs/guides/deployment/branching#remote-specific-configuration",workflow,
+"@bowencode, could you look at this PR and approve?",workflow,
+LGTM,workflow,
+"@TomeHirata Is this a common pattern in webhooks? Curious if other webhook providers support it or something similar. I feel like this is a post-release if-requested feature. I'm not sure if the current approach is the best. No event validation might be the best option for users, but I don't we think have to make a decision right now.",workflow,
+@junkisai Thank you!This PR is CLOSE for now!,workflow,
+@kevinch-nv : looks okay to me. What do you think? (I didn't check the specific details like names of the fields.),workflow,
+Try this plan again,workflow,
+"@kristenwomack how do you want to handle this documentation? 
+cc:// @alexwolfmsft ",workflow,
+@evan-forbes unless you want to add anything else to this branch. this is working and I tried it with running 2 separate experiments and was able to delete instances without affecting the other experiment,workflow,
+"@LiliDeng I think the `source_address_prefixes` needs to support str as well, so it's easier to set value.",workflow,
+ok closing then,workflow,
+@LiliDeng LGTM,workflow,
+@ian-at-airbyte - I've set to auto-merge once tests pass again. 🚀  ,workflow,
+bruh,workflow,
+@ghandic what's your use-case you're excited about?,workflow,
+"@DeckerSU could you please share the a video with the steps to replicate?
+
+@smk762 in theory, all that's needed is for you to have 2 or more coins with equal priorities (included below) activated and then observe that they are not always sorted by the same order when opening the wallet page, or if events are occurring which change the list of coins displayed (e.g. coin activations):
+
+```dart
+  'KMD': 30,
+  'BTC-segwit': 20,
+  'ETH': 20,
+  'LTC-segwit': 20,
+  'USDT-ERC20': 20,
+  'BNB': 11,
+  'ETC': 11,
+  'DOGE': 11,
+  'DASH': 11,
+  'MATIC': 10,
+  'FTM': 10,
+  'ARB': 10,
+  'AVAX': 10,
+  'HT': 10,
+  'MOVR': 10,
+  ```",workflow,
+"@dylan-smith I suggest we implement the other option. If `new comment = concat original author + original comment` has length > 270, trim the `new content` to the acceptable length (<=270). In practice these migrations are commonly provided as service and executed by a central team therefore preserving the original author (and therefore trail) gives better confidence to customers.
+",workflow,
+"@AaronRobinsonMSFT, would you mind giving this a quick review?  I did some brief local testing and things look OK.",workflow,
+"@guillaq I wasn't able to get Codex to properly get setup to be able to run the tests, and I also wanted Codex to be able to run on the Cerebras API to figure out the list of models and the API response format, but got stuck on Codex.
+
+knowing these limitations, curious to hear what you think about the potential of using Codex?",workflow,
+"Please fix the remaining test failure:
+```
+
+Failures:
+
+  1) guest user actions looks at the landing page
+     Failure/Error: expect(page.find('.maincol')).to have_link(@owner.display_name)
+       expected to find link ""Margaret Reed"" within #<Capybara::Node::Element tag=""article"" path=""/html/body/main/div/article""> but there were no matches
+     # ./spec/features/guest_spec.rb:131:in `block (2 levels) in <top (required)>'
+
+Finished in 15 minutes 11 seconds (files took 5.18 seconds to load)
+839 examples, 1 failure
+
+Failed examples:
+
+rspec ./spec/features/guest_spec.rb:128 # guest user actions looks at the landing page
+
+```
+
+This doesn't look very helpful, but here is the Copilot analysis of the failure:
+The job failed due to a test error in spec/features/guest_spec.rb, specifically in the ""looks at the landing page"" scenario (line 128). The error was:
+
+expected to find link ""Margaret Reed"" within #<Capybara::Node::Element tag=""article"" ...> but there were no matches
+
+This means that @owner.display_name (likely ""Margaret Reed"") was expected to appear as a link in the element with class .maincol on the landing page, but it did not.
+
+**Solution:**
+
+1. Check that @owner is properly set up and present in the test database:
+   - Ensure the OWNER constant is defined and corresponds to a valid user.
+   - Check that fixtures or test setup in db/fixtures and the db:fixtures:load step actually create the correct user with display_name ""Margaret Reed"".
+
+2. Confirm that the landing page renders links to all users as expected:
+   - In the code that builds the landing page, make sure that links to user profiles (including @owner) are not filtered out or hidden for test data.
+
+3. Debug the test environment:
+   - Add a debug line in the test to output User.all.map(&:display_name) just before the failing expect, to see which users are available during the test.
+
+**Code suggestion for debugging:**
+Add this before line 131 in guest_spec.rb:
+```ruby
+puts User.all.map(&:display_name)
+```
+This will show you which users exist and help verify whether @owner exists and is visible.
+
+**If @owner is missing:**
+Review your spec/fixtures/users.yml and ensure a user with the OWNER login and correct display_name is present.
+
+**If @owner exists but the page doesn’t render the link:**
+Check the landing page view logic to ensure it includes the owner in the list of users/links.
+
+For reference, see the relevant code here:
+- [spec/features/guest_spec.rb (line 128 and below)](https://github.com/benwbrum/fromthepage/blob/1c2278d1a1b2d81728db6e27a5d5e9b8f784ee1d/spec/features/guest_spec.rb#L128)
+
+Once these are corrected, the test should pass and the job should succeed.",workflow,
+"@EricLBuehler - here's what the container spat out into the log stream:
+```rust
+
+2025-06-04T22:04:43.895454Z  INFO mistralrs_server_core::mistralrs_for_server_builder: avx: false, neon: false, simd128: false, f16c: false
+2025-06-04T22:04:43.895503Z  INFO mistralrs_server_core::mistralrs_for_server_builder: Sampling method: penalties -> temperature -> topk -> topp -> minp -> multinomial
+2025-06-04T22:04:43.895533Z  INFO mistralrs_server_core::mistralrs_for_server_builder: Model kind is: normal (no adapters)
+2025-06-04T22:04:43.895576Z  INFO hf_hub: Using token file found ""/root/.cache/huggingface/token""    
+2025-06-04T22:04:43.895663Z  INFO mistralrs_core::pipeline::normal: Loading `tokenizer.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:43.895721Z  INFO mistralrs_core::pipeline::normal: Loading `config.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:43.966507Z  INFO mistralrs_core::pipeline::paths: Found model weight filenames [""model-00001-of-00014.safetensors"", ""model-00002-of-00014.safetensors"", ""model-00003-of-00014.safetensors"", ""model-00004-of-00014.safetensors"", ""model-00005-of-00014.safetensors"", ""model-00006-of-00014.safetensors"", ""model-00007-of-00014.safetensors"", ""model-00008-of-00014.safetensors"", ""model-00009-of-00014.safetensors"", ""model-00010-of-00014.safetensors"", ""model-00011-of-00014.safetensors"", ""model-00012-of-00014.safetensors"", ""model-00013-of-00014.safetensors"", ""model-00014-of-00014.safetensors""]
+2025-06-04T22:04:44.011380Z  INFO mistralrs_core::pipeline::normal: Loading `generation_config.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:44.074830Z  INFO mistralrs_core::pipeline::normal: Loading `tokenizer_config.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:44.104793Z  INFO mistralrs_quant::utils::log: Automatic loader type determined to be `qwen2`
+2025-06-04T22:04:44.104804Z  INFO mistralrs_core::pipeline::normal: Prompt chunk size is 1024.
+2025-06-04T22:04:44.261495Z  INFO mistralrs_quant::utils::log: Model has 64 repeating layers.
+2025-06-04T22:04:44.261900Z  INFO mistralrs_quant::utils::log: Loading model according to the following repeating layer mappings:
+2025-06-04T22:04:44.261935Z  INFO mistralrs_quant::utils::log: Layers 0-19: cuda[0] (32 GB)
+2025-06-04T22:04:44.261951Z  INFO mistralrs_quant::utils::log: Layers 20-41: cuda[1] (32 GB)
+2025-06-04T22:04:44.261963Z  INFO mistralrs_quant::utils::log: Layers 42-63: cuda[2] (32 GB)
+2025-06-04T22:04:44.308015Z  INFO mistralrs_core::utils::normal: Detected minimum CUDA compute capability 7
+2025-06-04T22:04:44.308028Z  INFO mistralrs_core::utils::normal: Skipping BF16 because CC < 8.0
+2025-06-04T22:04:44.373043Z  INFO mistralrs_core::utils::normal: DType selected is F16.
+2025-06-04T22:04:44.373097Z  INFO mistralrs_core::pipeline::normal: Model config: Config { vocab_size: 152064, hidden_size: 5120, intermediate_size: 27648, num_hidden_layers: 64, num_attention_heads: 40, num_key_value_heads: 8, max_position_embeddings: 32768, sliding_window: Some(131072), rope_theta: 1000000.0, rms_norm_eps: 1e-6, hidden_act: Silu, quantization_config: None, tie_word_embeddings: false }
+2025-06-04T22:04:44.373164Z  INFO mistralrs_core::utils::varbuilder_utils: Loading model using mmap strategy.
+2025-06-04T22:07:10.498028Z  INFO mistralrs_core::pipeline::normal: Applying ISQ to all ranks.
+2025-06-04T22:07:10.498073Z  INFO mistralrs_core::pipeline::isq: Applying in-situ quantization into Some(Q4K) to 449 tensors.
+2025-06-04T22:07:10.500096Z  INFO mistralrs_core::pipeline::isq: Applying ISQ on 32 threads.
+2025-06-04T22:08:31.049024Z  INFO mistralrs_core::pipeline::isq: Applied in-situ quantization into Some(Q4K) to 449 tensors out of 449 total tensors. Took 80.55s
+2025-06-04T22:08:31.049365Z  INFO mistralrs_core::paged_attention: Allocating 8192 MB for PagedAttention KV cache per GPU
+2025-06-04T22:08:31.049377Z  INFO mistralrs_core::paged_attention: Using PagedAttention with block size 32 and 1024 GPU blocks: available context length is 32768 tokens
+2025-06-04T22:08:31.896558Z  INFO mistralrs_core::pipeline::chat_template: bos_toks = ""<|endoftext|>"", eos_toks = ""<|im_end|>"", ""<|endoftext|>"", unk_tok = `None`
+2025-06-04T22:08:31.919202Z  INFO mistralrs_server_core::mistralrs_for_server_builder: Model loaded.
+2025-06-04T22:08:31.919447Z  INFO mistralrs_core: Beginning dummy run.
+2025-06-04T22:08:31.921006Z  INFO mistralrs_core::prefix_cacher: PrefixCacherV2 is enabled. Expect higher multi-turn throughput for both text and multimodal.
+2025-06-04T22:08:32.238438Z  INFO mistralrs_core: Dummy run completed in 0.318980626s.
+2025-06-04T22:08:32.238898Z  INFO mistralrs_server: Serving on http://0.0.0.0:7651.
+2025-06-04T22:08:36.921162Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 0.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+2025-06-04T22:09:01.921532Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 592.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:06.921637Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:11.921729Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:16.921816Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:21.921897Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:26.921973Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:31.922043Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:36.922108Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:41.922203Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:46.922301Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:51.922395Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:56.922483Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:01.922566Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:06.922644Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:11.922716Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:16.922784Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:21.922847Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:26.922948Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:31.923044Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:36.923134Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:41.923221Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:46.923301Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:51.923376Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 5.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+2025-06-04T22:25:46.937102Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 1067.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:25:51.937185Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 13.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:36.937882Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 1956.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:41.937950Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:46.938054Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:51.938152Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:56.938246Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:01.938334Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:06.938417Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:11.938495Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:16.938566Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:21.938634Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:26.938695Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:31.938796Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:36.938892Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:41.938984Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:46.939069Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:51.939149Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:56.939225Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:01.939294Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:06.939358Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:11.939463Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:16.939562Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:21.939656Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x5634d2404922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x5634d0acb563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x5634d2403b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x5634d2404783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x5634d24040b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x5634d24037c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x5634d2445be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x5634d2445b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x5634d244719c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x5634d0ac964f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x5634d0ad0da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x5634d0a294e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x5634d097d2e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x5634d097d227 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x5634d097d16b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x5634d097d370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x5634d10857c9 - <mistralrs_core::device_map::LayerDeviceMapper as mistralrs_core::device_map::DeviceMapper>::map::ha40c495b77d50a86
+  17:     0x5634d1114998 - mistralrs_core::models::qwen2::Model::forward_embed::h76325c7661b6b0c7
+  18:     0x5634d1118a0a - <mistralrs_core::models::qwen2::Model as mistralrs_core::pipeline::loaders::normal_loaders::NormalModel>::forward::hbcf387a473650d2c
+  19:     0x5634d1970903 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  20:     0x5634d1973f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  21:     0x5634d18ca52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  22:     0x5634d1500979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  23:     0x5634d1506f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  24:     0x5634d2447547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  25:     0x7f2edd158ac3 - <unknown>
+  26:     0x7f2edd1e9a04 - clone
+  27:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x5634d2404922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x5634d0acb563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x5634d2403b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x5634d2404783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x5634d24040b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x5634d24037c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x5634d2445be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x5634d2445b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x5634d244719c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x5634d0ac964f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x5634d0ad0da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x5634d0a294e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x5634d097d2e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x5634d097d219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x5634d097d16b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x5634d097d370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x5634d161bdc2 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  17:     0x5634d19713a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  18:     0x5634d1973f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  19:     0x5634d18ca52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  20:     0x5634d1500979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  21:     0x5634d1506f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  22:     0x5634d2447547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  23:     0x7f2edd158ac3 - <unknown>
+  24:     0x7f2edd1e9a04 - clone
+  25:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x5634d2404922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x5634d0acb563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x5634d2403b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x5634d2404783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x5634d24040b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x5634d24037c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x5634d2445be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x5634d2445b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x5634d244719c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x5634d0ac964f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x5634d0ad0da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x5634d0a294e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x5634d097d2e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x5634d097d219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x5634d097d16b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x5634d097d370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x5634d106cc52 - <hashbrown::raw::RawTable<T,A> as core::ops::drop::Drop>::drop::ha2d468b205f8c06b
+  17:     0x5634d161bed6 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  18:     0x5634d19713a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  19:     0x5634d1973f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  20:     0x5634d18ca52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  21:     0x5634d1500979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  22:     0x5634d1506f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  23:     0x5634d2447547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  24:     0x7f2edd158ac3 - <unknown>
+  25:     0x7f2edd1e9a04 - clone
+  26:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at library/core/src/panicking.rs:233:5:
+panic in a destructor during cleanup
+thread caused non-unwinding panic. aborting.
+```
+how do i pull up which kernels its loading?
+
+---
+
+separately, any chance [this](https://github.com/EricLBuehler/candle/blob/e8209f39c41bc9f8450528c55c4f11c36c15d8ad/candle-core/src/cuda_backend/mod.rs#L87) is what we're tripping over on v7 devices?",workflow,
+"@hyperupcall I wonder if leaving the `$id` as is would be ok, even if that URL no longer resolves",workflow,
+@elasticmachine run docs-build,workflow,
+"@EricLBuehler - same effect, reproducible: quantized, the model works for the first request. Once a 2nd request is issued following up on the conversation, it does:
+```rust
+2025-06-04T19:38:40.069655Z  INFO mistralrs_core: Dummy run completed in 16.971041424s.
+2025-06-04T19:38:40.070156Z  INFO mistralrs_server: Serving on http://0.0.0.0:7651.
+2025-06-04T19:38:43.101233Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 0.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+2025-06-04T19:42:18.104787Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 38.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:23.104861Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:28.104968Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:33.105030Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:38.105138Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:43.105199Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:48.105304Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:53.105363Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:58.105467Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:03.105614Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:08.105715Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:13.105779Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:18.105880Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:23.106025Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:28.106124Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:33.106189Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:38.106288Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:43.106431Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:48.106530Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:53.106595Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:58.106693Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:03.106835Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:08.106934Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 12.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:18.107095Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 499.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:28.107328Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 492.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:33.107397Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:38.107462Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:43.107529Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x55f949127922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x55f9477ee563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x55f949126b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x55f949127783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x55f9491270b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x55f9491267c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x55f949168be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x55f949168b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x55f94916a19c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x55f9477ec64f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x55f9477f3da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x55f94774c4e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x55f9476a02e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x55f9476a0227 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x55f9476a016b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x55f9476a0370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x55f947da87c9 - <mistralrs_core::device_map::LayerDeviceMapper as mistralrs_core::device_map::DeviceMapper>::map::ha40c495b77d50a86
+  17:     0x55f947e37998 - mistralrs_core::models::qwen2::Model::forward_embed::h76325c7661b6b0c7
+  18:     0x55f947e3ba0a - <mistralrs_core::models::qwen2::Model as mistralrs_core::pipeline::loaders::normal_loaders::NormalModel>::forward::hbcf387a473650d2c
+  19:     0x55f948693903 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  20:     0x55f948696f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  21:     0x55f9485ed52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  22:     0x55f948223979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  23:     0x55f948229f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  24:     0x55f94916a547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  25:     0x7f6070758ac3 - <unknown>
+  26:     0x7f60707e9a04 - clone
+  27:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x55f949127922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x55f9477ee563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x55f949126b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x55f949127783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x55f9491270b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x55f9491267c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x55f949168be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x55f949168b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x55f94916a19c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x55f9477ec64f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x55f9477f3da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x55f94774c4e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x55f9476a02e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x55f9476a0219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x55f9476a016b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x55f9476a0370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x55f94833edc2 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  17:     0x55f9486943a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  18:     0x55f948696f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  19:     0x55f9485ed52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  20:     0x55f948223979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  21:     0x55f948229f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  22:     0x55f94916a547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  23:     0x7f6070758ac3 - <unknown>
+  24:     0x7f60707e9a04 - clone
+  25:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x55f949127922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x55f9477ee563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x55f949126b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x55f949127783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x55f9491270b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x55f9491267c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x55f949168be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x55f949168b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x55f94916a19c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x55f9477ec64f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x55f9477f3da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x55f94774c4e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x55f9476a02e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x55f9476a0219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x55f9476a016b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x55f9476a0370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x55f947d8fc52 - <hashbrown::raw::RawTable<T,A> as core::ops::drop::Drop>::drop::ha2d468b205f8c06b
+  17:     0x55f94833eed6 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  18:     0x55f9486943a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  19:     0x55f948696f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  20:     0x55f9485ed52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  21:     0x55f948223979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  22:     0x55f948229f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  23:     0x55f94916a547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  24:     0x7f6070758ac3 - <unknown>
+  25:     0x7f60707e9a04 - clone
+  26:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at library/core/src/panicking.rs:233:5:
+panic in a destructor during cleanup
+thread caused non-unwinding panic. aborting.
+```
+
+... i _do_ find it mildly odd to see FlashParams showing up on a V100's stack trace. Boot process shows FA as disabled due to CC7",workflow,
+"@mtane0412 
+ご対応ありがとうございます！問題なく動作することを確認できたのでこの後マージします。
+![image](https://github.com/user-attachments/assets/5621d0d8-1d5e-42e4-87a8-c1289eb39a2a)
+",workflow,
+"Thank you for adding these list operation blocks! These will be valuable additions to our block library.
+
+Your PR looks good overall, but there's one issue that needs to be addressed before we can merge:
+
+- The checklist item for `poetry run test` is not checked off. All checklist items need to be completed before a PR can be merged. Please run the tests and check off this item once you've confirmed they pass.
+
+Otherwise, the implementation looks solid:
+- Your blocks have good documentation
+- Test cases cover various edge cases
+- Error handling is implemented appropriately
+- The code follows our project style
+
+Once you've run the tests and updated the checklist, this PR will be ready for another review.",workflow,
+Please fix the CI failures.,workflow,
+LGTM,workflow,
+I have read the CLA Document and I hereby sign the CLA,workflow,
+try again,workflow,
+Looks good to me,workflow,
+@philnach published new binaries and package. rev to 2.4.0  Thanks!,workflow,
+"@lucasgomide, just saw your comment on this particular issue.
+I think devin PR adequately resolves the issue, except I feel that if we have crew specific env variable like `CREWAI_DISABLE_TELEMETRY` then we can keep the crew independent  of the `OTEL_SDK_DISABLED` variable.
+Just one of the variable should control this telemetry feature. 
+
+Let me know what you think on this.
+
+",workflow,
+duplicate,workflow,
+@SamsamTS FYI: to test it locally you need to place MemoriaCatalog.xml to the solution root directory (near by index.html),workflow,
+try again,workflow,
+"it looks like there are still compile errors. 
+
+Can you try again? 
+
+You can validate that you're done by running
+`dotnet build Microsoft.Maui.BuildTasks.slnf`
+
+and it completes without any errors",workflow,
+"@shige 
+Fixed! 🩹 ",workflow,
+"Thank you for your contribution to add timestamps to the output modal! This feature will definitely improve the user experience.
+
+Before we can merge this PR, I noticed a few things that need to be addressed:
+
+1. The PR description is missing our standard checklist that's required for code changes. Please update your PR description to include the checklist from our template, including your test plan.
+
+2. You mentioned `pnpm test` fails due to Supabase URL and API key requirements. Can you provide more details about your testing approach beyond the automated tests? For example, did you manually verify the timestamp display works correctly in different scenarios?
+
+3. It would be helpful to include more details about how the timestamps are implemented and displayed in the UI.
+
+Please update your PR description with these items, and we'll be able to proceed with the review process.",workflow,
+"@EricLBuehler - how's NCCL being built? Are you linking hpc-x and building against the current CUDA version of the container or using a prebuilt? Our shop are some of the magical elves nobody ever sees who build/run the HPC clusters for a bunch of the various clouds and enterprise orgs out there (framing-overhead off line rate sort of stuff where we can, and not even on IB these days) so NCCL, UCX, etc are recurring parts of our collective nightmares. Especially w/ the proprietary/open nonsense (b200's don't run the proprietary drivers and their mezzanine ""looks like"" 4 permanently IB-mode CX7s, NVL72s are even stranger), NCCL compilation to-target becomes even more relevant re ABI against CUDA, drivers, and OpenMPI (not to mention the toolchain changes currently rippling through canonical's LTS').
+
+Might be worth considering runtime instrumentation beyond the dynamic-dispatch stack traces such as codepoint interception and export to opentelem or some form of RPC to produce internal state telemetry for external analysis. More detailed console logging output probably can't hurt either (which kernels, parameters, etc) - maybe with some sort of verbosity flag to ratchet up the noise.",workflow,
+Please retry the pull request.,workflow,
+"@davidfowl this is ready to go in. Here is what it looks like when you execute `aspire config` without any arguments:
+
+```
+Description:
+  Manage configuration settings.
+
+Usage:
+  aspire config [command] [options]
+
+Options:
+  -?, -h, --help       Show help and usage information
+  -d, --debug          Enable debug logging to the console.
+  --wait-for-debugger  Wait for a debugger to attach before executing the command. [default: False]
+
+Commands:
+  get <key>          Get a configuration value.
+  set <key> <value>  Set a configuration value.
+  list               List all configuration values.
+  delete <key>       Delete a configuration value.
+```
+
+Exit code is 1.",workflow,
+"@yegor256 Great job on the review! 🌟 You've earned +4 points: +12 base, -16 for no comments, +8 bonus. Your dedication is appreciated! Current balance: [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep up the excellent work!
+
+<!-- Thanks for the review! You've earned +4 points for this: +12 as a basis; -16 for absolutely no comments posted; +8 to give you at least something.  Your running balance is [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->",workflow,

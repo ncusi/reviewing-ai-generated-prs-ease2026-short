@@ -1,0 +1,2796 @@
+text,predicted_label,gold_label
+@copilot check all other CI workflows and make sure they all pass,agentic_cmd,agentic_cmd
+@copilot - the queue release gates comment trigger is not working.,agentic_cmd,agentic_cmd
+@copilot Please try again,agentic_cmd,agentic_cmd
+@copilot squash commit and push force,agentic_cmd,agentic_cmd
+"@copilot the completions already work for `code-tunnel.exe` and other `.exe`. However, the detail property is not provided",agentic_cmd,agentic_cmd
+@copilot There's a built in [AsyncEnumerable.Empty Method](https://learn.microsoft.com/en-us/dotnet/api/system.linq.asyncenumerable.empty?view=net-9.0-pp) you don't need EmptyAsyncEnumerable.,agentic_cmd,agentic_cmd
+@copilot Let's fix tests,agentic_cmd,agentic_cmd
+"@copilot your repeated analysis wasn't correct. After accounting for changes in this PR, the following functions are no longer used: _monodroid_get_network_interface_state and java_classes_init
+
+Remove _monodroid_get_network_interface_state and java_classes_init functions, then remove the monodroid-networkinfo.cc file, since it no longer contains any usable code. Make sure to properly remove the file from CMakeFiles.txt",agentic_cmd,agentic_cmd
+"@copilot fix up CI:
+
+```
+/home/runner/work/xterm.js/xterm.js/src/common/input/Keyboard.test.ts
+Warning:   345:1  warning  Trailing spaces not allowed  no-trailing-spaces
+ESLint found too many warnings (maximum: 0).
+```",agentic_cmd,agentic_cmd
+"@copilot check the new pipeline again, if it looks ok.",agentic_cmd,agentic_cmd
+@copilot 请使用v3的签名实现参考文档 https://help.aliyun.com/zh/sdk/product-overview/v3-request-structure-and-signature,agentic_cmd,agentic_cmd
+@copilot don't vendor dependencies,agentic_cmd,agentic_cmd
+"Not super useful, a lot of the new yaml file is nonsensical.
+
+@copilot thanks for the attempt, I will try again on a more well-defined task. Do not make further changes.",agentic_cmd,agentic_cmd
+This is outside of the scope of copilot until it can actually run tests and modify the code based on the results.,agentic_cmd,review
+@copilot please address Kai’s comments.,agentic_cmd,agentic_cmd
+@copilot you should revert [this change](https://github.com/dotnet/aspire/commit/5ac9cf76f2a3c3702c56ec1857d52b2340a34d44) - I'm pretty sure it's a product-level constraint for Aspire that they need 9.0.3xx. I was just noting the impact this constraint has on the user base.,agentic_cmd,agentic_cmd
+"@copilot, merge main into this feature branch so you are able to use the new firewall rules and then implement the integration tests that are currently commented as unavailable because of firewall rules:
+func TestAcc_DataSourcesIntegration(t *testing.T) {
+	// Skip this test if we can't access external network resources
+	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
+	t.Skip(""Skipping acceptance test - requires network access to Terraform CLI"")
+func TestAcc_ErrorHandling(t *testing.T) {
+	// Skip this test if we can't access external network resources
+	// This test requires Terraform CLI which needs to connect to checkpoint-api.hashicorp.com
+	t.Skip(""Skipping acceptance test - requires network access to Terraform CLI"")
+
+etc. ",agentic_cmd,agentic_cmd
+@copilot limit avatar size to 200x200 px,agentic_cmd,agentic_cmd
+@copilot Build is failing,agentic_cmd,agentic_cmd
+@copilot make it shorter without losing any meaning.,agentic_cmd,agentic_cmd
+@copilot try again,agentic_cmd,agentic_cmd
+@copilot still working?,agentic_cmd,agentic_cmd
+"@copilot use this url format instead https://github.com/coturn/coturn/archive/%{version}.tar.gz
+",agentic_cmd,agentic_cmd
+/gemini review,agentic_cmd,agentic_cmd
+@coderabbitai review,agentic_cmd,agentic_cmd
+"@claude, please review changes in this PR, they should cover comment on PR for 
+
+Code Review for Custom Database Storage Location Feature
+PR Title: 163/customize db storage location
+Tech Stack: Tauri (Rust + TypeScript/React), SQLite, Diesel ORM
+Scope: 48 files, 4464 additions, 1284 deletions
+
+Review Progress
+ Read repository guidelines and understand codebase structure
+ Review backend Rust changes (database, settings, commands)
+ Review frontend React/TypeScript changes (settings UI, stores)
+ Check translation files for consistency across languages
+ Assess security implications and error handling
+ Evaluate architecture and design patterns
+ Provide comprehensive feedback with severity levels
+🔍 Summary
+This PR implements a comprehensive custom database storage location feature that allows users to store PasteBar's data in a custom directory instead of the default application data folder. The implementation includes UI components, backend services, path transformation logic, and multi-language support.
+
+✅ Strengths
+Excellent Architecture & Design
+Well-structured separation of concerns: Clean separation between frontend UI, state management, backend commands, and database layer
+Robust path transformation system: The {{base_folder}} placeholder system elegantly handles relative/absolute path conversion for images
+Comprehensive user experience: Thoughtful handling of edge cases (existing data, empty directories, permissions)
+Good error handling: Extensive validation and user feedback throughout the process
+Code Quality
+Consistent patterns: Follows established codebase conventions for Tauri commands, state management, and UI components
+Type safety: Proper TypeScript types and Rust enums for path status checking
+Internationalization: Complete translation support across 7 languages
+State management: Well-designed Zustand store integration with proper loading states
+⚠️ Issues & Recommendations
+Critical Issues
+🔴 Security - Path Traversal Vulnerability (Critical)
+File: src-tauri/src/commands/user_settings_command.rs:95-140
+
+The path validation function doesn't adequately protect against path traversal attacks:
+
+pub fn cmd_validate_custom_db_path(path_str: String) -> Result<bool, String> {
+  let path = Path::new(&path_str);
+  // Missing: Path canonicalization and traversal checks
+Recommendation: Add path canonicalization and restrict to safe directories:
+
+let path = Path::new(&path_str).canonicalize()
+  .map_err(|e| format!(""Invalid path: {}"", e))?;
+  
+// Ensure path doesn't traverse outside allowed directories
+if path.ancestors().any(|p| p.ends_with("".."")) {
+  return Err(""Path traversal not allowed"".to_string());
+}
+🔴 Data Loss Risk - Insufficient Backup Strategy (Critical)
+File: src-tauri/src/commands/user_settings_command.rs:143-214
+
+The cmd_set_and_relocate_data function lacks proper backup mechanisms before moving data:
+
+""move"" => {
+  // Direct move without backup - risk of data loss if operation fails
+  fs::rename(&source_path, &dest_path)
+}
+Recommendation: Implement backup strategy and atomic operations:
+
+// Create backup before any destructive operations
+let backup_path = create_backup(&source_path)?;
+match fs::rename(&source_path, &dest_path) {
+  Ok(_) => remove_backup(backup_path),
+  Err(e) => {
+    restore_from_backup(backup_path, &source_path)?;
+    return Err(format!(""Move failed: {}"", e));
+  }
+}
+Major Issues
+🟠 Concurrency - Database Connection Pool Issues (Major)
+File: src-tauri/src/db.rs:75-93
+
+The database connection pool is initialized at application start and doesn't handle dynamic path changes:
+
+lazy_static! {
+  pub static ref DB_POOL_CONNECTION: Pool = init_connection_pool();
+}
+Recommendation: Implement connection pool reinitialization or use a dynamic connection strategy for custom paths.
+
+🟠 Error Recovery - Incomplete Rollback Logic (Major)
+File: packages/pastebar-app-ui/src/pages/settings/CustomDatabaseLocationSettings.tsx:199-216
+
+Error handling doesn't provide rollback mechanisms if database relocation fails partially:
+
+try {
+  await applyCustomDbPath(selectedPathForChangeDialog, dbOperationForChangeDialog)
+  relaunchApp()
+} catch (error: any) {
+  setOperationError(error.message) // No rollback of partial changes
+}
+Recommendation: Implement proper transaction-like rollback for failed operations.
+
+Minor Issues & Suggestions
+🟡 Performance - Unnecessary File Operations (Minor)
+File: src-tauri/src/commands/user_settings_command.rs:94-140
+
+Validation creates and deletes temporary directories unnecessarily:
+
+// Creates directory just to validate, then removes it
+fs::create_dir_all(&path)?;
+fs::remove_dir(&path)?;
+Recommendation: Use parent directory write permissions check instead.
+
+🟡 Code Duplication - Path Selection Logic (Minor)
+File: packages/pastebar-app-ui/src/pages/settings/CustomDatabaseLocationSettings.tsx
+
+The path selection logic is duplicated across multiple functions (handleBrowseForChangeDialog, handleSetupPathSelection, chooseAndSetCustomPath).
+
+Recommendation: Extract common path selection logic into a reusable function.
+
+🟡 UI/UX - Loading States (Minor)
+File: packages/pastebar-app-ui/src/pages/settings/CustomDatabaseLocationSettings.tsx:497
+
+Multiple loading states could be simplified:
+
+const isLoading = dbRelocationInProgress || isProcessing || isApplyingChange
+Recommendation: Consider a unified loading state machine for better UX.
+
+🏗️ Architecture Assessment
+Positive Patterns
+Command Pattern: Clean separation of Tauri commands from business logic
+State Management: Well-structured Zustand store with clear actions
+Error Boundaries: Comprehensive error handling at multiple layers
+Internationalization: Complete i18n support with fallbacks
+Areas for Improvement
+Transaction Management: Need atomic operations for data migration
+Validation Consistency: Backend validation should match frontend expectations
+Testing: No visible test coverage for critical path operations
+🧪 Testing Recommendations
+Critical Test Cases Missing:
+
+Path traversal attack prevention
+Partial migration failure recovery
+Concurrent access during migration
+Cross-platform path handling (Windows/macOS/Linux)
+Large database migration performance
+Disk space validation before migration
+📝 Translation Quality
+Excellent Coverage: All 7 languages properly updated with consistent terminology
+Minor Issue: Some translations could be more concise (e.g., German tends to be verbose)
+
+🎯 Overall Assessment
+This is a well-architected feature with comprehensive functionality. The code quality is high and follows established patterns. However, there are critical security and data safety concerns that must be addressed before production deployment.
+
+Recommendation: Address the critical security vulnerabilities and implement proper backup/rollback mechanisms before merging.
+
+🔧 Priority Actions:
+
+✅ Fix path traversal vulnerability
+✅ Implement backup strategy for data migration
+✅ Add transaction-like rollback capabilities
+⚡ Consider adding integration tests for critical paths
+Overall Rating: 7.5/10 - Excellent foundation with critical security fixes needed.",agentic_cmd,agentic_cmd
+"@copilot, these changes look correct.  Don't make any more changes to the code, just follow the test plan below and report your findings.
+
+Please validate that the following is the behavior with the latest changes.
+
+- For platform neutral builds, all of the native files are present.  So are Dia2Lib.dll and TraceReloggerLib.dll.
+- For single-file builds on Windows, the target architecture's native files are present.  Test x86, amd64, and arm64.
+- For single-file builds on Linux, none of the native files are present.
+
+For single-file builds Dia2Lib.dll and TraceReloggerLib.dll will be included in the merged managed binary and so they won't show up on the file system.",agentic_cmd,agentic_cmd
+"@copilot This still doesn't look right. Let me provide you with more details to help here.
+
+- When done correctly, there should be new tests in https://github.com/dotnet/aspnetcore/blob/a9e40df376d35df921efd5dc740ed3cd73d2b39c/src/Http/Http.Abstractions/test/Validation/ValidatableTypeInfoTests.cs that validate that when the service collection is configured with JsonSerializerOptions then the PropertyNamePolicy on the serializer options is respected.
+- The code that builds validation errors in here: https://github.com/dotnet/aspnetcore/blob/main/src/Http/Http.Abstractions/src/Validation/ValidateContext.cs
+- The `ValidationContext` property has access to a ServiceProvider you can use to resolve the JsonOptions.",agentic_cmd,agentic_cmd
+"@copilot There are some incorrect snippet links in IDictionary`2.xml. Can you fix them? This is the error:
+
+The code snippet ""~/snippets/visualbasic/VS_Snippets_CLR/Generic.IDictionary/VB/source.vb"" could not be found.",agentic_cmd,agentic_cmd
+"@copilot could you add a newsfragment for this change? just a short summary of what has been fixed and what should now work. you can find information on how to write a newsfragment in the qcodes documentation, in the contributors guide section.",agentic_cmd,agentic_cmd
+@copilot please update the `cpu` and `cswitch` events in `UniversalEventsTraceEventParser` to properly use the registered dynamic events.,agentic_cmd,agentic_cmd
+"@copilot finally update the version in the const.ts, const.py, package.json and manifest.json files and rebuild the js",agentic_cmd,agentic_cmd
+@claude adapt this PR to forward other tracking data such as ip/region to posthog from the API. adapt so that it works on both GCP and cloudflare.,agentic_cmd,agentic_cmd
+"@copilot 
+
+We might need to make the registration in another project. The error seems to persist. It’s likely in Wasm.Minimal
+
+2025-07-03T21:41:37Z] [Warning] http://127.0.0.1:35589/subdir/_framework/blazor.web.nt15gxxvjs.js 0:42409 ""[2025-07-03T21:41:37.200Z] Warning: Initializer 'http://127.0.0.1:35589/subdir/JSInitializers/Classic/BasicTestApp.j2kfp6tx1s.lib.module.js' will be ignored because multiple runtimes are available. Use 'before(Web|WebAssembly|Server)Start' and 'after(Web|WebAssembly|Server)Started' instead.""
+[2025-07-03T21:41:37Z] [Info] http://127.0.0.1:35589/subdir/_framework/blazor.web.nt15gxxvjs.js 0:167352 ""Debugging hotkey: Shift+Alt+D (when application has focus)""
+[2025-07-03T21:41:40Z] [Severe] http://127.0.0.1:35589/subdir/_framework/blazor.web.nt15gxxvjs.js 0:170184 ""crit: Microsoft.AspNetCore.Components.WebAssembly.Rendering.WebAssemblyRenderer[100]\n      Unhandled exception rendering component: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\nSystem.Text.Json.JsonException: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\n ---> System.Text.Json.JsonReaderException: ExpectedStartOfValueNotFound, C LineNumber: 0 | BytePositionInLine: 0.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   Exception_EndOfInnerExceptionStack\n   at System.Text.Json.ThrowHelper.ReThrowWithPath(ReadStack& state, JsonReaderException ex)\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   at System.Text.Json.JsonSerializer.ReadAsObject(Utf8JsonReader& reader, JsonTypeInfo jsonTypeInfo)\n   at System.Text.Json.JsonSerializer.Deserialize(Utf8JsonReader& reader, Type retu
+",agentic_cmd,agentic_cmd
+"@copilot continue your work in the PR description above, it looks like you timed out completing your checklist.
+
+> - [ ] Update remaining 5 `#nullable disable` files to `#nullable enable` with proper property annotations
+> - [ ] Convert `string.IsNullOrEmpty()` checks to extension method `.IsNullOrEmpty()` if found
+> - [ ] Build and test changes iteratively
+> - [ ] Verify all changes follow minimal modification principle
+",agentic_cmd,agentic_cmd
+"There's another question here about how this impacts the history. Given the way this tool is working right now, the history in the PRs it generates will basically always be a mess. That means we'll need to be very careful about checking the state of the history before merging and either require the lead dev to rebase right at the end before merging. I'm generally opposed to having the model due to rebase because this feels like a ripe target for prompt-injection attacks. Alternatively we could abandon multi-commit PR's entirely and move to a strictly squash and merge workflow. Personally I don't think this produces the best kind of history (but there are big projects that like this approach), but given how error prone 'make sure you check the history and then ask the dev to rebase' is, it might be better than the inevitable merges that pull in 25 commits worth of ""1. Copilot added this. 2. I asked copilot to remove it. 3. I asked copilot to follow the style guide...""",agentic_cmd,review
+"@copilot check and fix the build 
+",agentic_cmd,agentic_cmd
+@copilot only modify files in `packages/http-specs`. Remove your change to `packages/compiler`,agentic_cmd,agentic_cmd
+"Issue is still reproducible, will teach Devin to test against the example repo, closing for now.",agentic_cmd,workflow
+"@copilot keep left too 
+
+ --- 
+
+ TITLE: Removal of Resize Terminal Actions with Exception for ""Left"" Action
+USER INTENT: The user wants to remove specific resize terminal actions while retaining the ""left"" resize terminal action.
+TASK DESCRIPTION: The user is iterating on the removal of resize terminal actions in the codebase, specifically aiming to keep the ""left"" action intact.
+EXISTING: The user has initiated the process to remove resize terminal actions and has referenced a pull request (#253385) related to this task.
+PENDING: The assistant needs to modify the code to ensure that all resize terminal actions are removed except for the ""left"" action.
+CODE STATE: The conversation references a pull request (#253385) on GitHub related to the terminal actions in the VSCode repository. Specific code snippets or details about the terminal actions were not provided in the conversation.
+RELEVANT CODE/DOCUMENTATION SNIPPETS: No specific code snippets were shared, but the assistant indicated it would check the current state of terminal actions before proceeding with modifications.
+OTHER NOTES: The user has repeated the request multiple times, indicating a strong emphasis on the need to keep the ""left"" resize action while removing others. The assistant's responses suggest it is actively working on understanding and implementing the user's requirements.",agentic_cmd,agentic_cmd
+@copilot you can use dummy DA instead of mock DA,agentic_cmd,agentic_cmd
+@copilot are you able to sign .NET Foundation CLA?,agentic_cmd,agentic_cmd
+@coderabbitai review,agentic_cmd,agentic_cmd
+"Claude code also used the paper reference with it's PMC URL, however I believe the preference is to use the PMID URL.",agentic_cmd,review
+"@copilot You don't need to fix this issue. Instead, quarantine this test using the `QuarantinedTest` attribute and use the original issue as the url. Also, do not close the issue when this is done, so exclude any messages like `Fixes ...` in the commit messages or PR descriptions.",agentic_cmd,agentic_cmd
+@Copilot That broke things - it needs to be on file service bc dynamic import is not acceptable.,agentic_cmd,agentic_cmd
+@copilot Can you fix the code snippet not found warnings in [this build report](https://buildapi.docs.microsoft.com/Output/PullRequest/500c749d-de78-3d4a-00e4-269d599bf9ec/202506200906207663-11490/BuildReport?accessString=89c09fc28fa12f5576a09717a832442c2546f1383ffe4956c8763221d381b563)?,agentic_cmd,agentic_cmd
+@copilot that's not picked up as a pylint error. overreach.,agentic_cmd,agentic_cmd
+@copilot looks like there's errors in the tests post-rebasing the branch. Please fix.,agentic_cmd,agentic_cmd
+"@copilot Adding a margin has caused the item to overflow its container.
+
+Let's go a different route - if we remove the margin and the hover state from the item, then the spacing should be a non-issue.
+
+![CleanShot 2025-06-25 at 09 59 29@2x](https://github.com/user-attachments/assets/07f59084-7b95-481d-bba0-b79001252998)
+",agentic_cmd,agentic_cmd
+@copilot check pipelines https://github.com/aztfmod/terraform-provider-azurecaf/actions/runs/15989026171/job/45098884939?pr=337,agentic_cmd,agentic_cmd
+@sentry review,agentic_cmd,agentic_cmd
+@copilot gpg-sign and sign-off all commits,agentic_cmd,agentic_cmd
+"@adamint can you review -- the person that requested copilot do a job cannot sign off on it.
+
+this seems reasonable, but I see there's another place we log the same thing and I'm not sure whether that one should be removed.
+
+https://github.com/dotnet/aspire/blob/5044bb2e2068f5db4f64ac92c0a23e34eab3b8af/src/Aspire.Dashboard/DashboardWebApplication.cs#L322",agentic_cmd,agentic_cmd
+"> Warning
+> 
+> Firewall rules blocked me from connecting to one or more addresses
+> I tried to connect to the following addresses, but was blocked by firewall rules:
+> 
+> https://api.github.com/repos/dependabot/fetch-metadata/releases/latest
+> Triggering command: curl -s REDACTED (http block)
+> If you need me to access, download, or install something from one of these locations, you can either:
+> 
+> Configure [Actions setup steps](https://gh.io/copilot/actions-setup-steps) to set up my environment, which run before the firewall is enabled
+> Add the appropriate URLs or hosts to the custom allowlist in this repository's [Copilot coding agent settings](https://github.com/Skyscanner/backpack-ios/settings/copilot/coding_agent) (admins only)
+
+@copilot The firewall issue has been resolved. Please try again",agentic_cmd,agentic_cmd
+@copilot the resources are resolved in `TerminalCompletionService.ts`,agentic_cmd,agentic_cmd
+"@copilot we should do snap points using inertia modifiers as described here:
+https://learn.microsoft.com/en-us/windows/uwp/composition/inertia-modifiers",agentic_cmd,agentic_cmd
+@copilot try again,agentic_cmd,agentic_cmd
+"@claude The CI is failing—can you fix it?
+https://github.com/liam-hq/liam/actions/runs/15847081726/job/44671665619?pr=2079",agentic_cmd,agentic_cmd
+@Copilot Go ahead and make the changes necessary in OpenApiDocumentService to support processing multiple content-types on the same status code in the `GetResponsesAsync` method.,agentic_cmd,agentic_cmd
+"@copilot has warming here, is it ok?
+
+```bash
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/helper@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)                                             
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.55
+npm warn node_modules/@vuepress/helper
+npm warn   @vuepress/helper@""2.0.0-rc.55"" from @vuepress/plugin-back-to-top@2.0.0-rc.55    
+npm warn   node_modules/@vuepress/plugin-back-to-top
+npm warn   5 more (@vuepress/plugin-docsearch, ...)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.55
+npm warn   node_modules/@vuepress/helper
+npm warn     @vuepress/helper@""2.0.0-rc.55"" from @vuepress/plugin-back-to-top@2.0.0-rc.55  
+npm warn     node_modules/@vuepress/plugin-back-to-top
+npm warn     5 more (@vuepress/plugin-docsearch, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/highlighter-helper@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/highlighter-helper@2.0.0-rc.54
+npm warn node_modules/@vuepress/highlighter-helper
+npm warn   @vuepress/highlighter-helper@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn   node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn   1 more (@vuepress/plugin-prismjs)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/highlighter-helper@2.0.0-rc.54       
+npm warn   node_modules/@vuepress/highlighter-helper
+npm warn     @vuepress/highlighter-helper@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn     node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn     1 more (@vuepress/plugin-prismjs)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-active-header-links@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-active-header-links@2.0.0-rc.55 
+npm warn node_modules/@vuepress/plugin-active-header-links
+npm warn   @vuepress/plugin-active-header-links@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-active-header-links@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-active-header-links
+npm warn     @vuepress/plugin-active-header-links@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-back-to-top@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-back-to-top@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-back-to-top
+npm warn   @vuepress/plugin-back-to-top@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-back-to-top@2.0.0-rc.55       
+npm warn   node_modules/@vuepress/plugin-back-to-top
+npm warn     @vuepress/plugin-back-to-top@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-container@2.0.0-rc.28
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-container@2.0.0-rc.28
+npm warn node_modules/@vuepress/plugin-container
+npm warn   @vuepress/plugin-container@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.9
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-container@2.0.0-rc.28
+npm warn   node_modules/@vuepress/plugin-container
+npm warn     @vuepress/plugin-container@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-docsearch@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-docsearch@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-docsearch
+npm warn   @vuepress/plugin-docsearch@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-docsearch@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-docsearch
+npm warn     @vuepress/plugin-docsearch@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-external-link-icon@2.0.0-rc.28
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-external-link-icon@2.0.0-rc.28   
+npm warn node_modules/@vuepress/plugin-external-link-icon
+npm warn   @vuepress/plugin-external-link-icon@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.9
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.9"" from @vuepress/plugin-external-link-icon@2.0.0-rc.28 
+npm warn   node_modules/@vuepress/plugin-external-link-icon
+npm warn     @vuepress/plugin-external-link-icon@""2.0.0-rc.28"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-git@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-git@2.0.0-rc.54
+npm warn node_modules/@vuepress/plugin-git
+npm warn   @vuepress/plugin-git@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-git@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-git
+npm warn     @vuepress/plugin-git@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26       
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-medium-zoom@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-medium-zoom@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-medium-zoom
+npm warn   @vuepress/plugin-medium-zoom@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-medium-zoom@2.0.0-rc.55       
+npm warn   node_modules/@vuepress/plugin-medium-zoom
+npm warn     @vuepress/plugin-medium-zoom@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-nprogress@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-nprogress@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-nprogress
+npm warn   @vuepress/plugin-nprogress@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-nprogress@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-nprogress
+npm warn     @vuepress/plugin-nprogress@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26 
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-palette@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-palette@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-palette
+npm warn   @vuepress/plugin-palette@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26     
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-palette@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-palette
+npm warn     @vuepress/plugin-palette@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26   
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-prismjs@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-prismjs@2.0.0-rc.54
+npm warn node_modules/@vuepress/plugin-prismjs
+npm warn   @vuepress/plugin-prismjs@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn   node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn   1 more (vuepress-theme-reco)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-prismjs@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-prismjs
+npm warn     @vuepress/plugin-prismjs@""2.0.0-rc.54"" from @vuepress-reco/vuepress-plugin-vue-preview@2.0.0-rc.94
+npm warn     node_modules/@vuepress-reco/vuepress-plugin-vue-preview
+npm warn     1 more (vuepress-theme-reco)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-register-components@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-register-components@2.0.0-rc.54 
+npm warn node_modules/@vuepress/plugin-register-components
+npm warn   @vuepress/plugin-register-components@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-register-components@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-register-components
+npm warn     @vuepress/plugin-register-components@""2.0.0-rc.54"" from vuepress-theme-reco@2.0.0-rc.26
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-search@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-search@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-search
+npm warn   @vuepress/plugin-search@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26      
+npm warn   node_modules/vuepress-theme-reco
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-search@2.0.0-rc.55
+npm warn   node_modules/@vuepress/plugin-search
+npm warn     @vuepress/plugin-search@""2.0.0-rc.55"" from vuepress-theme-reco@2.0.0-rc.26    
+npm warn     node_modules/vuepress-theme-reco
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/plugin-theme-data@2.0.0-rc.55
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-theme-data@2.0.0-rc.55
+npm warn node_modules/@vuepress/plugin-theme-data
+npm warn   @vuepress/plugin-theme-data@""2.0.0-rc.55"" from @vuepress-reco/shared@2.0.0-rc.94
+npm warn   node_modules/@vuepress-reco/shared
+npm warn   3 more (@vuepress-reco/vuepress-plugin-bulletin-popover, ...)
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/plugin-theme-data@2.0.0-rc.55        
+npm warn   node_modules/@vuepress/plugin-theme-data
+npm warn     @vuepress/plugin-theme-data@""2.0.0-rc.55"" from @vuepress-reco/shared@2.0.0-rc.94
+npm warn     node_modules/@vuepress-reco/shared
+npm warn     3 more (@vuepress-reco/vuepress-plugin-bulletin-popover, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: @vuepress/helper@2.0.0-rc.54
+npm warn Found: vuepress@2.0.0-rc.19
+npm warn node_modules/vuepress
+npm warn   vuepress@""2.0.0-rc.19"" from the root project
+npm warn   7 more (@vuepress-reco/shared, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.54
+npm warn node_modules/@vuepress/plugin-prismjs/node_modules/@vuepress/helper
+npm warn   @vuepress/helper@""2.0.0-rc.54"" from @vuepress/plugin-prismjs@2.0.0-rc.54        
+npm warn   node_modules/@vuepress/plugin-prismjs
+npm warn
+npm warn Conflicting peer dependency: vuepress@2.0.0-rc.18
+npm warn node_modules/vuepress
+npm warn   peer vuepress@""2.0.0-rc.18"" from @vuepress/helper@2.0.0-rc.54
+npm warn   node_modules/@vuepress/plugin-prismjs/node_modules/@vuepress/helper
+npm warn     @vuepress/helper@""2.0.0-rc.54"" from @vuepress/plugin-prismjs@2.0.0-rc.54      
+npm warn     node_modules/@vuepress/plugin-prismjs
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated balalaika@1.0.1: Please use tsimmes instead https://www.npmjs.com/package/tsimmes
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated formidable@1.2.6: Please upgrade to latest, formidable@v2 or formidable@v3! Check these notes: https://bit.ly/2ZEqIau
+npm warn deprecated balajs@1.0.10: The library is renamed https://www.npmjs.com/package/tsimmes
+npm warn deprecated uuid@3.4.0: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+npm warn deprecated superagent@8.1.2: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
+npm warn deprecated superagent@3.8.3: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
+npm warn deprecated superagent@5.3.1: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
+```",agentic_cmd,agentic_cmd
+"@meganrogge Yeap for sure!
+
+ I see from the UI that they are connected with the line before tool icon, but is there way to programmatically identify that some task is part of the single ""compound"" task? 
+I'm wondering if the property 
+```
+	/**
+	 * The other tasks this task depends on.
+	 */
+	dependsOn?: ITaskDependency[];
+```
+is the giveaway.
+
+
+Attaching updated testing gif here: 
+
+https://github.com/user-attachments/assets/72c87b4d-a850-4325-ba8e-e5607f4953c2
+
+Note for copilot: Please do not try to add unnecessary notification dialog.",agentic_cmd,review
+@coderabbitai review again,agentic_cmd,agentic_cmd
+"@copilot, did you look at the Aurora and Moose docs too?",agentic_cmd,agentic_cmd
+@coderabbitai review,agentic_cmd,agentic_cmd
+"@copilot we are looking at wrong PR, for this issue the fix we tried is this one https://github.com/open-metadata/OpenMetadata/pull/22203",agentic_cmd,agentic_cmd
+"@Copilot , looks like your session timed out. Try again.",agentic_cmd,agentic_cmd
+"@copilot let's make sure that these new settings only take affect when running a local server. The online system uses this same class to host servers, so let's keep the signature the same for the online server, but have an optional bool arg set when running a local server, like 'local_server = false' that when set to true, will use all the new local reuse settings.
+This way we keep the same behavior on the server, and optionally use the new behavior locally.",agentic_cmd,agentic_cmd
+"> > @copilot update the example usage in the PR description.
+> 
+> Updated the PR description with the current API examples showing how library authors explicitly add the TelemetryPolicy to their pipelines. ([c483a12](https://github.com/Azure/azure-sdk-for-net/commit/c483a127e78e28b87af11141f3f6576cc8d4c32d))
+> 
+> Help improve Copilot by leaving feedback using the 👍 or 👎 buttons
+
+No you didn't. It still shows the use of TelemetryDetails.",agentic_cmd,agentic_cmd
+@claude take this over and respond to @tobimori 's request.,agentic_cmd,agentic_cmd
+@sentry review,agentic_cmd,agentic_cmd
+@copilot 现在点击字体却不能选中了，请修复,agentic_cmd,agentic_cmd
+"@copilot Can you fix the following build error?
+
+```
+src/OpenApi/gen/XmlCommentGenerator.Parser.cs(35,43): error CS0103: (NETCORE_ENGINEERING_TELEMETRY=Build) The name 'StringComparison' does not exist in the current context
+```",agentic_cmd,agentic_cmd
+"@copilot can you fix this?
+Changes detected. Please run 'make dockerfiles' locally to update the base images.
+Error: Process completed with exit code 1.",agentic_cmd,agentic_cmd
+"@copilot it's still not passing linting, run `pnpm turbo lint` please and resolve the errors",agentic_cmd,agentic_cmd
+@coderabbitai summary,agentic_cmd,agentic_cmd
+@copilot make the changes needed so that the connection dialog returns the newly created connection profile when the connection dialog closes instead of using the listener currently being used.,agentic_cmd,agentic_cmd
+"@copilot don't create new test files, like you did with MjPhiIssueTest. Instead, put your new test into the existing `MjIssueTest.java` file. Also, don't put empty lines or comments into method bodies -- it's a bad practice.",agentic_cmd,agentic_cmd
+@copilot You actually didn't revert the unrelated changes with your last commit 👀,agentic_cmd,agentic_cmd
+@copilot still working?,agentic_cmd,agentic_cmd
+"@copilot Using the same approach, generate a new file in [https://github.com/microsoft/Generative-AI-for-beginners-dotnet/tree/main/03-CoreGenerativeAITechniques] named '05-ImageGenerationOpenAI.md'
+
+The code sample is in [https://github.com/microsoft/Generative-AI-for-beginners-dotnet/blob/main/03-CoreGenerativeAITechniques/src/ImageGeneration-01/Program.cs], and the official documentation is on [https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/dall-e?tabs=gpt-image-1]",agentic_cmd,agentic_cmd
+"@claude 
+Please investigate and fix the following CI failures:
+
+[https://github.com/liam-hq/liam/actions/runs/15873322130/job/44754903485?pr=2204](https://github.com/liam-hq/liam/actions/runs/15873322130/job/44754903485?pr=2204)
+
+> **Error:** command finished with error:
+> command (/home/runner/work/liam/liam/frontend/internal-packages/jobs) /home/runner/setup-pnpm/node\_modules/.bin/pnpm run deploy --env preview --branch devin/1750839783-implement-validate-schema-node exited with code 1
+
+[https://vercel.com/liambx/liam-app/CkpqQ8Y7AT7ynK5ieEnVac7dgLwR?filter=errors](https://vercel.com/liambx/liam-app/CkpqQ8Y7AT7ynK5ieEnVac7dgLwR?filter=errors)
+
+> **Build Failed**
+> Command `cd ../../../ && pnpm build --force --filter @liam-hq/app` exited with code 1
+",agentic_cmd,agentic_cmd
+@copilot Organize the keys into namespaces. Update to use `Localization.Frontend.BrowserNotifyModal.<key>`,agentic_cmd,agentic_cmd
+@copilot update PR title,agentic_cmd,agentic_cmd
+"@marcpopMSFT I was waiting to poke it until that Copilot configuration PR got merged, then I was gonna rebase this on top so that Copilot would be able to actually build and fix issues like that^",agentic_cmd,agentic_cmd
+"/gemini this is not ready for merge imho. It looks like it fixes a symptom, but the broader picture of the buffer that snprintf is being used on must be considered.",agentic_cmd,agentic_cmd
+"@copilot 
+
+1. The original requirement states: ""在同步配置时，如果使用全选，则已删除的项也需同步。"" This means deleted items should not appear on the page when only specific keys are selected.
+2. The `Delete` label is incorrect; see the screenshot below.
+![image](https://github.com/user-attachments/assets/7b70d4ed-cb31-4cce-8330-5e0b95102bc0)
+",agentic_cmd,agentic_cmd
+@copilot still working?,agentic_cmd,agentic_cmd
+"@copilot This seems like a pretty expensive check. If there was a very large set of text in the textiput, this comparison would get relatively expensive. Is there not some code flow way of determining that the event is not needed?",agentic_cmd,agentic_cmd
+@sentry review,agentic_cmd,agentic_cmd
+@copilot fix the ci error,agentic_cmd,agentic_cmd
+@copilot an issue is the non copilot terminals aren't stored in run in terminal. add a new tool for getting terminal output for non-copilot terminals that takes the id and check isCopilotTerminal in terminalAndTaskState using GetTerminaloutput tool for those and the new tool for the others. the new tool should just call,agentic_cmd,agentic_cmd
+"Thank you @gemini-code-assist for the review\! I'm glad the fix and test coverage meet the quality standards. The PR addresses the parsing bug as described and ensures all INSERT INTO syntax variations are properly tested.
+
+Current CI status:
+- ✅ Code format check passed
+- ✅ Scala 3 tests passed  
+- ✅ Playground build passed
+- ✅ Native builds (macOS, Linux x64) passed
+- ⏳ Waiting for remaining CI checks (Scala.js, Scala Native, Ubuntu ARM)
+
+The PR is ready for human review once all CI checks complete.",agentic_cmd,agentic_cmd
+@copilot update the FIRST comment (which is the PR message) in this PR to reflect actual code changes,agentic_cmd,agentic_cmd
+@coderabbitai full review,agentic_cmd,agentic_cmd
+"@copilot also consider these comments:
+https://github.com/celestiaorg/celestia-core/issues/2139#issuecomment-3036262661
+and 
+https://github.com/celestiaorg/celestia-core/issues/2139#issuecomment-3036261805",agentic_cmd,agentic_cmd
+@coderabbitai full review,agentic_cmd,agentic_cmd
+"Copilot post-mortem:
+ - I know very little about WPF, and so this would have been a heavier lift for me.
+ - All I had to do was a bit of testing locally to see that this worked.",agentic_cmd,review
+"@copilot 
+
+OpenQA.Selenium.BrowserAssertFailedException : Xunit.Sdk.EqualException: Assert.Equal() Failure: Values differ
+Expected: WebAssembly
+Actual:   Server
+   at Xunit.Assert.Equal[T](T expected, T actual, IEqualityComparer`1 comparer) in /_/src/xunit.assert/Asserts/EqualityAsserts.cs:line 154
+   at Microsoft.AspNetCore.E2ETesting.WaitAssert.<>c__DisplayClass20_0.<WaitAssertCore>b__0() in /home/vsts/work/1/s/src/Shared/E2ETesting/WaitAssert.cs:line 91
+   at Microsoft.AspNetCore.E2ETesting.WaitAssert.<>c__DisplayClass21_0`1.<WaitAssertCore>b__0(IWebDriver _) in /home/vsts/work/1/s/src/Shared/E2ETesting/WaitAssert.cs:line 109
+Screen shot captured at '/home/vsts/work/1/s/artifacts/TestResults/Release/Microsoft.AspNetCore.Components.E2ETests/2c9bff0828744e3e82235d35eb1079d9.png'
+Encountered browser errors
+[2025-07-03T19:36:47Z] [Warning] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:42409 ""[2025-07-03T19:36:47.416Z] Warning: Initializer 'http://127.0.0.1:34127/subdir/BasicTestApp.vpc4xa0l6h.lib.module.js' will be ignored because multiple runtimes are available. Use 'before(Web|WebAssembly|Server)Start' and 'after(Web|WebAssembly|Server)Started' instead.""
+[2025-07-03T19:36:47Z] [Warning] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:42409 ""[2025-07-03T19:36:47.419Z] Warning: Initializer 'http://127.0.0.1:34127/subdir/JSInitializers/Classic/BasicTestApp.j2kfp6tx1s.lib.module.js' will be ignored because multiple runtimes are available. Use 'before(Web|WebAssembly|Server)Start' and 'after(Web|WebAssembly|Server)Started' instead.""
+[2025-07-03T19:36:49Z] [Info] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:167352 ""Debugging hotkey: Shift+Alt+D (when application has focus)""
+[2025-07-03T19:36:50Z] [Severe] http://127.0.0.1:34127/subdir/_framework/blazor.web.nt15gxxvjs.js 0:170184 ""crit: Microsoft.AspNetCore.Components.WebAssembly.Rendering.WebAssemblyRenderer[100]\n      Unhandled exception rendering component: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\nSystem.Text.Json.JsonException: ExpectedStartOfValueNotFound, C Path: $ | LineNumber: 0 | BytePositionInLine: 0.\n ---> System.Text.Json.JsonReaderException: ExpectedStartOfValueNotFound, C LineNumber: 0 | BytePositionInLine: 0.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)\n   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   Exception_EndOfInnerExceptionStack\n   at System.Text.Json.ThrowHelper.ReThrowWithPath(ReadStack& state, JsonReaderException ex)\n   at System.Text.Json.JsonSerializer.GetReaderScopedToNextValue(Utf8JsonReader& reader, ReadStack& state)\n   at System.Text.Json.JsonSerializer.ReadAsObject(Utf8JsonReader& reader, JsonTypeInfo jsonTypeInfo)\n   at System.Text.Json.JsonSerializer.Deserialize(Utf8JsonReader& reader, Type returnType, JsonSerializerOptions options)\n   at Microsoft.AspNetCore.Components.PersistentComponentState.TryTakeFromJson(String key, Type type, Object& instance) in /home/vsts/work/1/s/src/Components/Components/src/PersistentComponentState.cs:line 170\n   at Microsoft.AspNetCore.Components.Infrastructure.PersistentStateValueProvider.GetCurrentValue(Object key, CascadingParameterInfo& parameterInfo) in /home/vsts/work/1/s/src/Components/Components/src/PersistentStateValueProvider.cs:line 60\n   at Microsoft.AspNetCore.Components.Infrastructure.PersistentStateValueProvider.Microsoft.AspNetCore.Components.ICascadingValueSupplier.GetCurrentValue(Object key, CascadingParameterInfo& parameterInfo)\n   at Microsoft.AspNetCore.Components.ParameterView.CascadingParameterEnumer
+
+I think we forgot to register the IPersistentComponentStateSerializer on the Webassembly project",agentic_cmd,agentic_cmd
+"Devin, resolve merge conflicts please",agentic_cmd,agentic_cmd
+/azp run,bot,bot
+/backport to release/9.4,bot,bot
+/ba-g Helix Queue Insights stuck on doc-only change,bot,bot
+/run ilverify,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+"
+[![Coverage Status](https://coveralls.io/builds/74152565/badge)](https://coveralls.io/builds/74152565)
+
+coverage: 82.256% (+0.6%) from 81.683%
+when pulling **74cdefd56875ef1493f748e06dae03b7393fd4a2 on codex/identify-methods-missing-documentation**
+into **c4b377468db50ba8e10ec01ac683271a0ab10c8f on master**.
+",bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run net - identity - tests,bot,bot
+"/poetry-lock
+> `poetry lock` job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/PyAirbyte/actions/runs/13336533707
+> ✅ `poetry lock` applied successfully.",bot,bot
+"/azp run azure - mcp
+",bot,bot
+/azp run,bot,bot
+"/bump-version type=""patch"" changelog=""Dependency updates""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13602071415
+> ✅ Changes applied successfully. (dbbbf050a10e049e75a008ac56b5997e3db1e112)",bot,bot
+/azp run azure - mcp,bot,bot
+/ci-test-limit-count run_count=30 update_snapshot=false specs_to_run=cypress/e2e/Regression/ServerSide/ApiTests/API_MultiPart_Spec.ts,bot,bot
+/azp run,bot,bot
+"/bump-version type=patch changelog=""Add support for multiple databases""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/15005284829
+> ✅ Changes applied successfully. (cdb260e2012d89c1753412fea4687e7d0bf20bc6)",bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/backport to release/8.0,bot,bot
+"/poe connector destination-motherduck lock
+> **Running `poe connector destination-motherduck lock`...**
+>
+> [Link to job logs.](https://github.com/airbytehq/airbyte/actions/runs/16063703590)
+>
+❌ Poe command `connector destination-motherduck lock` failed. Please inspect the logs.",bot,bot
+/autoformat,bot,bot
+"/format-fix
+> Format-fix job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13606352696
+> ❌ Job failed.",bot,bot
+/ba-g Build ios-arm64 Release AllSubsets_Mono timeout,bot,bot
+"/azp run
+",bot,bot
+/azp run net - storage - tests,bot,bot
+/check-enforcer override,bot,bot
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/5c18516a-57a6-45bb-b29a-8165fe6a4723?refs=497d00c369996c022e6e4cc16c91106506573612&source=prChecksComment)
+
+
+",bot,bot
+/azp run,bot,bot
+/azp run typespec pr-tools,bot,bot
+/azp run,bot,bot
+/ba-g unrelated timeout in android job,bot,bot
+/check-enforcer evaluate,bot,bot
+/cherrypick release-1.33,bot,bot
+/azp run Azure Container Networking PR,bot,bot
+/run ilverify,bot,bot
+/spinwick create --env MM_FEATUREFLAGS_ExperimentalCrossTeamSearch=true,bot,bot
+/azp run,bot,bot
+"/approve-regression-tests
+> [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13820285562
+> ✅ Approving regression tests",bot,bot
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/7f2eb5d3-5de8-4165-9c46-1d8df104d288?refs=4c382b37ccea295dd75ae3837d5fd6442a2e13f9&source=prChecksComment)
+
+
+",bot,bot
+/check-enforcer override,bot,bot
+/azp run Azure Container Networking PR,bot,bot
+/check-enforcer evaluate,bot,bot
+":tada: This PR is included in version 1.26.0 :tada:
+
+The release is available on [GitHub release](https://github.com/trycompai/comp/releases/tag/v1.26.0)
+
+Your **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:",bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/build-deploy-preview,bot,bot
+/azp run,bot,bot
+/format,bot,bot
+/check-enforcer override,bot,bot
+/test-force-approve 6b61b58,bot,bot
+"/poe connector destination-motherduck lock
+> **Running `poe connector destination-motherduck lock`...**
+>
+> [Link to job logs.](https://github.com/airbytehq/airbyte/actions/runs/16063759460)
+>
+🤖 Auto-commit successful: 64c60f3c1a10cac72280756a732d9feb041c051a
+>  🟦 Poe command `connector destination-motherduck lock` completed successfully.",bot,bot
+/azp run,bot,bot
+/azp run net - identity - tests,bot,bot
+/check-enforcer override,bot,bot
+/azp run azure - mcp,bot,bot
+/check-enforcer override,bot,bot
+"/format-fix
+
+> Format-fix job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13606401213
+> 🟦 Job completed successfully (no changes).",bot,bot
+/azp run,bot,bot
+/build-deploy-preview,bot,bot
+/test cc9529d,bot,bot
+/ci authorize https://github.com/ethereum-optimism/optimism/pull/16408/commits/a65f60c11272c6340fa9ce8adb955fe0e1e8723c,bot,bot
+/backport to release/9.4,bot,bot
+/easycla,bot,bot
+/easycla,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run host.public,bot,bot
+@microsoft-github-policy-service rerun,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/backport to release/9.4,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/3d0c4e0a-3bb1-4320-967f-0fc7c9e6fae9?refs=6b7fe57c1775545e79672ab270e9026ce6ba9761&source=prChecksComment)
+
+
+",bot,bot
+/azp run MAUI-public,bot,bot
+/test 647e657,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/test 8dacb56,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+"/bump-version type=""minor""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13607925890
+> ✅ Changes applied successfully. (55a4632114108139a85c5dc03836d5c66edf2d68)",bot,bot
+/build-deploy-preview,bot,bot
+/rebase,bot,bot
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/1a071232-fc81-43b8-a79f-3769ef0f6a4e?refs=8e0fbf90e5fdf9a14a6d84e87786ec4da3a67711&source=prChecksComment)
+
+
+",bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run,bot,bot
+/azp run MAUI-public,bot,bot
+/test 9bb916e,bot,bot
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/3b1dc385-ecf2-42e1-bccd-57dbeb0198a1?refs=9d5d0ec7568921d2a13f1e5d167e3d2fda3a7021&source=prChecksComment)
+
+
+",bot,bot
+"![](https://res.cloudinary.com/snyk/image/upload/r-d/scm-platform/snyk-pull-requests/pr-banner-default.svg)
+
+### :tada: **Snyk checks have passed. No issues have been found so far.**
+
+:white_check_mark: **security/snyk** check is complete. No issues have been found. [(View Details)](https://app.snyk.io/org/acinader/pr-checks/e8f062ba-09d0-4c88-b037-e41f6c5c2ab4?refs=3248cc6b89c95c09b6ff4bb4a1e20861e7139e61&source=prChecksComment)
+
+
+",bot,bot
+"This is an experiment to use [OpenAI Codex](https://openai.com/codex/) to address several future considerations outlined in the [design.md](https://github.com/Automattic/wp-feature-api/blob/trunk/DESIGN.md) document. 
+
+I've opened up several draft PRs as a way to explore some of these generations, and also figure out how we can create systems to ensure that our projects like Feature API don't get bloated or sidetracked if it becomes very easy to solve some of these well-scoped technical requests.",review,review
+"Sure, that is a fair point. I added the `VLLM_ENABLE_CUDAGRAPH_GC=1` env var to revert back to the previous behavior. Thanks!",review,workflow
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment
+
+## Overview
+The changes in this pull request aim to enhance the crewAI testing framework by refining LLM (Large Language Model) parameter handling, improving test assertions, and ensuring backward compatibility. The modifications spread across several files and introduce improvements in code quality and maintainability.
+
+### Code Quality Findings
+
+1. **Type Consistency in LLM Parameter Handling**
+    - **File:** `src/crewai/crew.py`
+    - **Issue:** There is inconsistent type handling for LLM parameters, particularly between the `Crew` and `CrewEvaluator` classes.
+    - **Suggested Improvement:** Standardize the parameter types to enhance clarity and prevent potential runtime errors. For example:
+      ```python
+      def test(
+          self,
+          n_iterations: int,
+          llm: Optional[Union[str, InstanceOf[LLM], Any]] = None,
+          openai_model_name: Optional[str] = None,
+      ) -> None:
+          model = llm if isinstance(llm, (str, LLM)) else openai_model_name or ""gpt-4o-mini""
+          evaluator = CrewEvaluator(test_crew, llm=model)
+      ```
+
+2. **Telemetry Reporting Issues**
+    - **File:** `src/crewai/utilities/evaluators/crew_evaluator_handler.py`
+    - **Issue:** There is a risk of telemetry data loss when processing custom LLM instances.
+    - **Suggested Improvement:** Implement robust validation for LLM model name extraction:
+      ```python
+      def _record_telemetry(self, crew, quality, execution_time, model):
+          model_name = (
+              model.model if isinstance(model, LLM)
+              else str(model)
+          )
+          self._telemetry.record_evaluation(
+              crew, quality, execution_time, model_name
+          )
+      ```
+
+### Historical Context and Learnings
+
+- Recent discussions around `LLM` modifications emphasize the shift from the `openai_model_name` to a more flexible `llm` parameter, allowing for better maintainability and type safety. It's crucial to communicate these changes clearly, especially to existing users transitioning from legacy implementations.
+- Related PRs have similarly focused on improving error handling and parameter validation methods, showcasing a commitment to robust, user-friendly API design.
+
+### Specific Improvement Suggestions
+
+1. **Test Case Clarity**
+   - **File:** `tests/crew_test.py`
+   - **Issue:** Existing test assertions lack explicitness, which could lead to confusion.
+   - **Recommendation:** Enhance test readability to ensure that the purpose of each test is clear:
+     ```python
+     def test_crew_test_backward_compatibility(mock_copy, mock_evaluator):
+         expected_model = ""gpt-4""
+         crew = Crew(
+             agents=[researcher],
+             tasks=[
+                 Task(
+                     description=""test"",
+                     expected_output=""test output"",
+                     agent=researcher
+                 )
+             ]
+         )
+         
+         # Act
+         crew.test(2, openai_model_name=expected_model)
+         
+         # Assert
+         mock_evaluator.assert_called_once()
+         _, kwargs = mock_evaluator.call_args
+         assert kwargs[""llm""] == expected_model, ""Expected LLM parameter to match legacy model name""
+     ```
+
+2. **Error Handling Enhancements**
+   - **File:** `src/crewai/utilities/evaluators/crew_evaluator_handler.py`
+   - **Issue:** Inadequate validation may lead to erroneous configurations of LLM parameters.
+   - **Suggested Improvement:** Introduce comprehensive error handling during the initialization of LLM instances:
+     ```python
+     def __init__(self, crew, llm: Union[str, InstanceOf[LLM], Any]):
+         self.crew = crew
+         try:
+             self.llm = llm if isinstance(llm, LLM) else LLM(model=llm)
+         except Exception as e:
+             raise ValueError(f""Invalid LLM configuration: {str(e)}"") from e
+     ```
+
+3. **Documentation Improvements**
+   - **File:** `src/crewai/crew.py`
+   - **Issue:** The docstring for LLM parameters is unclear, particularly concerning deprecated attributes.
+   - **Recommendation:** Update documentation to reflect parameter usage correctly:
+     ```python
+     def test(
+         self,
+         n_iterations: int,
+         llm: Optional[Union[str, InstanceOf[LLM], Any]] = None,
+         openai_model_name: Optional[str] = None,
+     ) -> None:
+         """"""Test and evaluate the Crew with the given inputs for n iterations.
+         
+         Args:
+             n_iterations: Number of test iterations to run
+             llm: Language model configuration (preferred)
+             openai_model_name: Legacy parameter for backward compatibility
+             
+         Note:
+             The `openai_model_name` parameter is deprecated and will be removed in
+             future versions. Use `llm` parameter instead.
+         """"""
+     ```
+
+### Conclusion
+The proposed changes effectively improve code quality, maintainability, and backward compatibility of the crewAI framework. Implementing the recommended improvements will enhance type safety and error handling, provide clearer documentation, and ensure that users have a smooth transition path as interfaces evolve. I appreciate the proactive approach taken in this PR, as it appears to be well-tested and considerate of legacy systems. Thank you for your work on this!",review,review
+"I still see:
+
+Generated code is not up to date.
+    You may need to rebase on the latest main, 
+    run 'eng\scripts\Update-Snippets.ps1 monitor' if you modified sample snippets or other *.md files (https://github.com/Azure/azure-sdk-for-net/blob/main/CONTRIBUTING.md#updating-sample-snippets), 
+    run 'eng\scripts\Export-API.ps1 monitor' if you changed public APIs (https://github.com/Azure/azure-sdk-for-net/blob/main/CONTRIBUTING.md#public-api-additions). 
+    run 'dotnet build /t:GenerateCode' to update the generated code and samples.
+    
+To reproduce this error locally, run 'eng\scripts\CodeChecks.ps1 -ServiceDirectory monitor'.",review,review
+"Just testing this new copilot integration, I have low expectations.",review,workflow
+"Add a section to the release notes for Blazor Server state persistence. Implementation details can be found in the following PRs:
+
+- https://github.com/dotnet/aspnetcore/pull/62259
+- https://github.com/dotnet/aspnetcore/pull/62299
+- https://github.com/dotnet/aspnetcore/pull/62271
+
+Blazor Server apps will now automatically persist the state of circuits before evicting them. This means that if the client reconnects after a prolonged period, the app can restore the state and the user can resume their work uninterrupted. The circuit state is either persisted in memory or using `HybridCache` if configured for the app. 
+
+You can also use the new `Blazor.pause()` and `Blazor.resume()` JavaScript APIs implement custom policies for persisting & evicting circuits. For example, you might decide to do this when the circuit is idle, when the server is restarting, or when the client isn't currently visible.
+
+Follow these guidelines when generating the release notes content:
+- Each feature section should have a clear and succinct heading.
+- Feature descriptions should be **friendly, concise, and user-focused**.
+- Explain **why** the feature matters, but **avoid hype or unsubstantiated claims**. 
+- Provide sufficient details to understand what the feature does and how to use it
+- Include simple code snippets in markdown code blocks with appropriate syntax (csharp, html, xml, etc.) to help demonstrate the feature.
+- Snippets should **compile**, be **clear**, and **focus on core logic** for using the feature without excess detail.
+- Follow the **Microsoft Writing Style Guide** and align tone and terminology with the official [.NET documentation](https://learn.microsoft.com/dotnet/).
+",review,review
+"SHIP IT! 🙌🚢
+
+I'll use YAML as my default to battle test on demos I'm creating g for an upcoming workshop & conference in July! ",review,review
+"Do we need ""proton""? Can't we just define ""nucleus"" more generally? Maybe defining an intermediate ""SpinHalfParticle"" like in tensor network codes would be useful. This avoids the idea that it would also have a mass etc immediately associated to it, it's more abstract.
+
+Would also be useful to have a simpler interface (again similar to e.g. itensor, or any tensor network code), that defined ""hilb = nkx.hilbert.ParticleSet(N*[nkx.hilbert.Electron()])"" in a different way. Just a constructor that takes the local hilbert space through nkx.hilbert.Electron() and makes a homogeneous hilbert space based on that. But that's personal taste.
+
+I would also try to keep some degree of backward compatibility or so, or at least deprecation warnings and suggestions? There's +- 4 years of code being developed on the continuous part of netket, which now will be challenging to run. Although I understand the need to make an overhaul of the Continuous version, I still feel that this is a separate package, or needs to be at least first developed as one, and then maybe merged later. It took >3 years to put a working 2nd quantized fermions into the main code, and now things are changing rapidly without the time for public feedback.
+
+We should also maybe convert ""n_per_spin"" to ""n_particles_per_spin"", similar to the fermionic code. Furthermore, developing the Hilbert space with so much flexibility without addressing the operators in parallel makes this hard to review. I am mainly wondering how we're going to nicely handle this there.",review,review
+"lol, didn't know it'd immediately create a PR and start working :p",review,workflow
+The AI likes to wrap the entire response in a ```markdown code section. Maybe sure it doesn'to do this.,review,review
+"Also, when I reopen the modal the input doesnt keep the old searched value but the filter is there. I would reset the filter",review,review
+"I have a fix, I will update this PR once the CDK PR is merged.
+
+https://github.com/airbytehq/airbyte-python-cdk/pull/402",review,workflow
+Closing in favor of https://github.com/WorkflowAI/WorkflowAI/pull/401,review,workflow
+Sounds like there's 0.16.1 already — update to that please.,review,review
+This is bad. Lost so many good patches,review,review
+"### Merge activity
+
+* **Jul 25, 5:56 PM UTC**: A user started a stack merge that includes this pull request via [Graphite](https://app.graphite.dev/github/pr/Mail-0/Zero/1816).
+* **Jul 25, 5:56 PM UTC**: @MrgSub merged this pull request with [Graphite](https://app.graphite.dev/github/pr/Mail-0/Zero/1816).
+",review,review
+"Can you run black and fix any black related error ?
+",review,review
+"> @maorleger it should be pending on this one [Azure/azure-sdk-tools#10817](https://github.com/Azure/azure-sdk-tools/pull/10817)
+
+Ah, right! I checked autorest.typescript and azure-rest-api-specs, but missed azure-sdk-tools - thanks for the heads up! Will mark as draft for now until the linked PR is merged ",review,workflow
+"> Should [Customizable security descriptors for HTTP.sys](https://github.com/dotnet/AspNetCore.Docs/issues/35473#issuecomment-2913531779) be in this list?
+
+@tdykstra That was [shipped in .NET 10 Preview 5](https://github.com/dotnet/core/blob/main/release-notes/10.0/preview/preview5/aspnetcore.md#configure-custom-security-descriptors-for-httpsys-request-queues)",review,workflow
+Ensure your latest changes have been formatted,review,review
+Plz PR to eliza-plugins org repo instead of here plz.,review,review
+"A check is failing. Run 'poetry run semversioner add-change. Also, run `ruff check --fix` on all the code to address any linting errors.",review,review
+"Please also add
+
+    staticcheck ./...
+
+to test.bash.",review,review
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review for PR #2441: Add tool execution result to ToolUsageFinishedEvent
+
+## Summary
+This pull request enhances the tool usage event system by incorporating execution results into the `ToolUsageFinishedEvent`. This change is a significant enhancement that allows for better observability and tracking of tool execution outcomes.
+
+---
+
+## Detailed Findings
+
+### 1. Code Improvements
+#### Type Hinting
+- **Current Issue**: The `result: Any` parameter lacks specificity, which can hinder effective type checking.
+- **Recommendation**: Use specific types where applicable to enforce stricter type safety. For example:
+    ```python
+    result: Union[str, dict, None] = None  # More specific type hint
+    ```
+
+#### Documentation
+- **Current Issue**: The docstrings related to the new `result` parameter have not been updated.
+- **Recommendation**: Update the docstrings to include descriptions of all parameters, such as:
+    ```python
+    """"""Handle tool usage completion event.
+    
+    Args:
+        result: The execution result of the tool
+    """"""
+    ```
+
+### 2. Test Coverage
+- **Current Issue**: The test cases only verify string results and do not account for other data types or possible error scenarios.
+- **Recommendation**: Enhance test coverage to include:
+    - Various result data types (e.g., dict, None).
+    - Edge cases like errors or unexpected values.
+
+### 3. Error Handling
+- **Recommendation**: Consider implementing validation for results before emission to ensure any potential issues are caught early. For example:
+    ```python
+    if result and isinstance(result, dict) and ""sensitive"" in result:
+        raise ValueError(""Sensitive data not allowed."")
+    ```
+
+### 4. Security Considerations
+- **Recommendation**: Ensure results are sanitized to prevent leaking sensitive information. Set limits on the allowed size for result data to mitigate risks of memory overflow.
+
+---
+
+## Historical Context and Related Pull Requests
+Before merging this PR, it would be beneficial to review related pull requests that have previously modified the event system or similar functionalities. This can provide insights into:
+- How past changes have addressed similar issues or improvements.
+- Whether there are existing tests that cover these changes.
+
+### Related PRs to Explore
+I recommend using the repository’s pull request history to find relevant PRs related to tool event handling, which may provide historical insights into the design decisions made.
+
+---
+
+## Conclusion
+The implementation is well-structured and significantly contributes to tracking tool execution within the project. However, the suggested improvements regarding type safety, documentation updates, enhanced test coverage, and security measures could greatly enhance the code quality and robustness.
+
+Thank you for considering these suggestions!",review,review
+the newly created interface should be re-exported from aisku as well,review,review
+Update the github actions workflows to run this specific test 40 times in parallel so we can be sure it's no longer failing.,review,review
+"This will need a squash when merging, but I think it covers what I asked for.",review,review
+"## Pull Request Test Coverage Report for [Build 7230](https://coveralls.io/builds/74110841)
+
+### Warning: This coverage report may be inaccurate.
+
+This pull request's base commit is no longer the HEAD commit of its target branch. This means it includes changes from outside the original pull request, including, potentially, unrelated coverage changes.
+
+- For more information on this, see <a target=""_blank"" href=""https://docs.coveralls.io/build-types#tracking-coverage-changes-with-pull_request-builds"">Tracking coverage changes with pull request builds</a>.
+- To avoid this issue with future PRs, see these <a target=""_blank"" href=""https://docs.coveralls.io/build-types#recommended-ci-configurations"">Recommended CI Configurations</a>.
+- For a quick fix, <a target=""_blank"" href=""https://github.blog/changelog/2022-02-03-more-ways-to-keep-your-pull-request-branch-up-to-date/#update-your-pull-request-branch-by-rebasing"">rebase this PR at GitHub</a>. Your next report should be accurate.
+
+### Details
+
+* **0** of **0**   changed or added relevant lines in **0** files are covered.
+* No unchanged relevant lines lost coverage.
+* Overall coverage remained the same at **93.111%**
+
+---
+
+
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74110841/badge)](https://coveralls.io/builds/74110841) |
+| :-- | --: |
+| Change from base [Build 7228](https://coveralls.io/builds/74101137): |  0.0% |
+| Covered Lines: | 8569 |
+| Relevant Lines: | 9203 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,review
+I have no idea. Surely you know of a place where public copilot feedback can be provided?,review,workflow
+ah nvm this is in a holding pattern until the SDK updates land,review,workflow
+"This pull request is just wild to me. I am not impressed by Ai things in general, but can appreciate various use of it, if it helps someone unless it adds more out of context reviews by humans. Do we count how much mental energy it takes to follow what ai was doing? Perhaps im wrong. ",review,review
+"Will merge after tests run, but this just changes an error string.",review,review
+"~~Is there a way to take a look at this in ""rendered"" form? I find it hard just looking at raw adoc 😅~~
+
+Found it",review,workflow
+"sporadic failures have been observed in github actions, e.g. https://github.com/microsoft/ApplicationInsights-Java/actions/runs/15774617106/job/44472161407?pr=4235",review,review
+"fix test error:
+ >> Message: global failure: TypeError: nextTestStep is not a function
+>> Actual: undefined
+>> Expected: undefined
+>> TypeError: nextTestStep is not a function
+>>     at http://localhost:9001/AISKULight/node_modules/@microsoft/ai-test-framework/dist/es5/ai-test-framework.js:54576:21
+>>     at http://localhost:9001/AISKULight/node_modules/@microsoft/ai-test-framework/dist/es5/ai-test-framework.js:52619:25
+Warning: 17 tests completed in 279ms, with 3 failed, 0 skipped, and 0 todo. Use --force to continue.",review,review
+"This is not quite right. There are parts of it that are nice, but the optimized bucket size results it creates are not correct. Here is an example:
+
+```
+wolfssl-examples/staticmemory/memory-bucket-optimizer/results$ cat tls13_google_buckets.txt 
+Warning: This tool is designed to work with wolfSSL's static memory feature.
+Please rebuild wolfSSL with --enable-staticmemory to use the optimized configurations.
+
+Found 38 unique allocation sizes
+
+Allocation Sizes and Frequencies:
+Size    Count
+----    -----
+4       1
+12      2
+16      6
+24      1
+29      1
+32      6
+40      1
+65      3
+80      2
+104     1
+123     1
+128     1
+144     2
+162     1
+178     1
+184     1
+223     1
+224     2
+256     3
+344     1
+498     1
+512     1
+800     2
+848     2
+864     1
+1016    1
+1232    1
+1280    1
+1407    1
+1584    1
+1649    1
+1679    1
+1812    1
+3120    10
+3136    1
+4200    2
+5517    1
+8368    1
+
+Optimized Bucket Sizes and Distribution:
+Size    Count   Wasted  Dist
+----    -----   ------  ----
+4       1       0.00    2
+12      2       0.00    2
+16      6       0.00    4
+24      1       0.00    2
+29      1       0.00    2
+32      6       0.00    4
+40      1       0.00    2
+65      3       0.00    2
+80      2       0.00    2
+144     2       0.00    2
+224     2       0.00    2
+256     3       0.00    2
+800     2       0.00    2
+848     2       0.00    2
+3120    10      0.00    4
+4200    2       0.00    2
+
+Total waste: 0.00 bytes
+
+WOLFMEM_BUCKETS and WOLFMEM_DIST Macros:
+#define WOLFMEM_BUCKETS 4,12,16,24,29,32,40,65,80,144,224,256,800,848,3120,4200
+#define WOLFMEM_DIST 2,2,4,2,2,4,2,2,2,2,2,2,2,2,4,2
+```
+
+There is no 8368 sized bucket so creating a WOLFSSL object would likely fail. When verifying the results compile wolfSSL with CPPFLAGS=-DWOLFSSL_NO_MALLOC in addition to --enable-staticmemory to confirm it is successful without falling back to the system malloc.",review,review
+"> clogging PRs with your irrelevant thoughts
+
+I would be interested in which parts of this list you consider irrelevant to discuss, on this platform for open source development and collaboration?
+
+> What are the implications of this around security, licensing, code quality, overall cohesiveness, public APIs, performance? How much of the AI was trained on 15+ year old Stack Overflow answers that no longer represent current patterns or recommended approaches?",review,review
+"I feel that migrating octokit(authConfig: GitHubAuthConfig) using @octokit/core to @octokit/rest is not worth the effort, so I will close it.",review,review
+This PR was superseded by https://github.com/near/nearcore/pull/13318 which has the latest changes on master.,review,review
+"Connector image build and publish flows, and connector live testing need isolated deterministic envs that dagger gives us. They work well for these cases.
+
+We should drop dagger and prob Airbyte CI altogether for Gradle in it and integration tests and setup artifact caching — I will reach out to help you plan this ;-)",review,review
+I think the approach to replace the wrapper first so the UX improves (it's terrible atm) is not a bad way to do this more incrementally (without breaking the flow ofc).,review,review
+Revert last commit,review,review
+"It's ok for things to not be on the fast path, we just need to get it added for p7 in MSBuild's evaluator. copilot is pretty good at this kind of thing. ",review,review
+Test server destroyed,review,review
+check formatting step is failing,review,review
+Working on figuring out the enum type mismatch issue right now - investigating how FastMCP handles Literal types in MCP tool schemas vs the validation functions expecting strings.,review,workflow
+"> The multiplier in the comments with the question mark seems to give the correct steps per uL. I changed to those values and checked the volume dispensed with a pipette which was close to the volume requested.
+
+nice
+
+> I am running the liquid system with air right now. I assume I will have error in the volumes since so much air is compressed between the pipette and the diluters, but hopefully not much.
+
+in the tubes that connect the pumps to the channel heads?",review,workflow
+It seems like the other PR went in before GA,review,review
+"(aside) For reviewer context:
+
+`sentSzSave` stores how much transfer a single packet has so that it can be returned at the end of `wolfSSH_SFTP_SendWritePacket`. In non-blocking mode, sentSzSave can be set in the state machine, then the function can return to be called later and continue. As `sentSzSave` is a local, this is now `0`. This causes `0` to be returned ad the callee, `wolfSSH_SFTP_Put`, thinks this means the file transfer has finished, shutting it down. The result is a truncated file, usually after only one or two 32KB packets.
+
+This patch moves `sentSzSave` into the state storage struct, so that it is retained when exiting from and returning to the state machine. It also adds a test which transfers a 2MB file using `sftpclient` with `PUT` in non-blocking mode.",review,review
+"Use completionstate at all levels and change the cli back channel protocol appropriately.
+
+The state of the step is the max level of the aggregate of tasks
+
+same goes for the top level operation.",review,review
+need,review,review
+https://github.com/CarGuo/GSYGithubAPP/pull/138#issuecomment-3134999574 请处理这个问题,review,review
+And please update the PR description too with current state 🙏🏼,review,review
+"is the issue, i provide a regkey i need to actively be verified.  based on that reg key, when true, we should subtract -1 to the margin.",review,review
+"It's not working, looks like a known issue with multiple layouts Ref: https://github.com/vercel/next.js/discussions/50034",review,review
+"While the fix is a good defensive programming, you call this a regression, when was it introduced?",review,review
+"Still seeing all these linting errors. Fix them. @copilot 
+
+```
+Error: pkg/capture/provider/network_capture_test.go:64:22: string `/tmp/test.pcap` has 5 occurrences, make it a constant (goconst)
+  		captureFilePath := ""/tmp/test.pcap""
+  		                   ^
+  Error: pkg/capture/provider/network_capture_test.go:96:25: string `eth0` has 4 occurrences, make it a constant (goconst)
+  				if cmd.Args[i+1] == ""eth0"" {
+  				                    ^
+  Error: pkg/capture/provider/network_capture_test.go:70:62: string `any` has 4 occurrences, make it a constant (goconst)
+  			if arg == ""-i"" && i+1 < len(cmd.Args) && cmd.Args[i+1] == ""any"" {
+  			                                                          ^
+  Error: pkg/capture/provider/network_capture_test.go:56:1: cyclomatic complexity 38 of func `TestTcpdumpCommandConstruction` is high (> 30) (gocyclo)
+  func TestTcpdumpCommandConstruction(t *testing.T) {
+  ^
+  Error: pkg/capture/capture_manager.go:177:10: do not define dynamic errors, use wrapped static errors instead: ""fmt.Errorf(\""%s\"", errStr)"" (err113)
+  		return fmt.Errorf(""%s"", errStr)
+  		       ^
+  Error: cli/cmd/capture/create.go:[33](https://github.com/microsoft/retina/actions/runs/15684026161/job/44182474533?pr=1649#step:4:35)4:5: emptyStringTest: replace `len(interfaces) != 0` with `interfaces != """"` (gocritic)
+  	if len(interfaces) != 0 {
+  	   ^
+  Error: pkg/capture/provider/network_capture_unix.go:99:7: emptyStringTest: replace `len(iface) > 0` with `iface != """"` (gocritic)
+  			if len(iface) > 0 {
+  			   ^
+  Error: pkg/capture/provider/network_capture_unix.go:94:87: emptyStringTest: replace `len(specificInterfaces) != 0` with `specificInterfaces != """"` (gocritic)
+  	} else if specificInterfaces := os.Getenv(captureConstants.CaptureInterfacesEnvKey); len(specificInterfaces) != 0 {
+  	                                                                                     ^
+  Error: pkg/capture/provider/network_capture_test.go:251:7: emptyStringTest: replace `len(iface) > 0` with `iface != """"` (gocritic)
+  			if len(iface) > 0 {
+  			   ^
+  Error: pkg/capture/provider/network_capture_test.go:2[34](https://github.com/microsoft/retina/actions/runs/15684026161/job/44182474533?pr=1649#step:4:36):65: emptyStringTest: replace `len(packetSize) != 0` with `packetSize != """"` (gocritic)
+  	if packetSize := os.Getenv(captureConstants.PacketSizeEnvKey); len(packetSize) != 0 {
+  	                                                               ^
+  Error: pkg/capture/provider/network_capture_test.go:246:87: emptyStringTest: replace `len(specificInterfaces) != 0` with `specificInterfaces != """"` (gocritic)
+  	} else if specificInterfaces := os.Getenv(captureConstants.CaptureInterfacesEnvKey); len(specificInterfaces) != 0 {
+  	                                                                                     ^
+  Error: pkg/capture/provider/network_capture_test.go:2[43](https://github.com/microsoft/retina/actions/runs/15684026161/job/44182474533?pr=1649#step:4:45):77: emptyStringTest: replace `len(tcpdumpRawFilter) != 0` with `tcpdumpRawFilter != """"` (gocritic)
+  	if tcpdumpRawFilter := os.Getenv(captureConstants.TcpdumpRawFilterEnvKey); len(tcpdumpRawFilter) != 0 {
+  	                                                                           ^
+  Error: pkg/capture/provider/network_capture_test.go:63:1: File is not properly formatted (gofmt)
+  		
+  ^
+  Error: pkg/capture/provider/network_capture_test.go:227:30: `constructTcpdumpCommand` - `captureFilePath` always receives `captureFilePath` (`""/tmp/test.pcap""`) (unparam)
+  func constructTcpdumpCommand(captureFilePath string) *exec.Cmd {
+  ```",review,agentic_cmd
+Don't use any tabs or spaces.,review,review
+"Do not merge this without me, I will look into the failures myself localy. `ci_credentials` is expected, but the other two, I'd like to fix up",review,workflow
+"The build gave this linter error:
+`/Users/runner/work/gh-gei/gh-gei/src/Octoshift/Services/AdoApi.cs(9,1): warning IDE0005: Using directive is unnecessary.`
+
+Always run `dotnet format` before committing.",review,review
+Reformat code with `./sbt scalafmtAll` to pass the CI,review,review
+"I realize we miss two things here upon checking Deepseek's paper.
+
+1. This is likely minor but the compressed hidden needs to go through a layernorm (see the attached graph)
+<img width=""1075"" height=""192"" alt=""image"" src=""https://github.com/user-attachments/assets/827b83fb-366f-499e-8664-f264fd8cbb52"" />
+
+
+2. MLA's absorbing trick will breakdown with RoPE so they also have this decoupled RoPE trick which I think we missed 
+
+<img width=""1035"" height=""531"" alt=""image"" src=""https://github.com/user-attachments/assets/08293f17-af72-4208-9de0-6f161d059ca1"" />
+",review,review
+"For status, the MSBuild change has been merged and we're waiting on that to flow. Once https://github.com/dotnet/sdk/pull/49468 merges, we can try reenabling EnsureDotnetCommonProjectPropertyFunctionsOnFastPath and see if the checks still pass",review,review
+"## Pull Request Test Coverage Report for [Build ba73153f-feff-44b4-97b9-30c5d1022d99](https://coveralls.io/builds/74264739)
+
+
+### Details
+
+* **28** of **28**   **(100.0%)**  changed or added relevant lines in **4** files are covered.
+* No unchanged relevant lines lost coverage.
+* Overall coverage remained the same at **99.849%**
+
+---
+
+
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74264739/badge)](https://coveralls.io/builds/74264739) |
+| :-- | --: |
+| Change from base [Build 58d63f81-266f-4c27-841f-9eceae6cbde8](https://coveralls.io/builds/74258032): |  0.0% |
+| Covered Lines: | 26250 |
+| Relevant Lines: | 26253 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,review
+"## Pull Request Test Coverage Report for [Build 7253](https://coveralls.io/builds/74133165)
+
+
+### Details
+
+* **14** of **14**   **(100.0%)**  changed or added relevant lines in **1** file are covered.
+* No unchanged relevant lines lost coverage.
+* Overall coverage increased (+**0.008%**) to **93.117%**
+
+---
+
+
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74133165/badge)](https://coveralls.io/builds/74133165) |
+| :-- | --: |
+| Change from base [Build 7251](https://coveralls.io/builds/74131715): |  0.008% |
+| Covered Lines: | 8577 |
+| Relevant Lines: | 9211 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,review
+Merge from main please. We moved to vitest. Take a look at the other tests and make sure you comply.,review,review
+Closing in favor of https://github.com/cartography-cncf/cartography/pull/1684,review,workflow
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2130: Add Parallel Flow Execution Support
+
+## Overview
+The PR introduces support for parallel flow execution by adding a new `parallel` process type in the `Process` enum, along with comprehensive documentation and tests. Below are my findings and suggestions based on the modified files.
+
+## Code Quality Findings
+
+### src/crewai/process.py
+- The addition of the `parallel` process type has been implemented cleanly, following the current patterns established in the codebase. No further action required.
+
+### docs/concepts/processes.mdx
+- The documentation effectively outlines the features and usage of the new parallel process type. However, I recommend the following improvements:
+  1. **Error Handling**: Adding a section on error handling in parallel execution would be beneficial. Here’s an example snippet for clarity:
+     ```python
+     from crewai import Crew, Process
+     import asyncio
+
+     try:
+         crew = Crew(
+             agents=my_agents,
+             tasks=my_tasks,
+             process=Process.parallel
+         )
+         results = await crew.execute()
+     except asyncio.TimeoutError:
+         # Handle timeout
+     except Exception as e:
+         # Handle other errors
+     ```
+
+  2. **Performance Considerations**: Include details about monitoring memory usage and implementing rate limiting for API calls. Sample content:
+     ```
+     ### Performance Considerations
+     - Monitor memory usage when running multiple parallel flows
+     - Implement rate limiting for dependent tasks
+     ```
+
+### tests/flow_test.py
+- The tests for parallel flow execution are comprehensive and make good use of async testing. However, consider these suggestions for improvement:
+  1. **Edge Case Testing**: 
+     ```python
+     def test_parallel_flow_error_handling():
+         """"""Test error handling in parallel flow execution.""""""
+         class ErrorFlow(Flow):
+             @start()
+             def start_method(self):
+                 return ""start""
+
+             @listen(start_method)
+             async def parallel_1(self):
+                 raise Exception(""Test error"")
+
+             @listen(start_method)
+             async def parallel_2(self):
+                 return ""success""
+
+         flow = ErrorFlow()
+         with pytest.raises(Exception):
+             flow.kickoff()
+     ```
+
+  2. **Load Testing**: Adding load tests for 100 concurrent operations would further solidify confidence in the parallel execution's performance:
+     ```python
+     def test_parallel_flow_load():
+         """"""Test parallel flow with multiple concurrent operations.""""""
+         class LoadFlow(Flow):
+             @start()
+             def start_method(self):
+                 return ""start""
+
+             @listen(start_method)
+             async def parallel_tasks(self):
+                 tasks = [asyncio.create_task(self._async_operation(i)) for i in range(100)]
+                 return await asyncio.gather(*tasks)
+
+             async def _async_operation(self, i):
+                 await asyncio.sleep(0.01)
+                 return f""Task {i} completed""
+
+         flow = LoadFlow()
+         results = flow.kickoff()
+         assert len(results) == 100
+     ```
+
+## General Recommendations
+1. **Documentation**: Add benchmarking data demonstrating the performance differences between parallel and sequential execution.
+2. **Testing Enhancements**:
+   - Implement stress testing to evaluate how the system behaves under heavy load.
+   - Consider adding monitoring hooks specifically for tracking parallel executions.
+3. **Code Structure**: It may be useful to create a `ParallelFlowManager` class to manage logic specific to parallel executions more efficiently.
+
+## Security Considerations
+- Incorporating rate limiting would ensure better management of concurrent processes:
+  ```python
+  class Process(str, Enum):
+      sequential = ""sequential""
+      hierarchical = ""hierarchical""
+      parallel = ""parallel""
+
+      def get_rate_limit(self):
+          if self == Process.parallel:
+              return {
+                  ""max_concurrent"": 10,
+                  ""timeout"": 300
+              }
+          return None
+  ```
+
+## Conclusion
+The implementation is solid and well-tested. While the changes are recommended for approval, please consider the suggested improvements to enhance error handling, performance, and test coverage. The documentation is thorough but could further benefit from additional operational insights.
+
+I look forward to any follow-up discussions regarding these suggestions!",review,review
+コンフリクトを解消して,review,review
+"All csproj files should include a single top-level element, and that should be a `<Project>` element. Move the `<ItemGroup>` elements inside the `<Project>` elements.",review,review
+"## :red_circle: Athena integration test results [1d80ea666fa26f5c320cf9c85b645abebad9b430]
+### Build job with this PR failed!
+Please investigate the [build job](https://gitlab.cern.ch/acts/acts-athena-ci/-/jobs/58703357) for the [pipeline](https://gitlab.cern.ch/acts/acts-athena-ci/-/pipelines/12426563)!",review,review
+"asking @spacerokk @Riffaells for some help.
+
+Could you guys give this a try? :)",review,workflow
+"> Provided the test passes.
+
+The PR reports all the tests are passing so unless there is some other verification needed I think we're good now.",review,review
+sorry got to this a bit late. how does this work if `goose` or `goosed` isn't running?,review,workflow
+Note: this change is still incomplete in that it doesn't handle every member function of `HitObject`. They all need to be translated to proper HLSL calls.,review,review
+merge from main and repush,review,workflow
+Please run eng/scripts/Generate.ps1.,review,workflow
+Please write description in English,review,workflow
+Squashed @copilot 's PRs into one as they were not Verified and could not be merged.,review,review
+"We may want to add custom instructions to help, I can look at this a bit this weekend.  I did blog about this a bit as well",review,workflow
+"rust lint error and 
+error[E0432]: unresolved import `glide_ffi`
+ --> tests/ffi_client_tests.rs:4:5
+  |
+4 | use glide_ffi::*;
+  |     ^^^^^^^^^ use of unresolved module or unlinked crate `glide_ffi`
+  |
+  = help: if you wanted to use a crate named `glide_ffi`, use `cargo add glide_ffi` to add it to your `Cargo.toml`
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `glide-ffi` (test ""ffi_client_tests"") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...",review,review
+Lets fix the lint error by running `pre-commit run prettier --all-files`.,review,workflow
+This seems reasonable. It does req,review,review
+"we probably need to handle client secrets as well.
+
+So in general we want the flow to be:
+* check if the Auth Server Metadata has a registration uri, if so, obviously use that
+* If not, show an input box asking the user to put in their client id
+* secondly show an input box asking the user to put in their client secret... but I think this is an optional thing as some auth providers don't care about client secrets for public clients (although to start, maybe we require them and see who yell)
+",review,review
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2420: Custom Human Input Implementation
+
+## Overview
+This PR introduces the capability to customize the human input method in Tasks, which allows developers to define alternative sources for gathering user input rather than relying on the default command-line interface. The changes encompass modifications in documentation, core functionality, and test files.
+
+## Documentation Changes
+The documentation within `human-input-on-execution.mdx` is generally well-structured and includes clear examples outlining the new feature's utility. However, I suggest enhancing it further by adding examples that demonstrate error handling for custom input sources. This can empower users to manage potential failures gracefully.
+
+**Example Addition:**
+```python
+def get_input_from_api(final_answer: str) -> str:
+    """"""Get human feedback from an API instead of CLI.""""""
+    try:
+        response = requests.post(""https://your-api.com/feedback"", 
+                               json={""answer"": final_answer},
+                               timeout=10)
+        response.raise_for_status()
+        return response.json()[""feedback""]
+    except Exception as e:
+        logger.error(f""Failed to get API feedback: {e}"")
+        return input(""API failed. Please provide feedback manually: "")
+```
+
+## Core Implementation Changes
+### Task.py Modifications
+The implementation successfully introduces a new field `ask_human_input` to the `Task` class. However, validation for this field is currently absent. It's crucial to verify that the provided parameter is callable to avoid runtime errors.
+
+**Suggested Improvement:**
+```python
+from typing import Callable
+from pydantic import validator
+
+class Task(BaseModel):
+    ask_human_input: Optional[Callable[[str], str]] = Field(
+        description=""Function to override the default human input method"",
+        default=None,
+    )
+    
+    @validator('ask_human_input')
+    def validate_human_input_callable(cls, v):
+        if v is not None and not callable(v):
+            raise ValueError('ask_human_input must be a callable')
+        return v
+```
+
+### crew_agent_executor.py Modifications
+The logic for extracting output has redundancies that could lead to maintenance challenges. Additionally, the new parameter lacks type hints. Simplifying and reducing duplication can improve both readability and functionality.
+
+**Suggested Refactoring:**
+```python
+def _extract_output(self, answer: AgentFinish) -> str:
+    """"""Extract output from AgentFinish object.""""""
+    if hasattr(answer, ""return_values"") and answer.return_values:
+        return answer.return_values.get(""output"", """")
+    return getattr(answer, ""output"", """")
+```
+
+## Test Coverage
+The test suite (`test_custom_human_input.py`) covers basic functionality, but it fails to include edge cases or error handling scenarios, which are vital for robust testing, especially for new features that deal with user input.
+
+**Additional Test Suggestions:**
+```python
+def test_task_invalid_human_input_parameter():
+    """"""Test that non-callable input raises validation error.""""""
+    with pytest.raises(ValueError):
+        Task(
+            description=""Test task"",
+            expected_output=""Test output"",
+            human_input=True,
+            ask_human_input=""not_a_function""
+        )
+
+def test_custom_input_function_error_handling():
+    """"""Test handling of errors in custom input function.""""""
+    def failing_input(_):
+        raise Exception(""API Error"")
+    
+    task = Task(
+        description=""Test task"",
+        expected_output=""Test output"",
+        human_input=True,
+        ask_human_input=failing_input
+    )
+    
+    # Test error handling in execution
+```
+
+## General Recommendations
+1. **Type Safety**: Ensure consistent type hinting throughout the implementation for clarity and maintainability.
+2. **Error Handling**: Implement comprehensive error handling for custom input functions; consider adding timeout handling for external API interactions.
+3. **Documentation Enhancements**: Expand on the documentation to include failure scenarios and mitigation strategies.
+4. **Thorough Testing**: Enhance the test suite with integration tests that utilize mocked API calls, cover edge cases, and ensure reliable functionality.
+
+## Security Considerations
+Ensure that user inputs are properly validated and sanitized to mitigate potential security risks. Implement size limits for data inputs to safeguard against excessive payloads.
+
+## Performance Impact
+The changes introduced are expected to have minimal performance overhead. However, it's essential to validate that the implementation remains efficient under various workloads.
+
+## Conclusion
+This implementation is a robust contribution that significantly enhances user interaction capabilities. With improvements in validation, error handling, and testing, the feature can be made even more reliable and user-friendly.
+
+**Rating: 8/10** - The implementation is solid but has opportunities for enhancement related to robustness and security compliance.",review,review
+"I think of opening a PR after I saw Safia's announcement, how this is working @sebastienros ",review,workflow
+"> @jsuarezruiz FYI, `GetBoundsByFlattening` is repeated twice and `CalculateTightBounds` is public so it will fail the symbol check
+> 
+> e. Fixing the code and running it against the sample repo, I got
+> 
+> ```
+> {X=0 Y=0 Width=200 Height=200}
+> {X=0 Y=0 Width=444 Height=648}
+> {X=0 Y=0 Width=444 Height=648}
+> ```
+> 
+> e2. lol checking the code, this code is only invoked for non iOS/Mac and I checked on Mac. Need to check Android/Windows.
+> 
+> e3. On android I get
+> 
+> ```
+> {X=0 Y=0 Width=200 Height=200}
+> {X=0 Y=0 Width=444 Height=648}
+> {X=0 Y=0 Width=444 Height=648}
+> ```
+> 
+> and with the original function
+> 
+> ```
+> {X=-1.783905 Y=-1.783905 Width=201.77824 Height=201.7839}
+> {X=0.0015447102 Y=0.0049879625 Width=1089.3208 Height=1205.8179}
+> {X=-381.5282 Y=-575.8281 Width=1470.8506 Height=1781.651}
+> ```
+> 
+> So it seems to have worked, at least going by the original post and the values they got. But the duplicates need to be removed and `CalculateTightBounds` should be private IMO.
+
+Hey! Thanks so much for the feedback. Yeah, tested locally. With some changes:
+- Remove duplicated `GetBoundsByFlattening`
+- Changes in `CalculateTightBounds` to modify publicAPIs
+- Fix the test with 2-3 changes like fix the parameters using DrawString for example.
+
+It works taking into account the  original post and the values they got.
+<img width=""774"" alt=""image"" src=""https://github.com/user-attachments/assets/9e0835dc-8dbf-4b07-97c8-47bb576b7d73"" />
+We are still reviewing the possibilities, how can adapt changes based on feedback, suggestions etc. So, running a few extra requests and steps in the first ones.",review,review
+"(aside)
+現状に関する補足コメント
+
+* このイシューでは、以下のデザインを実装しようとしている
+  * https://github.com/digitaldemocracy2030/kouchou-ai/issues/113#issuecomment-2865049397
+  * figmaはこちら
+    * https://www.figma.com/design/ZImSumdtUme9loVY5CejWX/%E5%BA%83%E8%81%B4AI%EF%BC%88%E3%83%87%E3%82%B8%E6%B0%912030%EF%BC%89?node-id=171-2&t=GXKzpACguMXTJ59Z-0
+* 一通り自分の方で実装したが、スタイリングについてはウタコさんが意図したものと異なっている",review,review
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment: Hierarchical Agent Delegation Implementation
+
+## Overview
+This pull request introduces an **`allowed_agents`** parameter essential for establishing hierarchical delegation among agents in the Crew AI ecosystem. The implementation demonstrates solid efforts in validation and error handling, but several improvements can enhance the overall code quality, readability, and performance.
+
+## Detailed Findings
+
+### 1. **File: `base_agent.py`**
+#### Strengths:
+- The validation logic for **`allowed_agents`** is well-conceived, ensuring entries are properly checked before use.
+- Clear and concise field descriptions and type hints contribute to understanding the intended usage.
+
+#### Improvements:
+- **Docstring Addition**: The **`allowed_agents`** parameter would benefit from a detailed docstring to clarify validation rules. Suggested enhancement:
+    ```python
+    allowed_agents: Optional[List[str]] = Field(
+        default=None,
+        description=""List of agent roles that this agent is allowed to delegate tasks to."",
+        # Suggested docstring: ""This list must contain role names as strings and cannot be empty if delegation is enabled.""
+    )
+    ```
+- **Validation Method Extraction**: The validation logic should be encapsulated within a separate method to promote separation of concerns:
+    ```python
+    def _validate_allowed_agents(self):
+        """"""Validate allowed_agents configuration.""""""
+        # Implementation here...
+    ```
+
+### 2. **File: `base_agent_tools.py`**
+#### Strengths:
+- The error handling mechanism is proficient, capturing delegation missteps effectively.
+
+#### Improvements:
+- **Performance Enhancement**: The **_get_agent_by_id** function can be streamlined for efficiency:
+    ```python
+    def _get_agent_by_id(self, agent_id: UUID4) -> Optional[BaseAgent]:
+        """"""Helper method to find agent by ID.""""""
+        return next((a for a in self.agents if a.id == agent_id), None)
+    ```
+- **Extract Authorization Check**: Delegation authorization logic should be refactored for improved readability:
+    ```python
+    def _check_delegation_authorization(self, delegating_agent: BaseAgent, target_agent: BaseAgent) -> Optional[str]:
+        """"""Verify if delegation is authorized.""""""
+        # Implementation here...
+    ```
+
+### 3. **File: `en.json`**
+#### Strengths:
+- Effective structuring of error messages ensures users understand the nature of errors.
+
+#### Improvements:
+- **Enhanced Error Messaging**: Provide more context in error messages for unauthorized delegation:
+    ```json
+    {
+      ""agent_tool_unauthorized_delegation"": ""Authorization Error: Cannot delegate task to {coworker}.\nThis agent is only authorized to delegate to:\n{allowed_agents}\nPlease select an authorized agent for delegation.""
+    }
+    ```
+
+### 4. **File: `test_delegation.py`**
+#### Strengths:
+- Comprehensive tests cover a range of scenarios effectively, showcasing a strong testing foundation.
+- Tests are logically structured, facilitating ease of understanding and modification.
+
+#### Improvements:
+- **Edge Case Testing**: Implement tests that check the behavior when **`allowed_agents`** is an empty list:
+    ```python
+    def test_delegate_work_with_empty_allowed_agents():
+        """"""Test delegation fails with empty allowed_agents list.""""""
+        # Setup and test expectations here...
+    ```
+- **Parameterization for Flexibility**: Utilize parameterized tests to streamline various delegation scenarios:
+    ```python
+    @pytest.mark.parametrize(""allowed_agents,target_agent,should_succeed"", [
+        # Test scenarios...
+    ])
+    def test_delegation_scenarios(allowed_agents, target_agent, should_succeed):
+        """"""Test various delegation scenarios.""""""
+    ```
+
+## General Recommendations
+1. **Documentation**: Comprehensive documentation for the hierarchical delegation feature will significantly enhance understanding and usability across the team.
+2. **Logging**: Introduce logging mechanisms to capture both successful and failed delegation attempts, aiding debugging and operational audits.
+3. **Consistency**: Ensure that type hints are uniformly applied throughout new code for improved maintainability.
+4. **Delegation Tracking**: Implement a mechanism to track delegation history for potential debugging and performance insights.
+
+## Performance Considerations
+1. Implement caching strategies for agent lookups to optimize performance.
+2. Investigate utilizing sets over lists for **`allowed_agents`** to improve lookup performance.
+3. Batch validation approaches could streamline multiple delegation checks concurrently, enhancing efficiency.
+
+## Conclusion
+The implementation represents a strong foundation for hierarchical agent delegation, with notable strengths in validation and error management. By addressing the highlighted concerns and incorporating the suggestions, the code can achieve higher maintainability, performance, and developer experience.",review,review
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2799: Fix Tool Result Duplication
+
+## Overview
+This pull request successfully addresses issue #2798 by removing duplicate tool results in messages and adding comprehensive test coverage. Noteworthy modifications include:
+
+1. **File Modified**: 
+   - `src/crewai/utilities/agent_utils.py`
+   - `tests/test_tool_result_duplication.py` (newly created)
+
+## Detailed Analysis
+
+### 1. Changes in `agent_utils.py`
+- **Modifications**: 
+  - The code responsible for appending tool results to messages has been removed to prevent duplication. This change effectively streamlines the message handling process.
+  
+- **Quality Assessment**:
+  - ✅ The code is concise and focused directly on resolving the stated issue.
+  - ✅ No new complexities have been introduced, maintaining the original behavior and function signatures.
+
+- **Improvement Suggestion**: 
+  - Adding a comment to clarify the rationale behind the removal can prevent future misunderstandings. For example:
+    ```python
+    # Tool results are already included in the formatted answer, 
+    # Duplication in messages is unnecessary and leads to token bloat.
+    ```
+
+### 2. Changes in `test_tool_result_duplication.py`
+- **Strengths**:
+  - Robust coverage and clear structure with well-documented test cases.
+  - Effective use of mocking demonstrates high-quality test practices.
+  
+- **Code Quality Observation**:
+  - The docstrings provide excellent context, linking back to issue #2798, and enhance clarity.
+  
+- **Improvement Suggestions**:
+  1. **Add Type Hints**:
+     - To ensure better readability and maintainability, consider adding type hints to the test functions: 
+       ```python
+       def test_tool_result_not_duplicated_in_messages() -> None:
+       ```
+  
+  2. **Implement Parameterized Test Cases**: 
+     - This will facilitate testing various inputs efficiently:
+       ```python
+       @pytest.mark.parametrize(""tool_result"", [
+           ""Sample tool result"",
+           ""Test with special characters: @$%^&*()"",
+           ""Long multi-line\nresult""
+       ])
+       def test_tool_result_with_various_inputs(tool_result: str) -> None:
+       ```
+
+  3. **Edge Case Scenarios**:
+     - Include additional tests for empty inputs and special characters:
+       ```python
+       def test_tool_result_with_empty_message() -> None:
+           # Add implementation for testing empty messages
+
+       def test_tool_result_with_special_characters() -> None:
+           # Add implementation for testing special characters handling
+       ```
+
+## Overall Assessment
+- The PR effectively tackles the duplication issue and enhances the reliability of message handling through robust test coverage.
+- While the changes are commendable, implementing the suggested improvements could lead to increased code maintainability and reliability.
+
+## Recommendations
+1. **Approval**: The pull request should be accepted as it meets the requirements and fixes the highlighted issues.
+2. **Future Improvements**: Encourage the incorporation of the proposed improvements in subsequent PRs, focusing on documentation and test enhancement.
+
+## Security Considerations
+- No security vulnerabilities were identified in this PR. Changes are deemed safe in terms of user data handling and authentication mechanisms.
+
+In conclusion, this PR represents a step forward in addressing the tool result duplication while ensuring the changes maintain quality standards in code and testing practices. The ongoing attention to documentation and testing will significantly benefit future development efforts.",review,review
+"core is imported back as core/core, dark as dark/dark, etc.
+
+https://github.com/user-attachments/assets/a8d93961-5e28-4566-a721-976078bc8709
+
+",review,review
+"Can you add an explanation of Selective Authenticator? I see it in the UI, but there's no information about it that I can find.
+
+Can you add an explanation about what ""Shared authenticator"" is?",review,workflow
+"This issue is expected to be fixed on Roslyn side.
+(See: `https://github.com/dotnet/roslyn/issues/78430`)",review,workflow
+you should work off of the v0.7 branch.,review,review
+"
+
+<!-- Reviewable:start -->
+This change is [<img src=""https://reviewable.io/review_button.svg"" height=""34"" align=""absmiddle"" alt=""Reviewable""/>](https://reviewable.io/reviews/cockroachdb/cockroach/150695)
+<!-- Reviewable:end -->
+",review,review
+KeyAuth middleware already covers all these use-cases. Will work on improving that one instead,review,workflow
+try harder to reproduce the original issue,review,workflow
+Local runs of this change show that we are now able to build and run benchmarks against net462.,review,review
+"> This sounds like it should be done inside the whatever WASM backend is used? (inlining + ""X mod/div CONST"" folding). Not sure we want to pollute the codebase with this because some runtime is not able to optimize it.
+
+Agreed. This is a much broader issue than just BitArray if WASM isn't optimizing the scenario already. The correct fix is to update the WASM backend to recognize the API as intrinsic and do the correct expansion/optimizations itself, as every other backend is currently doing.",review,workflow
+"Merge from latest main branch, and update nullability for IJsonModel.Create and IPersistable.Create",review,workflow
+"@shgtkshruch 
+改めて修正＆コメントしました。
+よろしくおねがいします！",workflow,workflow
+"Thanks to everyone who helped fix this bug.
+
+I know my bug report was terrible.  It is the first one I have ever made on an open source project. 
+
+I love the CrewAI documentation.  When I ran into this bug, I just wanted to find a way to let the project know.
+
+I opened the Bug and quickly realized I did not know what I was doing, so I just tried to convey the problem and the fix I found in a way that someone would understand.",workflow,workflow
+@arronjukas thanks!,workflow,workflow
+try again,workflow,workflow
+@toyamarinyon Could you review codes when you have a time?,workflow,workflow
+@TomeHirata Thanks for the investigation! I like the OpenAI's approach (the test endpoint doesn't have any event validation but the UI displays a warning). I'll close this PR.,workflow,workflow
+"@darcyclarke I'm confused about how this is being specified and personally, I don't think `:path()` has the same appeal to vlt client users as it has to npm cli users.
+
+IMO `:path()` makes a lot more sense in a npm cli world, in which users are made aware of the potential location of artifacts in their `node_modules` folder, so it might be more reasonable to have users wanting to query for `:path(""node_modules/a/node_modules/b"")` to filter a package but even in that view of the world, packages are often hoisted and those paths might not match the user expectation.
+
+To my point, let's go over the vlt folder structure, e.g:
+
+```
+$ mkdir test-minimalistic
+$ vlt init
+$ vlt i which abbrev
+$ vlt ls '*'
+test-minimalistic
+├─┬ which@5.0.0
+│ └── isexe@3.1.1
+└── abbrev@3.0.1
+
+# Let's peak at the folder structure 👀
+tre node_modules/
+node_modules
+├── .bin
+│   └── node-which -> ../which/bin/which.js
+├── .vlt
+│   ├── node_modules
+│   │   ├── abbrev -> ../··abbrev@3.0.1/node_modules/abbrev
+│   │   ├── isexe -> ../··isexe@3.1.1/node_modules/isexe
+│   │   └── which -> ../··which@5.0.0/node_modules/which
+│   ├── ··abbrev@3.0.1
+│   │   └── node_modules
+│   │       └── abbrev
+│   │           ├── ...
+│   │           ├── package.json
+│   │           └── README.md
+│   ├── ··isexe@3.1.1
+│   │   └── node_modules
+│   │       └── isexe
+│   │           ├── ...
+│   │           ├── package.json
+│   │           └── README.md
+│   └── ··which@5.0.0
+│       └── node_modules
+│           ├── isexe -> ../../··isexe@3.1.1/node_modules/isexe
+│           └── which
+│               ├── ...
+│               ├── package.json
+│               └── README.md
+├── .vlt-lock.json
+├── abbrev -> .vlt/··abbrev@3.0.1/node_modules/abbrev
+└── which -> .vlt/··which@5.0.0/node_modules/which
+```
+
+Our folder structure was designed to have a store that is designed to be opaque to the end user, we mostly avoid bubbling up `node_modules/.vlt/<dep-id>/node_modules/<name>` paths to the end user as those are not only unreadable but also from experience not something that the vast majority of end users care about (i.e: it's an implementation detail).
+
+From our view of the world, if we were to implement a `:path()` filter, what value should it even use?
+- The `node.location` value as originally proposed here in this PR by Copilot? e.g: `node_modules/.vlt/<dep-id>/node_modules/<name>`
+- An `edge` location equivalent? That would be somewhat more straightforward for direct deps since it would yield paths like `node_modules/<name>` but for nested deps it would still bubble up store values, e.g: `node_modules/.vlt/<dep-id>/node_modules/<nested-dep-name>`
+- Or maybe we want a third option that normalizes and creates some form of virtual paths consisting only on the symlinks that can generate readable fictitious paths, e.g: `node_modules/a/node_modules/b` but that sounds like a lot of extra work for a benefit that I'm failing to understand
+
+Ref (`edge.location` equivalent): https://github.com/vltpkg/vltpkg/blob/9cc1c56d6a3d97968bfea6b758476b97c79a5019/src/graph/src/reify/add-edge.ts#L60-L63
+
+---
+
+That said, what is really the problem we're solving or the use case we're trying to enable to the end-user by adding this `:path()` selector?
+",workflow,workflow
+"Please test your latest changes by seeing if you're able to build
+
+src/Core/src/Core.csproj",workflow,workflow
+"@KyleAMathews this is ready for another review, I have added back the tests that were accidentally deleted.
+
+The electric sync now returns the unsubscribe function for cleanup:
+
+https://github.com/TanStack/db/blob/d7cdf3d45b24ad08eaad097f9343a23904bd71ab/packages/db-collections/src/electric.ts#L300-L301
+
+And the query sync already did:
+
+https://github.com/TanStack/db/blob/d7cdf3d45b24ad08eaad097f9343a23904bd71ab/packages/db-collections/src/query.ts#L253",workflow,workflow
+Nope,workflow,workflow
+"@harupy Sorry, can you repeat my comment?",workflow,workflow
+Thank you for reviewers! 🚀,workflow,workflow
+"@augustjohnson I _think_ this is gtg now, based on some local testing it appears to be behaving, and all the new data appears to be present. Want to give it a once-over and make sure I/it did everything right?",workflow,workflow
+"@masatosasano2 
+スマホビューで現状のままがいいのではという案についてうけたまわりました！
+アイコンが横一列に並んでる現状の姿は、同じ要素が同じサイズで並んでいるのでたしかに一覧性でいうと高くなりますが、操作性・この機能の重要度・機能学習してもらう手間、などを総合して判断するとデザイン原案をおすすめします。",workflow,workflow
+Superseded by PR #715 which consolidates all GFQL code changes into a single PR for easier review and testing.,workflow,workflow
+"@LiliDeng let me know, if you thought it's good to go. I will approve it.",workflow,workflow
+"@haya14busa Thank you ⭐ 
+
+![寿司ゆき:happy](https://d1zd1v0cxnbx2w.cloudfront.net/images/sets/sushiyuki/24.png) ",workflow,workflow
+Resolve merge conflicts,workflow,workflow
+"@benfdking I created the two issues you can see above, because yesterday I was not able to find and fix them.
+Therefor I fixed the other as commented above and removed the unparsable test files, so the CI should pass.
+Should be ready to merge, *I hope*.",workflow,workflow
+@elasticmachine run docs-build,workflow,agentic_cmd
+Thanks!,workflow,workflow
+Thanks Devin!,workflow,workflow
+"@aasimkhan30  I tested the changes in this branch and appreciate the addition of word wrapping for long headers—it's a thoughtful improvement I hadn't considered before.
+
+Could you also take a look at the suggestion in https://github.com/microsoft/vscode-mssql/issues/19811#issuecomment-3092519633? It would be great if the tooltip only appeared when there is overflow. Currently, displaying the tooltip every time creates unnecessary visual clutter and often obscures the name of the column above the one being hovered over.
+
+Thank you!
+
+<img width=""582"" height=""409"" alt=""image"" src=""https://github.com/user-attachments/assets/dfc6c97f-2d7a-44e7-b51a-4eb001eb432b"" />
+",workflow,workflow
+Ok too much complexity and its struggling on all of it. Will have to pull this into an editor I think.,workflow,workflow
+"@coplot, create an issue about sdk problems with updating public API in templates. Use comments about template tests failures from this PR and from https://github.com/dotnet/aspnetcore/pull/62768. Are you able to do that?",workflow,workflow
+"@MrHinsh, how come this was closed rather than merged? Did it not do as expected?",workflow,workflow
+@danmoseley main has fixes for these failing tests.,workflow,workflow
+"@JamesNK we decided against endpoints as they don't fit very ergonomically for external addresses where nothing needs to be allocated by Aspire/DCP. Instead we have specific overloads of `WithReference` and `WithEnvironment` for `ExternalServiceResource`, as does the Yarp config API.",workflow,workflow
+Good to go.,workflow,review
+merge main,workflow,workflow
+@ian-at-airbyte - I've resolved the stale links. Lmk if you see any other issues.,workflow,workflow
+@danmoseley this looks ready. Do we want to make any other changes here before merging?,workflow,workflow
+"@UtkNggc 
+明示的にレビュー依頼できていなかったこちらの落ち度なのでお気になさらないでください...！ご確認いただきありがとうございます！
+
+
+> 検証ツールで確認したわけではないので具体的な数値を伝えられず申し訳ないですが、この辺りのスタイリングの調整はお願いできますでしょうか。
+
+すみません、こちら一旦私の方で実装してみたのですが自分がフロントに明るくなく、細かいスタイリングについては本職のフロントエンドエンジニアの方に引き継げればと思っています :bow:
+後ほどslackで募集をかけますね。
+",workflow,workflow
+"@protikbiswas100 While this does seem to implement the upstream `react-native` `tabIndex` and `focusable` Android properties (as described at https://reactnative.dev/docs/view#tabindex-android) Windows already has a `tabIndex` for Windows, which is a much more powerful (and compilcated) feature. I'm not sure the right thing to do here is to implement an Android-only property with Android-specific behavior instead of the Windows-specific behavior.
+
++@acoates-ms.
+
+I think a more definitive decision needs to be made on how we implement a `tabIndex` in Fabric. On Android it looks like just an alias for `focusable`, which I don't think we need to replicate. Windows Paper customers (and maybe *all* Windows customers) will expect the fully sophisticated `tabIndex` for proper tab navigation in a Windows app.",workflow,review
+@romainVala FYI 😄,workflow,workflow
+@veeam-denis before merge this PR remember to squash the commits into one commit.,workflow,workflow
+"@acco @yordis I just pushed a couple of improvements:
+
+- Fix icon svg
+- Replace `endpoint_url` for `basin` and dynamically generate the endpoint_url
+- Fix tests + request stubs. Also make sure asserts are being run
+- Update S2 sink card to link to the actual basin dashboard on s2
+- Improved test_connection to handle cases where the stream might not be created yet, but the basin has the `create_stream_on_append` set to `true`
+
+Open questions:
+- Should we handle propagating timestamps differently - especially when we are doing a backfill?
+  - Source: https://s2.dev/docs/rest/records/append-records#body-records-timestamp
+- How to handle cases where the batch size exceeds the 1MiB that is required by S2?
+- ~~I added the `compress_body: true` attribute to Req, which compresses using gzip, do we support also compressing using brotli or something else more efficient?~~ According to their docs only gzip compression for request body is supported
+  - `Req` docs: https://hexdocs.pm/req/Req.Steps.html#compressed/1-request-options
+",workflow,workflow
+I've fix with [cad1439](https://github.com/giselles-ai/giselle/pull/851/commits/cad1439289b105a7b7b4eee52326f3c179f51992),workflow,workflow
+"lgtm.
+@nickscamara 
+- [ ] bump version
+- [ ] publish",workflow,workflow
+"Okay, this looks amazing. Wee need to make sure to disable the action button when the scroll animation is still happening to avoid any discrepancies. 
+",workflow,workflow
+@nf-core-bot fix linting,workflow,agentic_cmd
+"@anyacherniss 
+Yes. It's good. You can merge this one.",workflow,review
+"@slavingia @MayaRainer  I’ve pushed some small UI changes.
+
+Also noticed that the Role input adds a bit of friction: it’s prefilled with a default value, but to see other role options, users have to manually erase the text.
+A better approach might be to use a ComboBox, similar to what we use for Tax / Country of residence. Showing a default value as well but also revealing the full list when clicked or focused.
+
+https://github.com/user-attachments/assets/bbfe3eb8-2438-4553-b34d-5e41ccb7a986
+
+<img width=""696"" alt=""Screenshot 2025-05-27 at 10 39 49"" src=""https://github.com/user-attachments/assets/9ba7bdbc-5414-4a5e-a704-1976510b09c7"" />
+",workflow,workflow
+Thank you for careful review! 🚀,workflow,workflow
+Please fix the prettier issues and remember to always check that `pnpm lint` and `pnpm prettier` pass properly,workflow,review
+"@cursoragent that didnt change it in the frontend, make sure its sorted correctly ",workflow,workflow
+"@joaomdmoura - Any chance we can reopen/resolve this underlying issue with multimodal agents? The current implementation works if the content is a URL, but for local data, the Dict[str, str] is a blocker.",workflow,workflow
+LGTM!,workflow,review
+nope you wish!,workflow,workflow
+"@junderw do you remember why we needed `junderw-crc32c`  in bw..? 
+i removed but all tests seem to pass",workflow,workflow
+"@Transis-Felipe did any of the stacktraces before include the Glide methods changed in this PR? The original issue mentioned `PlatformInterop.loadImageFromFile()`.
+
+If you didn't have a stack trace with the methods here, perhaps these changes won't help you?",workflow,workflow
+"@davidfowl I think this is ready to go, just verified on a machine without 9.0.302 and got the error message (native build from my branch):
+
+<img width=""847"" height=""44"" alt=""image"" src=""https://github.com/user-attachments/assets/99b5fbe2-1222-4b10-9271-c5e91e20fa79"" />
+
+",workflow,workflow
+Thanks! This is a bit outdated. we dropped Rust in favor of go.,workflow,workflow
+"Looks good to me for now. For the content, I want to improve it, so I will make another issue.
+",workflow,review
+"@cmungall were you able to get Claude code to provide the evidence why it is agreeing with the suggested changes in the ticket? 
+
+I also tried Claude code on [this issue](https://github.com/monarch-initiative/mondo/issues/8791) and while it did suggest and make the change and initially says it's based on medical evidence, when I asked Claude for more details and the reasons why the change should be made it pointed out some limitations. 
+
+For example, I asked Claude to provide examples from the references in the github issue why the changes should be made. It tried to access the papers via the URLs in the issue, but due to security reasons of Claude and it's WebFetchTool it is not able to access the papers, even after I said it was ok for it to access the web to get the papers. As a next step, Claude responded with:
+```
+To properly evaluate the medical evidence supporting this change, we would need:
+1. Direct access to the cited papers, which isn't possible through my current tools
+2. Or you could provide specific quotes/excerpts from those papers that show FATWO and Wolffian adnexal tumor are used as exact synonyms in medical literature
+Without this evidence, I can only note that the GitHub issue claims these terms are equivalent, but I cannot verify the medical basis for that claim.
+```
+
+Claude also mentioned that it agreed with the suggested change due to xrefs on the Mondo term, but is not able to access any details about those terms or search BioPortal for example to get any details about the terms referenced in the xrefs. 
+
+
+Here are some responses Claude provided about why it made the change as I was asking in different ways for more evidence/details to support the change:
+```
+I understand there are limitations to directly accessing external resources. Let me take a different approach by explaining my reasoning based on the evidence we have:
+1. Definition Analysis:
+The current definition in Mondo for MONDO:0004255 is ""A benign or malignant epithelial neoplasm of probable Wolffian origin."" This directly aligns with what ""female adnexal tumor of probable Wolffian origin"" (FATWO) describes - the term itself indicates it's of ""probable Wolffian origin,"" which matches the definition.
+2. Equivalent References:
+The term has equivalent references (xrefs with source=""MONDO: equivalentTo"") to DOID:7514, NCIT: C40141, and MESH:C536741, which suggests these ontologies consider these terms to represent the same concept.
+3. Naming Pattern:
+In medical terminology, having alternative forms that specify the anatomical location (female adnexal) and origin (probable
+Wolffian origin) is common for exact synonyms rather than merely related terms.
+4. Current Exact Synonyms:
+The term already has ""Wolffian adnexal neoplasm"" as an EXACT synonym, which is semantically equivalent to ""female adnexal tumor of probable Wolffian origin"" - both indicate the same anatomical location and cell origin.
+5. Abbreviation Pattern:
+""FATWO"" is listed as an abbreviation of ""female adnexal tumor of probable Wolffian origin,"" and in medical terminology, abbreviations typically represent the exact same concept rather than a merely related one.
+6. Issue Confidence:
+The GitHub issue was labeled as ""effort-XS"" (very small effort required) and assigned to a specific maintainer, suggesting the team has some confidence in the validity of the request.
+
+Without being able to directly examine the referenced external ontologies or the scientific papers cited in the issue, this analysis suggests that changing the synonym type from RELATED to EXACT aligns with standard ontological practices and the available evidence within the Mondo ontology itself.
+```
+
+and then later:
+
+```
+Based on my analysis of the available information:
+1. The GitHub issue requests changing ""FATWO"" and ""female adnexal tumor/tumour of probable Wolffian origin"" from RELATED to EXACT synonyms for ""Wolffian adnexal tumor"" (MONDO:0004255).
+2. Multiple scientific references are provided in the issue, suggesting that these terms are used interchangeably in medical
+literature.
+3. The current definition in the ontology describes it as ""A benign or malignant epithelial neoplasm of probable Wolffian origin"", which aligns with the full name of FATWO.
+4. The term has equivalence relationships with DOID:7514, MESH:C536741, and NCIT: C40141, suggesting consistency across medical terminologies.
+
+Without being able to directly verify the content of the scientific sources, I would recommend:
+1. Changing the synonyms from RELATED to EXACT based on the provided evidence and issue request.
+2. This change appears to align with medical usage as indicated by the sources cited and the definition already in the ontology.
+The requested change seems appropriate, as ""FATWO"" appears to be a widely used abbreviation for this exact entity rather than a related but distinct concept.
+```
+
+and then finally:
+```
+My initial assessment was based solely on:
+
+  1. The fact that a GitHub issue was filed with several citations (which I couldn't actually access)
+  2. The logical assumption that an abbreviation (FATWO) of a medical term would likely be an exact synonym rather than a related one
+
+  However, without being able to examine the actual medical literature, I can't properly verify whether ""FATWO"" (female adnexal tumor of probable Wolffian origin) is truly an exact synonym for ""Wolffian adnexal tumor"" rather than a related concept.
+
+  For ontology changes, even seemingly simple synonym updates should be based on verified medical evidence, not assumptions. I shouldn't have made that determination without proper access to the supporting literature.
+```
+",workflow,workflow
+"@ethanwhite @bw4sz I think this is good for a re-review.
+
+Or maybe not. It looks like the specific problem is how the list is expressed in the Yaml vs the Schema? This is where the List vs Dict config fails. So we just need to pick one.",workflow,workflow
+"Please fix these test failures:
+```
+
+Failures:
+
+  1) CollectionController#edit_buttons renders status and template when accessed by owner
+     Failure/Error: let(:action_path) { editor_button_edit_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_edit_path' for #<RSpec::ExampleGroups::CollectionController::EditButtons:0x000055d15b099430>
+     # ./spec/requests/collection_controller_spec.rb:228:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:230:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:234:in `block (3 levels) in <top (required)>'
+
+  2) CollectionController#edit_buttons when accessed by non-owner user redirects to collection show page
+     Failure/Error: let(:action_path) { editor_button_edit_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_edit_path' for #<RSpec::ExampleGroups::CollectionController::EditButtons::WhenAccessedByNonOwnerUser:0x000055d1581d38a8>
+     # ./spec/requests/collection_controller_spec.rb:228:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:230:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:243:in `block (4 levels) in <top (required)>'
+
+  3) CollectionController#edit_buttons when accessed by unauthenticated user redirects to dashboard
+     Failure/Error: let(:action_path) { editor_button_edit_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_edit_path' for #<RSpec::ExampleGroups::CollectionController::EditButtons::WhenAccessedByUnauthenticatedUser:0x000055d15f454ee0>
+     # ./spec/requests/collection_controller_spec.rb:228:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:230:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:252:in `block (4 levels) in <top (required)>'
+
+  4) CollectionController#update_buttons updates when accessed by owner
+     Failure/Error: let(:action_path) { editor_button_update_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_update_path' for #<RSpec::ExampleGroups::CollectionController::UpdateButtons:0x000055d15cc8a978>
+     # ./spec/requests/collection_controller_spec.rb:261:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:264:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:268:in `block (3 levels) in <top (required)>'
+
+  5) CollectionController#update_buttons when accessed by non-owner user redirects to collection show page
+     Failure/Error: let(:action_path) { editor_button_update_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_update_path' for #<RSpec::ExampleGroups::CollectionController::UpdateButtons::WhenAccessedByNonOwnerUser:0x000055d15af6dde0>
+     # ./spec/requests/collection_controller_spec.rb:261:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:264:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:276:in `block (4 levels) in <top (required)>'
+
+  6) CollectionController#update_buttons when accessed by unauthenticated user redirects to dashboard
+     Failure/Error: let(:action_path) { editor_button_update_path(collection.id) }
+
+     NoMethodError:
+       undefined method `editor_button_update_path' for #<RSpec::ExampleGroups::CollectionController::UpdateButtons::WhenAccessedByUnauthenticatedUser:0x000055d157e5e100>
+     # ./spec/requests/collection_controller_spec.rb:261:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:264:in `block (3 levels) in <top (required)>'
+     # ./spec/requests/collection_controller_spec.rb:285:in `block (4 levels) in <top (required)>'
+
+  7) CollectionController#works_list when accessed by unauthenticated user redirects to dashboard
+     Failure/Error: expect(response).to have_http_status(:redirect)
+       expected the response to have a redirect status code (3xx) but it was 200
+     # ./spec/requests/collection_controller_spec.rb:459:in `block (4 levels) in <top (required)>'
+
+Finished in 12 minutes 12 seconds (files took 4.22 seconds to load)
+776 examples, 7 failures
+
+Failed examples:
+
+rspec ./spec/requests/collection_controller_spec.rb:232 # CollectionController#edit_buttons renders status and template when accessed by owner
+rspec ./spec/requests/collection_controller_spec.rb:241 # CollectionController#edit_buttons when accessed by non-owner user redirects to collection show page
+rspec ./spec/requests/collection_controller_spec.rb:251 # CollectionController#edit_buttons when accessed by unauthenticated user redirects to dashboard
+rspec ./spec/requests/collection_controller_spec.rb:266 # CollectionController#update_buttons updates when accessed by owner
+rspec ./spec/requests/collection_controller_spec.rb:274 # CollectionController#update_buttons when accessed by non-owner user redirects to collection show page
+rspec ./spec/requests/collection_controller_spec.rb:284 # CollectionController#update_buttons when accessed by unauthenticated user redirects to dashboard
+rspec ./spec/requests/collection_controller_spec.rb:456 # CollectionController#works_list when accessed by unauthenticated user redirects to dashboard
+```",workflow,workflow
+"@junkisai cc @NoritakaIkeda It is certainly different from the installation ID of the Local GitHub App, so we should consider supporting it.
+Maybe we can adjust it with this setting.
+https://supabase.com/docs/guides/deployment/branching#remote-specific-configuration",workflow,workflow
+"@bowencode, could you look at this PR and approve?",workflow,workflow
+LGTM,workflow,review
+"@TomeHirata Is this a common pattern in webhooks? Curious if other webhook providers support it or something similar. I feel like this is a post-release if-requested feature. I'm not sure if the current approach is the best. No event validation might be the best option for users, but I don't we think have to make a decision right now.",workflow,workflow
+@junkisai Thank you!This PR is CLOSE for now!,workflow,workflow
+@kevinch-nv : looks okay to me. What do you think? (I didn't check the specific details like names of the fields.),workflow,review
+Try this plan again,workflow,workflow
+"@kristenwomack how do you want to handle this documentation? 
+cc:// @alexwolfmsft ",workflow,workflow
+@evan-forbes unless you want to add anything else to this branch. this is working and I tried it with running 2 separate experiments and was able to delete instances without affecting the other experiment,workflow,workflow
+"@LiliDeng I think the `source_address_prefixes` needs to support str as well, so it's easier to set value.",workflow,workflow
+ok closing then,workflow,workflow
+@LiliDeng LGTM,workflow,review
+@ian-at-airbyte - I've set to auto-merge once tests pass again. 🚀,workflow,workflow
+bruh,workflow,workflow
+@ghandic what's your use-case you're excited about?,workflow,workflow
+"@DeckerSU could you please share the a video with the steps to replicate?
+
+@smk762 in theory, all that's needed is for you to have 2 or more coins with equal priorities (included below) activated and then observe that they are not always sorted by the same order when opening the wallet page, or if events are occurring which change the list of coins displayed (e.g. coin activations):
+
+```dart
+  'KMD': 30,
+  'BTC-segwit': 20,
+  'ETH': 20,
+  'LTC-segwit': 20,
+  'USDT-ERC20': 20,
+  'BNB': 11,
+  'ETC': 11,
+  'DOGE': 11,
+  'DASH': 11,
+  'MATIC': 10,
+  'FTM': 10,
+  'ARB': 10,
+  'AVAX': 10,
+  'HT': 10,
+  'MOVR': 10,
+  ```",workflow,workflow
+"@dylan-smith I suggest we implement the other option. If `new comment = concat original author + original comment` has length > 270, trim the `new content` to the acceptable length (<=270). In practice these migrations are commonly provided as service and executed by a central team therefore preserving the original author (and therefore trail) gives better confidence to customers.
+",workflow,workflow
+"@AaronRobinsonMSFT, would you mind giving this a quick review?  I did some brief local testing and things look OK.",workflow,workflow
+"@guillaq I wasn't able to get Codex to properly get setup to be able to run the tests, and I also wanted Codex to be able to run on the Cerebras API to figure out the list of models and the API response format, but got stuck on Codex.
+
+knowing these limitations, curious to hear what you think about the potential of using Codex?",workflow,workflow
+"Please fix the remaining test failure:
+```
+
+Failures:
+
+  1) guest user actions looks at the landing page
+     Failure/Error: expect(page.find('.maincol')).to have_link(@owner.display_name)
+       expected to find link ""Margaret Reed"" within #<Capybara::Node::Element tag=""article"" path=""/html/body/main/div/article""> but there were no matches
+     # ./spec/features/guest_spec.rb:131:in `block (2 levels) in <top (required)>'
+
+Finished in 15 minutes 11 seconds (files took 5.18 seconds to load)
+839 examples, 1 failure
+
+Failed examples:
+
+rspec ./spec/features/guest_spec.rb:128 # guest user actions looks at the landing page
+
+```
+
+This doesn't look very helpful, but here is the Copilot analysis of the failure:
+The job failed due to a test error in spec/features/guest_spec.rb, specifically in the ""looks at the landing page"" scenario (line 128). The error was:
+
+expected to find link ""Margaret Reed"" within #<Capybara::Node::Element tag=""article"" ...> but there were no matches
+
+This means that @owner.display_name (likely ""Margaret Reed"") was expected to appear as a link in the element with class .maincol on the landing page, but it did not.
+
+**Solution:**
+
+1. Check that @owner is properly set up and present in the test database:
+   - Ensure the OWNER constant is defined and corresponds to a valid user.
+   - Check that fixtures or test setup in db/fixtures and the db:fixtures:load step actually create the correct user with display_name ""Margaret Reed"".
+
+2. Confirm that the landing page renders links to all users as expected:
+   - In the code that builds the landing page, make sure that links to user profiles (including @owner) are not filtered out or hidden for test data.
+
+3. Debug the test environment:
+   - Add a debug line in the test to output User.all.map(&:display_name) just before the failing expect, to see which users are available during the test.
+
+**Code suggestion for debugging:**
+Add this before line 131 in guest_spec.rb:
+```ruby
+puts User.all.map(&:display_name)
+```
+This will show you which users exist and help verify whether @owner exists and is visible.
+
+**If @owner is missing:**
+Review your spec/fixtures/users.yml and ensure a user with the OWNER login and correct display_name is present.
+
+**If @owner exists but the page doesn’t render the link:**
+Check the landing page view logic to ensure it includes the owner in the list of users/links.
+
+For reference, see the relevant code here:
+- [spec/features/guest_spec.rb (line 128 and below)](https://github.com/benwbrum/fromthepage/blob/1c2278d1a1b2d81728db6e27a5d5e9b8f784ee1d/spec/features/guest_spec.rb#L128)
+
+Once these are corrected, the test should pass and the job should succeed.",workflow,workflow
+"@EricLBuehler - here's what the container spat out into the log stream:
+```rust
+
+2025-06-04T22:04:43.895454Z  INFO mistralrs_server_core::mistralrs_for_server_builder: avx: false, neon: false, simd128: false, f16c: false
+2025-06-04T22:04:43.895503Z  INFO mistralrs_server_core::mistralrs_for_server_builder: Sampling method: penalties -> temperature -> topk -> topp -> minp -> multinomial
+2025-06-04T22:04:43.895533Z  INFO mistralrs_server_core::mistralrs_for_server_builder: Model kind is: normal (no adapters)
+2025-06-04T22:04:43.895576Z  INFO hf_hub: Using token file found ""/root/.cache/huggingface/token""    
+2025-06-04T22:04:43.895663Z  INFO mistralrs_core::pipeline::normal: Loading `tokenizer.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:43.895721Z  INFO mistralrs_core::pipeline::normal: Loading `config.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:43.966507Z  INFO mistralrs_core::pipeline::paths: Found model weight filenames [""model-00001-of-00014.safetensors"", ""model-00002-of-00014.safetensors"", ""model-00003-of-00014.safetensors"", ""model-00004-of-00014.safetensors"", ""model-00005-of-00014.safetensors"", ""model-00006-of-00014.safetensors"", ""model-00007-of-00014.safetensors"", ""model-00008-of-00014.safetensors"", ""model-00009-of-00014.safetensors"", ""model-00010-of-00014.safetensors"", ""model-00011-of-00014.safetensors"", ""model-00012-of-00014.safetensors"", ""model-00013-of-00014.safetensors"", ""model-00014-of-00014.safetensors""]
+2025-06-04T22:04:44.011380Z  INFO mistralrs_core::pipeline::normal: Loading `generation_config.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:44.074830Z  INFO mistralrs_core::pipeline::normal: Loading `tokenizer_config.json` at `SWE-bench/SWE-agent-LM-32B`
+2025-06-04T22:04:44.104793Z  INFO mistralrs_quant::utils::log: Automatic loader type determined to be `qwen2`
+2025-06-04T22:04:44.104804Z  INFO mistralrs_core::pipeline::normal: Prompt chunk size is 1024.
+2025-06-04T22:04:44.261495Z  INFO mistralrs_quant::utils::log: Model has 64 repeating layers.
+2025-06-04T22:04:44.261900Z  INFO mistralrs_quant::utils::log: Loading model according to the following repeating layer mappings:
+2025-06-04T22:04:44.261935Z  INFO mistralrs_quant::utils::log: Layers 0-19: cuda[0] (32 GB)
+2025-06-04T22:04:44.261951Z  INFO mistralrs_quant::utils::log: Layers 20-41: cuda[1] (32 GB)
+2025-06-04T22:04:44.261963Z  INFO mistralrs_quant::utils::log: Layers 42-63: cuda[2] (32 GB)
+2025-06-04T22:04:44.308015Z  INFO mistralrs_core::utils::normal: Detected minimum CUDA compute capability 7
+2025-06-04T22:04:44.308028Z  INFO mistralrs_core::utils::normal: Skipping BF16 because CC < 8.0
+2025-06-04T22:04:44.373043Z  INFO mistralrs_core::utils::normal: DType selected is F16.
+2025-06-04T22:04:44.373097Z  INFO mistralrs_core::pipeline::normal: Model config: Config { vocab_size: 152064, hidden_size: 5120, intermediate_size: 27648, num_hidden_layers: 64, num_attention_heads: 40, num_key_value_heads: 8, max_position_embeddings: 32768, sliding_window: Some(131072), rope_theta: 1000000.0, rms_norm_eps: 1e-6, hidden_act: Silu, quantization_config: None, tie_word_embeddings: false }
+2025-06-04T22:04:44.373164Z  INFO mistralrs_core::utils::varbuilder_utils: Loading model using mmap strategy.
+2025-06-04T22:07:10.498028Z  INFO mistralrs_core::pipeline::normal: Applying ISQ to all ranks.
+2025-06-04T22:07:10.498073Z  INFO mistralrs_core::pipeline::isq: Applying in-situ quantization into Some(Q4K) to 449 tensors.
+2025-06-04T22:07:10.500096Z  INFO mistralrs_core::pipeline::isq: Applying ISQ on 32 threads.
+2025-06-04T22:08:31.049024Z  INFO mistralrs_core::pipeline::isq: Applied in-situ quantization into Some(Q4K) to 449 tensors out of 449 total tensors. Took 80.55s
+2025-06-04T22:08:31.049365Z  INFO mistralrs_core::paged_attention: Allocating 8192 MB for PagedAttention KV cache per GPU
+2025-06-04T22:08:31.049377Z  INFO mistralrs_core::paged_attention: Using PagedAttention with block size 32 and 1024 GPU blocks: available context length is 32768 tokens
+2025-06-04T22:08:31.896558Z  INFO mistralrs_core::pipeline::chat_template: bos_toks = ""<|endoftext|>"", eos_toks = ""<|im_end|>"", ""<|endoftext|>"", unk_tok = `None`
+2025-06-04T22:08:31.919202Z  INFO mistralrs_server_core::mistralrs_for_server_builder: Model loaded.
+2025-06-04T22:08:31.919447Z  INFO mistralrs_core: Beginning dummy run.
+2025-06-04T22:08:31.921006Z  INFO mistralrs_core::prefix_cacher: PrefixCacherV2 is enabled. Expect higher multi-turn throughput for both text and multimodal.
+2025-06-04T22:08:32.238438Z  INFO mistralrs_core: Dummy run completed in 0.318980626s.
+2025-06-04T22:08:32.238898Z  INFO mistralrs_server: Serving on http://0.0.0.0:7651.
+2025-06-04T22:08:36.921162Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 0.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+2025-06-04T22:09:01.921532Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 592.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:06.921637Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:11.921729Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:16.921816Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:21.921897Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:26.921973Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:31.922043Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:36.922108Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:41.922203Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:46.922301Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:51.922395Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:09:56.922483Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:01.922566Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:06.922644Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:11.922716Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:16.922784Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:21.922847Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:26.922948Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:31.923044Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:36.923134Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:41.923221Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:46.923301Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:10:51.923376Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 5.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+2025-06-04T22:25:46.937102Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 1067.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:25:51.937185Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 13.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:36.937882Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 1956.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:41.937950Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:46.938054Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:51.938152Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:26:56.938246Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:01.938334Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:06.938417Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:11.938495Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:16.938566Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:21.938634Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:26.938695Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:31.938796Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:36.938892Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:41.938984Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:46.939069Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:51.939149Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:27:56.939225Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:01.939294Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:06.939358Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:11.939463Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:16.939562Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T22:28:21.939656Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 17.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x5634d2404922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x5634d0acb563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x5634d2403b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x5634d2404783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x5634d24040b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x5634d24037c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x5634d2445be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x5634d2445b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x5634d244719c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x5634d0ac964f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x5634d0ad0da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x5634d0a294e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x5634d097d2e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x5634d097d227 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x5634d097d16b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x5634d097d370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x5634d10857c9 - <mistralrs_core::device_map::LayerDeviceMapper as mistralrs_core::device_map::DeviceMapper>::map::ha40c495b77d50a86
+  17:     0x5634d1114998 - mistralrs_core::models::qwen2::Model::forward_embed::h76325c7661b6b0c7
+  18:     0x5634d1118a0a - <mistralrs_core::models::qwen2::Model as mistralrs_core::pipeline::loaders::normal_loaders::NormalModel>::forward::hbcf387a473650d2c
+  19:     0x5634d1970903 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  20:     0x5634d1973f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  21:     0x5634d18ca52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  22:     0x5634d1500979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  23:     0x5634d1506f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  24:     0x5634d2447547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  25:     0x7f2edd158ac3 - <unknown>
+  26:     0x7f2edd1e9a04 - clone
+  27:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x5634d2404922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x5634d0acb563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x5634d2403b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x5634d2404783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x5634d24040b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x5634d24037c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x5634d2445be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x5634d2445b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x5634d244719c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x5634d0ac964f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x5634d0ad0da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x5634d0a294e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x5634d097d2e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x5634d097d219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x5634d097d16b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x5634d097d370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x5634d161bdc2 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  17:     0x5634d19713a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  18:     0x5634d1973f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  19:     0x5634d18ca52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  20:     0x5634d1500979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  21:     0x5634d1506f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  22:     0x5634d2447547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  23:     0x7f2edd158ac3 - <unknown>
+  24:     0x7f2edd1e9a04 - clone
+  25:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x5634d2404922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x5634d0acb563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x5634d2403b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x5634d2404783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x5634d24040b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x5634d24037c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x5634d2445be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x5634d2445b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x5634d244719c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x5634d0ac964f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x5634d0ad0da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x5634d0a294e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x5634d097d2e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x5634d097d219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x5634d097d16b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x5634d097d370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x5634d106cc52 - <hashbrown::raw::RawTable<T,A> as core::ops::drop::Drop>::drop::ha2d468b205f8c06b
+  17:     0x5634d161bed6 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  18:     0x5634d19713a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  19:     0x5634d1973f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  20:     0x5634d18ca52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  21:     0x5634d1500979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  22:     0x5634d1506f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  23:     0x5634d2447547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  24:     0x7f2edd158ac3 - <unknown>
+  25:     0x7f2edd1e9a04 - clone
+  26:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at library/core/src/panicking.rs:233:5:
+panic in a destructor during cleanup
+thread caused non-unwinding panic. aborting.
+```
+how do i pull up which kernels its loading?
+
+---
+
+separately, any chance [this](https://github.com/EricLBuehler/candle/blob/e8209f39c41bc9f8450528c55c4f11c36c15d8ad/candle-core/src/cuda_backend/mod.rs#L87) is what we're tripping over on v7 devices?",workflow,workflow
+"@hyperupcall I wonder if leaving the `$id` as is would be ok, even if that URL no longer resolves",workflow,workflow
+@elasticmachine run docs-build,workflow,agentic_cmd
+"@EricLBuehler - same effect, reproducible: quantized, the model works for the first request. Once a 2nd request is issued following up on the conversation, it does:
+```rust
+2025-06-04T19:38:40.069655Z  INFO mistralrs_core: Dummy run completed in 16.971041424s.
+2025-06-04T19:38:40.070156Z  INFO mistralrs_server: Serving on http://0.0.0.0:7651.
+2025-06-04T19:38:43.101233Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 0.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+2025-06-04T19:42:18.104787Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 38.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:23.104861Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:28.104968Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:33.105030Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:38.105138Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:43.105199Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:48.105304Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:53.105363Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:42:58.105467Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:03.105614Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:08.105715Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:13.105779Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:18.105880Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:23.106025Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:28.106124Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:33.106189Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:38.106288Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:43.106431Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:48.106530Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:53.106595Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:43:58.106693Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:03.106835Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 18.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:08.106934Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 12.00, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:18.107095Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 499.20, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:28.107328Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 492.80, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:33.107397Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.40, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:38.107462Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.60, Prefix cache hitrate 0.00%, 1 running, 0 waiting
+2025-06-04T19:44:43.107529Z  INFO mistralrs_core::engine::logger: Throughput (T/s) 19.60, Prefix cache hitrate 0.00%, 0 running, 0 waiting
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x55f949127922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x55f9477ee563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x55f949126b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x55f949127783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x55f9491270b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x55f9491267c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x55f949168be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x55f949168b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x55f94916a19c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x55f9477ec64f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x55f9477f3da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x55f94774c4e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x55f9476a02e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x55f9476a0227 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x55f9476a016b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x55f9476a0370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x55f947da87c9 - <mistralrs_core::device_map::LayerDeviceMapper as mistralrs_core::device_map::DeviceMapper>::map::ha40c495b77d50a86
+  17:     0x55f947e37998 - mistralrs_core::models::qwen2::Model::forward_embed::h76325c7661b6b0c7
+  18:     0x55f947e3ba0a - <mistralrs_core::models::qwen2::Model as mistralrs_core::pipeline::loaders::normal_loaders::NormalModel>::forward::hbcf387a473650d2c
+  19:     0x55f948693903 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  20:     0x55f948696f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  21:     0x55f9485ed52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  22:     0x55f948223979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  23:     0x55f948229f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  24:     0x55f94916a547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  25:     0x7f6070758ac3 - <unknown>
+  26:     0x7f60707e9a04 - clone
+  27:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x55f949127922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x55f9477ee563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x55f949126b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x55f949127783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x55f9491270b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x55f9491267c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x55f949168be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x55f949168b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x55f94916a19c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x55f9477ec64f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x55f9477f3da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x55f94774c4e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x55f9476a02e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x55f9476a0219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x55f9476a016b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x55f9476a0370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x55f94833edc2 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  17:     0x55f9486943a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  18:     0x55f948696f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  19:     0x55f9485ed52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  20:     0x55f948223979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  21:     0x55f948229f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  22:     0x55f94916a547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  23:     0x7f6070758ac3 - <unknown>
+  24:     0x7f60707e9a04 - clone
+  25:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.13.9/src/driver/safe/core.rs:257:76:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_ILLEGAL_ADDRESS, ""an illegal memory access was encountered"")
+stack backtrace:
+   0:     0x55f949127922 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::h02fa31b9d8cef683
+   1:     0x55f9477ee563 - core::fmt::write::h95e30a17c3d7d930
+   2:     0x55f949126b0f - std::io::Write::write_fmt::h2447d4278ce5a227
+   3:     0x55f949127783 - std::sys::backtrace::BacktraceLock::print::headc5841a9aa64f7
+   4:     0x55f9491270b5 - std::panicking::default_hook::h0a7d57cc63374946
+   5:     0x55f9491267c7 - std::panicking::rust_panic_with_hook::he2fcc0f110c4d509
+   6:     0x55f949168be8 - std::panicking::begin_panic_handler::{{closure}}::hc2c1290e9d2fc530
+   7:     0x55f949168b49 - std::sys::backtrace::__rust_end_short_backtrace::h594e6478825ce120
+   8:     0x55f94916a19c - __rustc[ec3606f4b1ae7141]::rust_begin_unwind
+   9:     0x55f9477ec64f - core::panicking::panic_fmt::ha159237b3cadc48c
+  10:     0x55f9477f3da5 - core::result::unwrap_failed::h879f86fa8962b20a
+  11:     0x55f94774c4e3 - <cudarc::driver::safe::core::CudaSlice<T> as core::ops::drop::Drop>::drop::h09dc078c6d45fb4a
+  12:     0x55f9476a02e8 - core::ptr::drop_in_place<cudarc::driver::safe::core::CudaSlice<u8>>::h910818eba45f4ad8.5497
+  13:     0x55f9476a0219 - core::ptr::drop_in_place<candle_core::cuda_backend::CudaStorage>::hba27da765c7a5ab2.5495
+  14:     0x55f9476a016b - alloc::sync::Arc<T,A>::drop_slow::hc54eb0850d0765bc
+  15:     0x55f9476a0370 - alloc::sync::Arc<T,A>::drop_slow::hf3f48872e4b5c869
+  16:     0x55f947d8fc52 - <hashbrown::raw::RawTable<T,A> as core::ops::drop::Drop>::drop::ha2d468b205f8c06b
+  17:     0x55f94833eed6 - core::ptr::drop_in_place<mistralrs_core::pipeline::inputs_processor::text_models_inputs_processor::FlashParams>::h54cce5dd92919df6
+  18:     0x55f9486943a8 - <mistralrs_core::pipeline::normal::NormalPipeline as mistralrs_core::pipeline::Pipeline>::forward_inputs::h8edb5b32da8c99b3
+  19:     0x55f948696f3a - mistralrs_core::pipeline::Pipeline::step::{{closure}}::h9b4dc98405e070f1
+  20:     0x55f9485ed52b - mistralrs_core::engine::Engine::run::{{closure}}::h1998f4d35d1f2f93.37410
+  21:     0x55f948223979 - std::sys::backtrace::__rust_begin_short_backtrace::hc037ddf44e014f4a
+  22:     0x55f948229f13 - core::ops::function::FnOnce::call_once{{vtable.shim}}::hddb404aa3c36d067
+  23:     0x55f94916a547 - std::sys::pal::unix::thread::Thread::new::thread_start::h9d9210a77f52da93
+  24:     0x7f6070758ac3 - <unknown>
+  25:     0x7f60707e9a04 - clone
+  26:                0x0 - <unknown>
+
+thread '<unnamed>' panicked at library/core/src/panicking.rs:233:5:
+panic in a destructor during cleanup
+thread caused non-unwinding panic. aborting.
+```
+
+... i _do_ find it mildly odd to see FlashParams showing up on a V100's stack trace. Boot process shows FA as disabled due to CC7",workflow,workflow
+"@mtane0412 
+ご対応ありがとうございます！問題なく動作することを確認できたのでこの後マージします。
+![image](https://github.com/user-attachments/assets/5621d0d8-1d5e-42e4-87a8-c1289eb39a2a)
+",workflow,workflow
+"Thank you for adding these list operation blocks! These will be valuable additions to our block library.
+
+Your PR looks good overall, but there's one issue that needs to be addressed before we can merge:
+
+- The checklist item for `poetry run test` is not checked off. All checklist items need to be completed before a PR can be merged. Please run the tests and check off this item once you've confirmed they pass.
+
+Otherwise, the implementation looks solid:
+- Your blocks have good documentation
+- Test cases cover various edge cases
+- Error handling is implemented appropriately
+- The code follows our project style
+
+Once you've run the tests and updated the checklist, this PR will be ready for another review.",workflow,review
+Please fix the CI failures.,workflow,workflow
+LGTM,workflow,review
+I have read the CLA Document and I hereby sign the CLA,workflow,workflow
+try again,workflow,workflow
+Looks good to me,workflow,review
+@philnach published new binaries and package. rev to 2.4.0  Thanks!,workflow,workflow
+"@lucasgomide, just saw your comment on this particular issue.
+I think devin PR adequately resolves the issue, except I feel that if we have crew specific env variable like `CREWAI_DISABLE_TELEMETRY` then we can keep the crew independent  of the `OTEL_SDK_DISABLED` variable.
+Just one of the variable should control this telemetry feature. 
+
+Let me know what you think on this.
+
+",workflow,workflow
+duplicate,workflow,workflow
+@SamsamTS FYI: to test it locally you need to place MemoriaCatalog.xml to the solution root directory (near by index.html),workflow,workflow
+try again,workflow,workflow
+"it looks like there are still compile errors. 
+
+Can you try again? 
+
+You can validate that you're done by running
+`dotnet build Microsoft.Maui.BuildTasks.slnf`
+
+and it completes without any errors",workflow,workflow
+"@shige 
+Fixed! 🩹 ",workflow,workflow
+"Thank you for your contribution to add timestamps to the output modal! This feature will definitely improve the user experience.
+
+Before we can merge this PR, I noticed a few things that need to be addressed:
+
+1. The PR description is missing our standard checklist that's required for code changes. Please update your PR description to include the checklist from our template, including your test plan.
+
+2. You mentioned `pnpm test` fails due to Supabase URL and API key requirements. Can you provide more details about your testing approach beyond the automated tests? For example, did you manually verify the timestamp display works correctly in different scenarios?
+
+3. It would be helpful to include more details about how the timestamps are implemented and displayed in the UI.
+
+Please update your PR description with these items, and we'll be able to proceed with the review process.",workflow,review
+"@EricLBuehler - how's NCCL being built? Are you linking hpc-x and building against the current CUDA version of the container or using a prebuilt? Our shop are some of the magical elves nobody ever sees who build/run the HPC clusters for a bunch of the various clouds and enterprise orgs out there (framing-overhead off line rate sort of stuff where we can, and not even on IB these days) so NCCL, UCX, etc are recurring parts of our collective nightmares. Especially w/ the proprietary/open nonsense (b200's don't run the proprietary drivers and their mezzanine ""looks like"" 4 permanently IB-mode CX7s, NVL72s are even stranger), NCCL compilation to-target becomes even more relevant re ABI against CUDA, drivers, and OpenMPI (not to mention the toolchain changes currently rippling through canonical's LTS').
+
+Might be worth considering runtime instrumentation beyond the dynamic-dispatch stack traces such as codepoint interception and export to opentelem or some form of RPC to produce internal state telemetry for external analysis. More detailed console logging output probably can't hurt either (which kernels, parameters, etc) - maybe with some sort of verbosity flag to ratchet up the noise.",workflow,workflow
+Please retry the pull request.,workflow,workflow
+"@davidfowl this is ready to go in. Here is what it looks like when you execute `aspire config` without any arguments:
+
+```
+Description:
+  Manage configuration settings.
+
+Usage:
+  aspire config [command] [options]
+
+Options:
+  -?, -h, --help       Show help and usage information
+  -d, --debug          Enable debug logging to the console.
+  --wait-for-debugger  Wait for a debugger to attach before executing the command. [default: False]
+
+Commands:
+  get <key>          Get a configuration value.
+  set <key> <value>  Set a configuration value.
+  list               List all configuration values.
+  delete <key>       Delete a configuration value.
+```
+
+Exit code is 1.",workflow,workflow
+"@yegor256 Great job on the review! 🌟 You've earned +4 points: +12 base, -16 for no comments, +8 bonus. Your dedication is appreciated! Current balance: [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep up the excellent work!
+
+<!-- Thanks for the review! You've earned +4 points for this: +12 as a basis; -16 for absolutely no comments posted; +8 to give you at least something.  Your running balance is [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->",workflow,workflow

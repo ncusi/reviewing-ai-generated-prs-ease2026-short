@@ -1,0 +1,1088 @@
+text,predicted_label,gold_label
+@coderabbitai full review,agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+/gemini review,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+"I have redeploy again, locally, and I confirm this now working as expected. 
+
+![image](https://github.com/user-attachments/assets/db59aaff-acce-4180-82e6-f2455d5eea12)
+
+## Feedback
+
+To get the correct `openAIApiKey` name, I had to explicitly create a chatflow a add chatOpenAI Node (same apply for Gemini, etc), so maybe it would be good to let the user know what `providerApikey` is used in V2 (or document how `credential` work, if I am not missing something here). 
+
+![image](https://github.com/user-attachments/assets/c16483ed-db91-4faf-814d-5b1f1aba8fc2)
+
+
+
+
+
+
+
+
+
+
+",agentic_cmd,
+@coderabbit review,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+"> So another solution someone suggested is using other api like openrouter. 
+> Can you access openrouter api from China?
+
+Yes, but respecting system proxy setting would be more simple and direct (since connectivity is the issue, just fix connectivity - if they are using Claude Code, they must have had a proxy set up for that anyway.) Other programming languages' built-in fetch function usually read these env vars by default.
+
+Another thing we can consider is to have a model price list built-in, or cache it somewhere so that ccusage works even when user is completely offline. Pricing doesn't change all that often.",agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+"@greptileai could you please check again?
+",agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+"@pytorchbot revert -m ""breaking internal builds: unused variable 'halpha'"" -c ghfirst
+",agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+@CodeRabbit full review ,agentic_cmd,
+"@claude make a PR that is just the readme, why, philophy, without changing the index.md 
+",agentic_cmd,
+"@claude You created this PR and reported your findings here: https://github.com/angular-eslint/angular-eslint/issues/2425#issuecomment-2909107193 but the formatting is incorrect. Fix the formatting by running `pnpm format` and committing the result.
+
+Additionally add a test case which covers the multiple concatenations that you spoke about. For that you simply need to use `annotatedOutputs` as an array:
+
+Example from a different rule in the codebase:
+
+```
+convertAnnotatedSourceToFailureCase({
+    description: `can remove multiple consecutive variables when fixing`,
+    options: [{ allowedAliases: { $count: ['b'] } }],
+    annotatedSource: `
+      @for (item of items; track item.id; let a = $index, x = $even, b = $count) {,}
+                                              ~~~~~~~~~~  ^^^^^^^^^
+      `,
+    messages: [
+      {
+        char: '~',
+        messageId: preferContextualVariable,
+        data: { name: '$index' },
+      },
+      {
+        char: '^',
+        messageId: preferContextualVariable,
+        data: { name: '$even' },
+      },
+    ],
+    annotatedOutputs: [
+      `
+      @for (item of items; track item.id; let x = $even, b = $count) {,}
+                                                          
+      `,
+      `
+      @for (item of items; track item.id; let b = $count) {,}
+                                                          
+      `,
+    ],
+  }),
+  ```",agentic_cmd,
+@coderabbitai are you able to review the changes between the releases of the version of React 18 used in this repo and the latest release of React 19 and identify what needs to be updated in this repo to fully support React 19?,agentic_cmd,
+"gemini concerns are valid, but will be addressed in later iteration (already scheduled)",agentic_cmd,
+@5ohdan do you need some help? still this review from CodeRabbit hanging,agentic_cmd,
+"Yeah looking much better!
+
+We can likely migrate one form to the new format, considering the new structure and any small design changes, and then have Devin use that PR as a base for the rest. ",agentic_cmd,
+@pytorchmergebot rebase,agentic_cmd,
+@coderabbitai review please,agentic_cmd,
+@pytorchmergebot merge,agentic_cmd,
+@pytorchmergebot merge,agentic_cmd,
+"> @5ohdan do you need some help? still this review from CodeRabbit hanging
+
+@a-rebets yeah, i don't really know how to handle Zoom, basically because it is not a calendar provider and not an equal option to Google or Microsoft",agentic_cmd,
+"/gemini review
+",agentic_cmd,
+bugbot run,agentic_cmd,
+@pytorchmergebot merge,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+/gemini review,agentic_cmd,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for Pull Request #2915: ""docs: Adds Gemini example to OpenAI-compat section""
+
+## Overview
+The recent modifications to the `llm-connections.mdx` file introduce specific examples for integrating Gemini with OpenAI-compatible sections, which is a valuable addition for users. However, there are several areas where improvements can enhance the clarity and consistency of the documentation. Below are my observations and recommendations based on the current review.
+
+## Positive Aspects
+1. **Specificity**: Effective integration of Gemini-specific examples enhances user guidance.
+2. **Structural Consistency**: The overall organization of the document is maintained well, supporting readability.
+3. **Clear Environment Variables Documentation**: Well explained for user configuration.
+4. **Informative Comments**: Existing comments effectively guide users about crucial configurations like API key formats.
+
+## Suggestions for Improvement
+
+### 1. **Inconsistent Code Block Naming**
+**Issue**: The use of varied language identifiers such as ""Code"", ""Generic"", and ""Google"" can confuse users.
+**Recommendation**: Standardize the naming for consistency:
+```mdx
+```python environment-setup
+// Generic setup code
+```
+
+```python gemini-setup
+// Gemini-specific setup code
+```
+```
+
+### 2. **Missing API Version Notes**
+**Issue**: The API version (v1beta) is mentioned without context.
+**Recommendation**: Include a note clarifying the importance of API versions:
+```mdx
+<Note>
+    The Gemini OpenAI-compatible API currently uses the v1beta endpoint. Refer to the latest Google documentation for updates.
+</Note>
+```
+
+### 3. **Whitespace Consistency**
+**Issue**: Noticeable inconsistencies in whitespace after certain notes.
+**Recommendation**: Remain consistent with spacing, which can be achieved as follows:
+```mdx
+<Note>
+    By default, CrewAI uses the `gpt-4o-mini` model. This is determined by the `OPENAI_MODEL_NAME` environment variable, which defaults to ""gpt-4o-mini"" if not set.
+    You can configure your agents to use a different model as per this guide.
+</Note>
+```
+
+### 4. **Documentation Structure Enhancement**
+**Issue**: The Gemini section may benefit from a structured introduction.
+**Recommendation**: Introduce a brief overview before the examples:
+```mdx
+### Google Gemini Integration
+Gemini provides an OpenAI-compatible API endpoint facilitating integration with CrewAI. The following examples illustrate configuration steps:
+```
+
+### 5. **Model Name Clarity**
+**Issue**: The conversion of Gemini model naming needs further clarification.
+**Recommendation**: Add comprehensive documentation to specify:
+```mdx
+<Info>
+When using Gemini models, prepend the model name with `openai/` in the `OPENAI_MODEL_NAME`. 
+Available models include:
+- openai/gemini-2.0-flash
+- openai/gemini-2.0-pro
+</Info>
+```
+
+### 6. **Prominence for API Key Format**
+**Issue**: The commentary on API keys can be obscured.
+**Recommendation**: Transform inline comments into warnings for stronger emphasis:
+```mdx
+<Warning>
+Gemini API keys must start with `AIza...`. Check your key format to avoid authentication errors.
+</Warning>
+```
+
+### 7. **Code Block Formatting Standardization**
+**Issue**: Some code examples exhibit inconsistent formatting.
+**Recommendation**: Ensure uniformity:
+```python
+llm = LLM(
+    model=""openai/gemini-2.0-flash"",
+    base_url=""https://generativelanguage.googleapis.com/v1beta/openai/"",
+    api_key=""your-gemini-key"",  # Should start with AIza...
+)
+agent = Agent(llm=llm, ...)
+```
+
+## Summary
+In summary, by focusing on these corrective measures, we can significantly enhance the documentation's usability for developers relying on Gemini model integration with CrewAI. These improvements will foster better understanding and implementation, aligning closely with best practices observed in related documentation. 
+
+I recommend addressing these issues to enhance overall clarity, consistency, and user experience. Thank you for your efforts on this contribution!",agentic_cmd,
+@coderabbit review,agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+"hi mr @coderabbitai , can you review this file [`prod.js`](https://github.com/box/box-ui-elements/blob/master/scripts/prod.js) and tell me how you would modernize it? the `worker-farm` dependency is very old and I think it's causing out of memory issues. what's a modern way that we can build these locales in parallel?",agentic_cmd,
+/gemini review,agentic_cmd,
+@pytorchmergebot merge,agentic_cmd,
+@pytorchmergebot merge,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+"@claude can you create a fork of this branch and submit a pull request that merges into sam/miniflare base branch that:
+1. uses esbuild ""context"" to watch the bundle (when using esbuild to bundle a Worker with `entrypoint: string` defined and have it trigger an auto-update of the miniflare worker. This is for dev mode. It's basically hot reloading of the worker.
+2. use the vite programmable API to launch the vite projects when scope.dev is true in Website? The goal is to use vite's API to start a server that hot reloads and shares the same miniflare state as the singleton miniflare instance in alchemy",agentic_cmd,
+"@coderabbitai can you please generate more test cases
+which test the complete process coherently
+
+i.e.
+in the code a redirect with a flash message is set, then we expect as response a status code with redirect and a url and a cookie
+we now send this as well as the client or browser in a 2nd request to the server with the redirect url and the cookie header from the previous response and expect that in the response by the handler our flash message from is output (this message initially came from the first handler)",agentic_cmd,
+/gemini review,agentic_cmd,
+@coderabbitai,agentic_cmd,
+@coderabbitai are you able to identify the breaking changes between the major version for the `@box/blueprint-web` packages? here is the npm link to the package: https://www.npmjs.com/package/@box/blueprint-web,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+@coderabbitai review,agentic_cmd,
+@claude,agentic_cmd,
+@claude review,agentic_cmd,
+@coderabbitai plan,agentic_cmd,
+/gemini review,agentic_cmd,
+/azp run,bot,
+/format,bot,
+/intelci: run,bot,
+/azp run ,bot,
+/azp run,bot,
+"/azp run Linux QNN CI Pipeline,onnxruntime-binary-size-checks-ci-pipeline,Big Models,Linux Android Emulator QNN CI Pipeline,Android CI Pipeline,iOS CI Pipeline,ONNX Runtime React Native CI Pipeline,Linux DNNL CI Pipeline,Linux MIGraphX CI Pipeline,Linux ROCm CI Pipeline",bot,
+/azp run,bot,
+/azp run,bot,
+/intelci: run,bot,
+!gpu,bot,
+"/azp run Linux CPU CI Pipeline,Linux CPU Minimal Build E2E CI Pipeline,Linux GPU CI Pipeline,Linux GPU TensorRT CI Pipeline, Linux OpenVINO CI Pipeline,Linux QNN CI Pipeline,MacOS CI Pipeline,Windows ARM64 QNN CI Pipeline,Windows CPU CI Pipeline
+",bot,
+"/azp run Linux QNN CI Pipeline,Win_TRT_Minimal_CUDA_Test_CI,Windows ARM64 QNN CI Pipeline,Windows GPU Doc Gen CI Pipeline,Windows x64 QNN CI Pipeline",bot,
+/rebase,bot,
+"@microsoft-github-policy-service agree company=""Millennity""",bot,
+/backport to release/9.0,bot,
+/azp run,bot,
+!gpu,bot,
+/backport to release/9.2,bot,
+@microsoft-github-policy-service agree,bot,
+"/azp run Windows ARM64 QNN CI Pipeline,Windows x64 QNN CI Pipeline,Windows GPU Doc Gen CI Pipeline,ONNX Runtime Web CI Pipeline,Win_TRT_Minimal_CUDA_Test_CI,Linux CPU CI Pipeline,Linux CPU Minimal Build E2E CI Pipeline,Linux GPU CI Pipeline,Linux GPU TensorRT CI Pipeline,Linux OpenVINO CI Pipeline",bot,
+/ba-g infra failures,bot,
+/build-deploy-preview skip-tests=true,bot,
+@microsoft-github-policy-service agree,bot,
+/azp run,bot,
+"/bump-version type=patch changelog=""Use default precision when a Airbyte NUMBER gets converted to a decimal type.""
+
+
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13319506140
+> ✅ Changes applied successfully. (df39dfc42c74286d4df8a35ac0abbca178c77cc0)",bot,
+/build-deploy-preview skip-tests=true,bot,
+/intelci: run,bot,
+"/azp run Linux QNN CI Pipeline,Win_TRT_Minimal_CUDA_Test_CI,Windows ARM64 QNN CI Pipeline,Windows GPU Doc Gen CI Pipeline,Windows x64 QNN CI Pipeline",bot,
+"/azp run Windows GPU TensorRT CI Pipeline,onnxruntime-binary-size-checks-ci-pipeline,orttraining-linux-ci-pipeline,orttraining-linux-gpu-ci-pipeline,orttraining-ortmodule-distributed,Windows x64 QNN CI Pipeline,Big Models
+",bot,
+/azp run,bot,
+/azp run CI,bot,
+@microsoft-github-policy-service agree,bot,
+/check-enforcer override,bot,
+/azp run,bot,
+/azp run go - azeventhubs,bot,
+/build-deploy-preview skip-tests=true,bot,
+/azp run,bot,
+/build-deploy-preview skip-tests=true,bot,
+/azp run CI,bot,
+/azp run net - eventhub - tests,bot,
+/rebase,bot,
+/build-deploy-preview skip-tests=true,bot,
+@microsoft-github-policy-service agree,bot,
+/backport to release/10.0-preview1,bot,
+"/azp run Linux QNN CI Pipeline,onnxruntime-binary-size-checks-ci-pipeline,Big Models,Linux Android Emulator QNN CI Pipeline,Android CI Pipeline,iOS CI Pipeline,ONNX Runtime React Native CI Pipeline,Linux DNNL CI Pipeline,Linux MIGraphX CI Pipeline,Linux ROCm CI Pipeline",bot,
+"/azp run Linux QNN CI Pipeline,Win_TRT_Minimal_CUDA_Test_CI,Windows ARM64 QNN CI Pipeline,Windows GPU Doc Gen CI Pipeline,Windows x64 QNN CI Pipeline",bot,
+"/bump-version type=patch changelog=""Use default precision when a Airbyte NUMBER gets converted to a decimal type.""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13319466786",bot,
+/backport to release/9.2,bot,
+"@cincuranet I updated the code and pushed it out, but by the time the hotfix was rolled out system management had already mitigated the NRE by not auto-starting the tracing service and starting it after 3 minuten. They are not willing to rollback the change in production, because it solved their issue. They have rolled it out to a few testing clusters, but these are relatively small (10 machines per cluster) and not very busy so I have not been able to reproduce the issue there.
+
+I have updated the pull request so now it throws an exception and i am hoping you merge the change so the `hr` is actually written part of the throw exception instead of an NRE.",bot,
+/azp run all,bot,
+"Well, actually ""dotnet dev-certs https"" alone will create one if necessary (but untrusted).. Not sure where I'd put that. This change is accurate and an improvement. The actual docs explain all.",review,
+"Everybody adds port dependencies, nobody adds tests...
+CURL CMake code is changing fast. With support for a broad range of platforms, so pkg-config really matters more than CMake for dependencies and export.
+The key difference to upstream now is using `pkg_check_modules`'s `<Pkg>_LINK_LIBRARIES` instead of `<Pkg>_LIBRARIES` which saves us some trouble with regard to generated CMake config.
+
+*My* PR for today's [!] curl update, #43629, is based on this PR.",review,
+Hey @0xaguspunk is this accepted and ready to merge?,review,
+"> Which sections are you referring to? Can you share a screenshot?
+
+My bad - the docs must've been updated very recently. I checked them a few hours ago and there was still a table in the [LLM page](https://docs.crewai.com/concepts/llms) with only a couple of providers.
+
+We'll add the model-specific info in the main table you were referring to. Sorry for the confusion.",review,
+"It’s difficult to reproduce intentionally, but I’ve seen instances—and others have too—where the keys ended up in a different order than expected. This isn’t something we can easily trigger on demand, but those sporadic cases were enough to warrant adding explicit sorting for consistency.",review,
+"Deployed
+![CleanShot 2025-03-14 at 21 23 39](https://github.com/user-attachments/assets/63d1cad9-1a64-47a9-a54f-3e1ad09b0fdd)
+",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+## Code Review Comment for PR #2481
+
+### Overview
+This pull request introduces minor improvements and bug fixes to the following two files: `src/crewai/crew.py` and `src/crewai/utilities/events/utils/console_formatter.py`. The changes not only enhance code quality but also improve stability and performance. Below is a detailed analysis of the modifications, along with suggestions for further enhancements.
+
+### 1. `src/crewai/crew.py`
+
+#### Changes Made:
+- **Removal of Unused Import**: The import of `LangchainBaseTool` has been removed, which cleans up the code significantly.
+- **Whitespace Fix in `key` Method**: Corrected whitespace issues for better formatting.
+
+#### Code Quality Findings:
+- ✅ **Positive Improvement**: The removal of unused imports helps in reducing clutter and maintaining code cleanliness.
+- ✅ **Positive Improvement**: The whitespace fix contributes positively to the overall readability of the code.
+
+#### Suggestions for Improvement:
+To further enhance the clarity of the `key` method, consider adding a docstring. Here’s a recommended implementation:
+
+```python
+@property
+def key(self) -> str:
+    """"""
+    Generates a unique key for the crew based on task keys.
+    
+    Returns:
+        str: MD5 hash of concatenated task keys.
+    """"""
+    source = [task.key for task in self.tasks]
+    return md5(""|"".join(source).encode(), usedforsecurity=False).hexdigest()
+```
+
+### 2. `src/crewai/utilities/events/utils/console_formatter.py`
+
+#### Changes Made:
+- **Safety Check Addition**: Implemented a check before removing `tool_branch` to prevent null reference errors.
+- **Break Statement in Test Completion Loop**: Added to optimize loop efficiency.
+- **Error Handling Improvements**: Enhanced error handling in the LLM call completion method.
+
+#### Code Quality Findings:
+- ✅ **Positive Improvement**: The null check significantly reduces the risk of runtime exceptions when dealing with `tool_branch`.
+- ✅ **Positive Improvement**: The break statement enhances processing efficiency by avoiding unnecessary iterations.
+- ⚠️ **Potential Improvement**: The error handling could be more robust, addressing various failure scenarios comprehensively.
+
+#### Suggested Enhancements:
+1. Improve error management in the LLM call completion function with catchable exceptions:
+
+```python
+def handle_llm_call_completed(
+    self, tool_branch: Optional[Tree], agent_branch: Tree, crew_tree: Tree
+) -> None:
+    try:
+        if tool_branch and ""Thinking"" in str(tool_branch.label):
+            if tool_branch in agent_branch.children:
+                agent_branch.children.remove(tool_branch)
+                self.print(crew_tree)
+                self.print()
+    except Exception as e:
+        logger.error(f""Error handling LLM call completion: {str(e)}"")
+```
+
+2. Enhance the test completion handler for better status visibility:
+
+```python
+def handle_crew_test_completed(
+    self, success: bool, flow_tree: Optional[Tree]
+) -> None:
+    if flow_tree:
+        test_status = ""✅ Tests completed successfully"" if success else ""❌ Tests failed""
+        test_style = ""green"" if success else ""red""
+        
+        for child in flow_tree.children:
+            if ""Running tests"" in str(child.label):
+                child.label = Text(test_status, style=test_style)
+                break
+        
+        self.print(flow_tree)
+        self.print()
+```
+
+### General Recommendations:
+1. **Logging**: Implement logging statements to facilitate better debugging:
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+```
+
+2. **Type Hinting**: Ensure that all method parameters and return types are annotated for improved code maintainability.
+
+3. **Unit Testing**: Create unit tests for the new error-handling scenarios to ensure all paths are thoroughly covered and functioning as expected.
+
+### Summary of Impact:
+- The changes successfully enhance the code's stability through the introduction of proper null checks.
+- Removal of redundant imports and improved formatting contribute positively to code readability.
+- The introduction of efficiency improvements like the break statement indicates a thoughtful approach to performance.
+
+### Final Recommendation:
+- ✅ The changes proposed in this PR are safe for merging.
+- ✅ The overall improvements in code quality are commendable.
+- ⚠️ Minor suggestions for further enhancements have been provided but are not blocker issues for merging.
+
+In conclusion, the changes made in this PR significantly enhance the codebase, particularly in terms of error handling and code efficiency. Implementing the suggested improvements would further elevate the code quality.",review,
+"Hi @lucasgomide,
+here is a concrete launches before and after a fix:
+- [before.log](https://github.com/user-attachments/files/20946749/before.log)
+- [after.log](https://github.com/user-attachments/files/20946748/after.log)
+
+This is a dummy task to create 10 files. You can observe that:
+- _before.log_ contains **5** _""You ONLY have access to the following tools...""_ across 14 messages.
+- _after.log_ contains only **2** of them across 13 messages: one in the first system message and the second one in the last message. 
+
+We can refactor it further and exclude _""You ONLY have access to the following tools...""_ from the first system message when we decide to put the reminder in the last message. 
+
+Yes, as I have mentioned this is not very elaborate PR because I'd like to validate the approach before doing it properly.",review,
+"> > > The another thing to do is to add windows to os-matrix in workflow. Is that OK with u?
+> > > Edit: We can run only the test for windows total memory function on these machine if we want
+> > 
+> > 
+> > Sorry I didn't quite get this. ""os-matrix in workflow"" - where would this be?
+> > From my side looks good to merge
+> 
+> Sorry meant here: see matrix.os in https://github.com/PriorLabs/TabPFN/blob/main/.github/workflows/pull_request.yml
+
+@LeoGrin ",review,
+"> Not exactly the results I was hoping for.
+> Any ideas?
+
+Yeah, that's what I suspected will happen :( Bcl in full framework doesn't have those functions vectorised.
+
+And the issue with fslib is that it ships as netstandard, so there's no way to tailor separate implementations for netfx and netcore.",review,
+Closing since we are continuing with this PR: https://github.com/calcom/cal.com/pull/20674,review,
+"> ### Bug: Navbar Renders Incorrectly on Onboarding Pages
+> The navbar refactoring removed the onboarding logic that previously prevented the navbar from rendering on `/onboarding` paths. The `Navbar` component now always renders, causing it to appear on onboarding pages where it should be hidden.
+> 
+> `apps/comps/components/navbar/index.tsx#L16-L26`
+> [Fix in Cursor](https://cursor.com/open?data=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJ1Z2JvdC12MSJ9.eyJ2ZXJzaW9uIjoxLCJ0eXBlIjoiQlVHQk9UX0ZJWF9JTl9DVVJTT1IiLCJkYXRhIjp7InJlZGlzS2V5IjoiYnVnYm90OjQ1MTUzMDI0LWRhNDAtNGRiNS04MDM3LTZmMjNjNzEzYzc3NyIsImVuY3J5cHRpb25LZXkiOiJHWmstYmF5WUhjMk9lMmZhZHBZeVJ1VG5MRWVhaFBBZFpiRmNuQmx6TnZFIiwiYnJhbmNoIjoicmFtaXJvdHcvdWktaXNzdWVzIn0sImlhdCI6MTc1MTAzNDM5MywiZXhwIjoxNzUxNjM5MTkzfQ.jhrRT_BCz8_3u_QSL-1Q7Vnzx-NCERq8oXbaH236XCnv8NJN25m0j444Ivt0rU0MJ3jJACWUvXV3OGImj_9zmKLwk3bqw5DBILJoCgPrONhTnio-vAczI2xflgfuV2BAM48ClW-R_PewnIadOXphmYVB6YDzEb8UCyNxCu-l6MEVOtzj8yS77_6Mu_1zy1TI_sGojSwt7v2YjudYdHz0Mep5M5KEIpXDbsD7FkqBqbxH8_28268H6aQ-LGu76mFOs3w3MnVsFE8-AePlWywdvjoZfNZv3rUMYXCgj8xVu9ZsFyKKKlHbAs_nbHUgvdMA189-zzIzZQP5mpssAQYTBg)
+> 
+> ### Bug: Navbar Renders Incorrectly on Onboarding Page
+> The onboarding page's special rendering logic was removed during navbar refactoring. Previously, the Navbar component would skip rendering the navbar and main content wrapper for the onboarding page. Now, both the navbar and main content wrapper are always rendered, breaking the intended onboarding page design.
+> 
+> `apps/comps/app/layout.tsx#L30-L34`
+> [Fix in Cursor](https://cursor.com/open?data=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJ1Z2JvdC12MSJ9.eyJ2ZXJzaW9uIjoxLCJ0eXBlIjoiQlVHQk9UX0ZJWF9JTl9DVVJTT1IiLCJkYXRhIjp7InJlZGlzS2V5IjoiYnVnYm90OjMwYjE3ZGE3LWI2N2QtNGE5Ny1hYmY1LWI5NTZlNmNlNjdkYyIsImVuY3J5cHRpb25LZXkiOiJxSVJ3Y1NEQ3UtaHBIczQyOFV6UXNTeDBPSE1KVE9sczMzSVNjS1pfT2lNIiwiYnJhbmNoIjoicmFtaXJvdHcvdWktaXNzdWVzIn0sImlhdCI6MTc1MTAzNDM5MywiZXhwIjoxNzUxNjM5MTkzfQ.cnQI9IeBSkQAQ7aAEt4XCjEthoKyM1vtTycsnwPUuBNWf6nDf90-l52xt0icZhOJyr8QnTwNX3VOgtdrkr20N8ZysDobY9UxUHfg7nKvMFSgWeaIoDyzhVXb9Zr1z62Nohe0utvLvYLft3qa_iU1h8zNVGn0VC1xMZYZYKLQTkSTyUjWzja8nY8j3b9FR5A2SvMFKs51NpZvUdjEdN_YuY1_zgEwZJDNpUPNpVxGpXfP7Ntkn6w4kO2Q_LC2i7Vs8J6IDOEdyII9UVOMhugqvG_aGOSN7iuZsMtkhloXwKDmTxWMy5NDCS5fU51cT0Zi-YhlYtaQakiI1ES_svRamA)
+> 
+> _Comment `bugbot run` to trigger another review on this PR_ _Was this report helpful? Give feedback by reacting with 👍 or 👎_
+
+the onboarding pages are leftovers from the old Wednesday Studio designs and will be cleaned up as part of https://github.com/recallnet/js-recall/issues/719",review,
+"## :white_check_mark: API diff for current PR / commit
+
+<details><summary>.NET ( No breaking changes )</summary>
+
+* iOS: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/previous-api-comparison/diff/Microsoft.iOS.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/fc2075e056e30f59b1f84354e2da7cbd) ( No breaking changes )
+* tvOS: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/previous-api-comparison/diff/Microsoft.tvOS.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/1f514ec782fed83048c84141a85967fc) ( No breaking changes )
+* MacCatalyst: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/previous-api-comparison/diff/Microsoft.MacCatalyst.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/d75fc9a5b5bc98271ecd6c4070af69c8) ( No breaking changes )
+* macOS: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/previous-api-comparison/diff/Microsoft.macOS.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/25826b1a11108c2809ab0537755d9034) ( No breaking changes )
+
+</details>
+
+
+## :heavy_exclamation_mark: API diff vs stable (Breaking changes)
+
+<details><summary>.NET ( :heavy_exclamation_mark: Breaking changes :heavy_exclamation_mark: )</summary>
+
+* iOS: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/stable-api-comparison/diff/Microsoft.iOS.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/ea121a9f91aca9e4c925ebf01e54bac8) ( :heavy_exclamation_mark: Breaking changes :heavy_exclamation_mark: )
+* tvOS: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/stable-api-comparison/diff/Microsoft.tvOS.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/4f44f3b0414563ccabbb1f0aadc93786) ( :heavy_exclamation_mark: Breaking changes :heavy_exclamation_mark: )
+* MacCatalyst: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/stable-api-comparison/diff/Microsoft.MacCatalyst.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/6bdcd350575647ac844ac4fca8e0ba9c) ( :heavy_exclamation_mark: Breaking changes :heavy_exclamation_mark: )
+* macOS: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/stable-api-comparison/diff/Microsoft.macOS.html) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/73ab19a1ad448c5b562674d9dd49d86e) ( :heavy_exclamation_mark: Breaking changes :heavy_exclamation_mark: )
+
+</details>
+
+
+<!-- BreakingChangesDetected -->
+
+
+## :information_source: Generator diff
+
+Generator Diff: [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/generator-diff/index.html) (html) [vsdrops](https://vsdrop.corp.microsoft.com/file/v1/xamarin-macios/detected-changes/20250211.47/10993910-1/;/generator-diff/generator.diff) (raw diff) [gist](https://gist.github.com/vs-mobiletools-engineering-service2/a8b98fb35e45f6ba09e194ec866e2258) (raw diff) - Please review changes)
+
+
+[Pipeline](https://devdiv.visualstudio.com/DevDiv/_build/index?buildId=10993910&view=ms.vss-test-web.test-result-details) on Agent 
+Hash: [5691dd3bffc01519d76709f182acc160fc4fb1ea](https://github.com/xamarin/xamarin-macios/pull/22161/commits/5691dd3bffc01519d76709f182acc160fc4fb1ea)  [PR build]
+
+[comment]: <> (This is a comment added by Azure DevOps, id: api diff)
+",review,
+Please resolve docbuild fail before merge: https://dev.azure.com/daal/DAAL/_build/results?buildId=44462&view=logs&j=12f1170f-54f2-53f3-20dd-22fc7dff55f9&t=5caf77c8-9b10-50ef-b5c7-ca89c63e1c86&l=950,review,
+"We need to check that '.' is not a valid character in all the places we use this to escape things. I feel it's probably OK, but would want to validate or test.",review,
+"> @RiskyMH want to push up a PR to setup-bun to fix it (without a breaking change)?
+
+I'll work on it.",review,
+"> merged, can you. confirm this work?
+
+sure!",review,
+"Please update CI testing: `Run Unit tests(Rust)` to run all Rust test codes on GitHub Actions.
+
+target file: https://github.com/vdaas/vald/blob/main/.github/workflows/unit-test-rust.yaml",review,
+"> 1. You accidentally pushed a new package in package.json
+> 2. https://github.com/calcom/cal.com/pull/21466/files#r2102031803
+
+deleted it from this commit , thanks",review,
+"实测最新版 0.3.26 这个问题仍然存在
+https://github.com/user-attachments/assets/72d996c7-0160-49b5-9301-f60c70b8dd25
+
+",review,
+PRs are merged now,review,
+"> > I think for the env vars we can just have the user set them up in their .env file and we directly read them from there. I think Vercel AI SDK is like that.
+> 
+> had a discussion in the last PR about this.
+> 
+> [#231 (comment)](https://github.com/anti-work/shortest/pull/231#discussion_r1900478123)
+> 
+> after my PR merge, -> any field that can accept an env variable is optional. the code has a fallback to the env variable.
+
+Just saw your PR. This PR is not required anymore as your solves it in a better way. ",review,
+fixes: https://github.com/crewAIInc/crewAI/issues/2150#issuecomment-2691352566,review,
+The buildbox/rsyslog solaris11x64 rsyslog failure is in an unrelated test pmrfc3164-json.sh that uses imtcp and omfile with tcpflood.  This particular PR only affects omuxsock.  Note that pmrfc3164-json.sh passes locally for me.,review,
+This fix is working great for me.,review,
+"sorry, some CI pipelines changed - needs to be merged with main",review,
+"I think I messed up by merging this. I thought the opacity was at the segmentation level, but it seems to be segment-specific. Could you please create a pull request to revert this change? My reasoning is that there's only one layer of opacity change at the API level, which is between Segmentations, not within them. If someone needs a different opacity for any active segment, they can use the `perSegment` configuration.
+
+This PR also cannot get merged, https://github.com/cornerstonejs/cornerstone3D/pull/1836 as it is adding another layer of opacity configuration at api level. There is already API for perSegment configuration
+
+@minimal-scouser @stada526 ",review,
+"> How hard is it to create this PR? My main concerns is how often do we need to sync the CRP API to our namespace API
+
+I believe any changes would almost always require a new API version..",review,
+"> @Rish-it do you need another review of this?
+
+I’ve made all the final changes you mentioned in the last review, as well as the checkpoint from @Kitenite regarding the gradient removal. I think we’re good to merge this for now  I’ll keep an eye out and address any bugs that may come up.
+
+",review,
+"Indeed! 
+But it's something separate.
+
+The PR here is just about representing the non-projected operator, if it happens to have a representation in the subspace. 
+And as it stands, it does not break any consistency in the existing code, give better error messages, and allows for using netket as is to do some extra things. 
+So it is a very good idea to merge it.
+
+Whether we want to address the fact that we do not have a simple way to represent projection, it's another matter.",review,
+"This continues moving along, there are now only two non-JSON things being returned by `alternatives`:
+
+- The `test`, which unfortunately is widely used
+- The `start`, which likewise
+
+We really ought to redo this and make it saner to start, but :shrug:",review,
+"This should fix #16 @threepointone if you want to take a look
+
+This should also further fix #10 removing the warning log",review,
+"Looks like updating the `BootstrapSdkVersion` leads to bunch of IDE0052 errors in tests
+```
+error IDE0052: (NETCORE_ENGINEERING_TELEMETRY=Build) Private member '' can be removed as the value assigned to it is never read (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0052)
+```
+
+@GangWang01, @JaynieBai could you please fix these in the current PR?",review,
+I looked at how it was done in other places and added a disposable callback for settings updates. Now it looks correct to me,review,
+"Closing, duplicated.",review,
+"> Please fix the commit errors
+
+@DarkLight1337 The failed buildkite jobs are failing with some other Dockerfile with nvidia base image and not for the changes made in this PR",review,
+"This PR also fixes a runtime bug where services can be initialized twice, which is problematic and can cause errors.",review,
+Can you generate a changeset for the change in agents core? @seratch ,review,
+"Currently the use of this API is somewhat unstable (though this is not due to the feature itself, but rather how it is currently used/set up). Will investigate further as well as fix any linting errors
+
+For reference, the bulk of the changes in the latest commit is to create the contexts once with a single contextCreateFromBinaryListAsync() call with all necessary context bins. While everything can still run with multiple calls like before, the feature itself is not utilized properly unless done this way.",review,
+Please run `pre-commit run --all-files` to address the pre-commit scans. Thank you! ,review,
+"> > While we are at it, we should also test that the failed terraform apply also exits 1, and that a successful apply exits zero.
+> 
+> Done
+> 
+> But a note now tests will pass only first time. I need to delete the resources so that they always, pass. We can either do that in this pr or raise another pr because we should technically do it for all tests and i want to keep this pr short. Like we decided
+
+We support a new “clean” setting in the test configuration that will delete any unstated files inside the scenario, when set to true. Use this to automatically ensure the working directory is reset when you need it to be.",review,
+"Hey @Rebecca-Qian! Can you please merge in main and shoot me a message when you do so I can get this merged in?
+
+Thank you for updating these docs!",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2224
+
+## Overview
+The changes in this pull request enhance the token counting logic by implementing additional type safety checks when handling the `usage` token details. The aim is to improve code reliability and maintainability.
+
+## Positive Aspects
+- **Null Safety Checks**: The implementation of null checks for `usage.prompt_tokens_details.cached_tokens` is a commendable effort that helps in preventing potential `AttributeError` scenarios.
+- **Improved Readability**: Adjustments in line formatting have enhanced the readability of the code, allowing for easier navigation and understanding.
+- **Consistent Indentation**: Maintaining consistent indentation throughout the file adheres to Python's stylistic conventions, which is a plus.
+
+## Specific Code Improvements
+1. **Type Hints**: 
+   - The code would benefit significantly from explicit type hints, which enhances static analysis and developer understanding:
+   ```python
+   def log_success_event(
+       self,
+       usage: TokenUsage,  # Explicit type hinting
+   ) -> None:  # Specify return type
+   ```
+
+2. **Simplifying Nested Checks**: 
+   - It can be more Pythonic to use `getattr()` instead of multiple nested `hasattr()` calls:
+   ```python
+   # Current:
+   if (
+       hasattr(usage, ""prompt_tokens_details"")
+       and usage.prompt_tokens_details
+       and usage.prompt_tokens_details.cached_tokens
+   ):
+   # Suggested:
+   if getattr(usage, ""prompt_tokens_details"", None) and getattr(
+       usage.prompt_tokens_details, ""cached_tokens"", None
+   ):
+   ```
+
+3. **Consistent Line Formatting**:
+   - While improving line breaks is beneficial, consistently using parentheses can also enhance readability:
+   ```python
+   self.token_cost_process.sum_completion_tokens(
+       usage.completion_tokens
+   )
+   # Could be simplified to:
+   self.token_cost_process.sum_completion_tokens(usage.completion_tokens)
+   ```
+
+4. **Documentation Enhancements**:
+   - Adding docstrings will improve clarity around the function's purpose and parameters:
+   ```python
+   def log_success_event(self, usage):
+       """"""
+       Log successful token usage events and update token counters.
+       
+       Args:
+           usage (TokenUsage): Token usage information containing prompt and completion details
+           
+       Note:
+           Handles both regular token counts and cached token statistics
+       """"""
+   ```
+
+## Security & Performance
+- No security vulnerabilities were identified.
+- The added null checks enhance security by preventing possible runtime exceptions.
+- Changes are optimized with minimal impact on performance.
+
+## Testing Recommendations
+- Implement unit tests to cover scenarios involving null checks.
+- Add test cases for missing `prompt_tokens_details`.
+- Ensure testing behavior when `cached_tokens` is `None`.
+
+## Conclusion
+The modifications made in PR #2224 lead to significant improvements in the stability and clarity of the codebase, primarily through enhanced null checks. However, addressing the suggestions for type hints, simplification of checks, consistent formatting, and improved documentation would further elevate the code quality. 
+
+This PR is on a positive trajectory and is suitable for merging with these enhancements in mind. Continuous focus on clear documentation and testing is crucial for future contributions, ensuring a robust and maintainable codebase for all developers involved.",review,
+"the loss of accuracy (versus fp32) can be mitigated (whilst still retaining the favourable performance) by using split-k matmul.
+
+fluffy measured the accuracy and perf for various values of k in a triton implementation:  
+https://github.com/sekstini/gpupoor
+
+Zippy offers a cuBLAS implementation here:  
+https://github.com/aredden/torch-cublas-hgemm",review,
+"> But the registry was caching the evaluation across it's lifetime
+
+That call is inside a closure, just to bind the namespace. `maxInFlight`, `maxTotal`, etc. were being called each time",review,
+todo: call dispose for reaction...,review,
+"I feel you :)
+
+I can help with testing, with my update I basically use ifs when the code
+was different in the reversed list, so there should not be any regression.
+I added the TODOs because sometimes I could not tell if this was an
+omission of something you really wanted only in the non-reversed list (do
+some people even used non reversed ? :p)
+
+I did not dive into mixins because, for example, the scroll mixin would
+have to have access to `_oldList`, this is doable with an ""abstract"" getter
+in the mixin but (once again not a Dart pro) felt like not the right way to
+do it.
+
+Let me know if I can help, will have some time next week.
+",review,
+"> @romitg2 Could you share a loom/recording before and after where first it shows that earlier there was an error in signup and now it isn;t there.
+> 
+> Thanks for the PR btw 🙏
+
+@hariombalhara  I wasn't actually getting error in my local setup. but you mentioned that you somehow getting `refresh_token_expires_in` field. So, i thought to check AccountData before creating Account so that we can avoid sending this field.
+
+- have i misunderstood the issue?
+",review,
+"> I 100% agree this would be a valuable feature, I am a chronic file saver and in no way mean to be pushing that often to the gist.
+> 
+> I am unfortunately not experienced enough in vscode extensions to properly assess the code but generally seems good and aligns with my personal expectations for this feature and how it should work.
+
+happy to see that it may help.",review,
+"This pull request has been mentioned on **Mautic Forums**. There might be relevant details there:
+
+https://forum.mautic.org/t/public-release-of-mautic-7-0-alpha/36111/2
+",review,
+Thanks,workflow,
+"@ivanpovazan You could use https://github.com/grendello/XAPerfTestRunner to run a sample app with both this PR and `main`, and compare the results. Marshal methods impact startup performance in a noticeable way, so the tests could be ran in the following configurations:
+
+  1. (`main`) marshal methods disabled
+  2. (`main`) marshal methods enabled
+  3. (`PR`) managed marshal methods enabled
+",workflow,
+@LaptopCat Please add unit+tests for this functionality,workflow,
+"@junqi-lu Apologies for the late reply here! This is a great contribution, and I appreciate the thoughtfulness in your implementation 🙏🏼 
+
+I left a handful of comments, but am otherwise happy with the PR. If you had a moment to make a few of the suggested changes, that would be awesome. And then I can get an update published later today (or whenever we get this merged).
+
+Thanks!",workflow,
+"@andiemanning Sorry, but I can't find the comments. Can you send the link to them, please?
+",workflow,
+"Thanks for the feedback @laugardie, would address and should get them sorted within the next couple of hours.",workflow,
+"Thank you for your PR implementing the Enrichlayer integration! The implementation looks comprehensive and well-structured.
+
+### Observations
+
+- Your code is well-documented with clear docstrings and appropriate test cases
+- The implementation follows the project patterns for block definitions
+- The credential handling is properly set up
+- You've added cost configurations for the new blocks
+
+### Issues to Address
+
+1. **Merge Conflicts**: Your PR has the ""conflicts"" label, meaning there are merge conflicts that need to be resolved before this can be merged. Please rebase your branch on the latest main branch and resolve any conflicts.
+
+2. **Minor Out-of-Scope Change**: There's an addition to CLAUDE.md that adds instructions for reviewing/revising PRs. While this is a minor change, it might be better to submit this as a separate PR since it's not directly related to the Enrichlayer integration.
+
+Once you've resolved the merge conflicts, this PR looks ready for approval. Great work on the implementation!
+
+### Next Steps
+
+1. Resolve the merge conflicts
+2. Consider moving the CLAUDE.md changes to a separate PR if possible
+3. Respond to this review when the conflicts are resolved",workflow,
+Fixed!,workflow,
+@dotnet-policy-service agree,workflow,
+I have read the CLA Document and I hereby sign the CLA,workflow,
+"@yegor256 Hey there! 👋 Great job on the review! You've snagged +9 points for your effort. Here's the breakdown: +4 base points, +15 for reviewing a whopping 1531 hits-of-code (impressive!), but we had to deduct 10 points because there were only 3 comments. Remember, more comments can boost your score next time! Your current balance stands at [-596](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep up the good work and aim for those bonus points! 💪
+
+<!-- Thanks for the review! You've earned +9 points for this: +4 as a basis; +15 for the 1531 hits-of-code that you reviewed; -10 for very few (3) comments.  Your running balance is [-596](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->",workflow,
+"@jc26 @raulpopadineti  @slavingia One question 
+
+For all the card that look like below attached cards , should i maintain the spacing for the separator like in the design Sahil has added in the comment
+
+![card-line](https://github.com/user-attachments/assets/972db6b5-19e2-4bf2-a8b8-5852bc7f20c1)
+",workflow,
+@marcosmarxm Let me know when this RC is available and I'll update our prod connectors to it,workflow,
+good catch!,workflow,
+"@190n @Jarred-Sumner made some changes. this one seems tough, I know we want to avoid safety checks typically for perf reasons. 
+
+@Jarred-Sumner is this accurate?
+<img width=""916"" alt=""image"" src=""https://github.com/user-attachments/assets/39d58d99-7705-4c87-a238-c90f3d355a97"" />
+
+
+
+Curious if what @dylan-conway  pointed out is still problematic:
+
+![image](https://github.com/user-attachments/assets/5cb175ac-a83c-4218-93b0-c918b09ca8f3)
+",workflow,
+@DimasKovas I updated to the PR description to add why I exposed all the SSL parameters. I'm also covering `libpagestore.c` now too.,workflow,
+"Thanks, @Paulalex85! I think the should-fail tests are currently not as useful largely because they don't verify that every one of the cases listed there is failing. Instead, ideally, there'd be a single test per case that's expected to fail to parse.
+
+",workflow,
+"@grivera64 you mean like this ?
+
+<details>
+<summary>Patch</summary>
+
+```diff
+diff --git a/app.go b/app.go
+index 75d83fd2dcbe7e916067b65a1f1a279ea0f48662..4229cabd3a95bdadf62957613a06b0e9313418cc 100644
+--- a/app.go
++++ b/app.go
+@@ -1094,60 +1094,74 @@ func (app *App) Test(req *http.Request, config ...TestConfig) (*http.Response, e
+ 		channel <- app.server.ServeConn(conn)
+ 		returned = true
+ 	}()
+ 
+ 	// Wait for callback
+ 	if cfg.Timeout > 0 {
+ 		// With timeout
+ 		select {
+ 		case err = <-channel:
+ 		case <-time.After(cfg.Timeout):
+ 			conn.Close() //nolint:errcheck // It is fine to ignore the error here
+ 			if cfg.FailOnTimeout {
+ 				return nil, os.ErrDeadlineExceeded
+ 			}
+ 		}
+ 	} else {
+ 		// Without timeout
+ 		err = <-channel
+ 	}
+ 
+ 	// Check for errors
+ 	if err != nil && !errors.Is(err, fasthttp.ErrGetOnly) && !errors.Is(err, errTestConnClosed) {
+ 		return nil, err
+ 	}
+ 
+-	// Read response
++	// Read response(s)
+ 	buffer := bufio.NewReader(&conn.w)
+ 
+-	// Convert raw http response to *http.Response
+-	res, err := http.ReadResponse(buffer, req)
+-	if err != nil {
+-		if errors.Is(err, io.ErrUnexpectedEOF) {
+-			return nil, ErrTestGotEmptyResponse
++	var res *http.Response
++	for {
++		// Convert raw http response to *http.Response
++		res, err = http.ReadResponse(buffer, req)
++		if err != nil {
++			if errors.Is(err, io.ErrUnexpectedEOF) {
++				return nil, ErrTestGotEmptyResponse
++			}
++			return nil, fmt.Errorf(""failed to read response: %w"", err)
++		}
++
++		// Break if this response is non-1xx or there are no more responses
++		if res.StatusCode >= http.StatusOK || buffer.Buffered() == 0 {
++			break
++		}
++
++		// Discard interim response body before reading the next one
++		if res.Body != nil {
++			_, _ = io.Copy(io.Discard, res.Body)
++			res.Body.Close()
+ 		}
+-		return nil, fmt.Errorf(""failed to read response: %w"", err)
+ 	}
+ 
+ 	return res, nil
+ }
+ 
+ type disableLogger struct{}
+ 
+ func (*disableLogger) Printf(string, ...any) {
+ }
+ 
+ func (app *App) init() *App {
+ 	// lock application
+ 	app.mutex.Lock()
+ 
+ 	// Initialize Services when needed,
+ 	// panics if there is an error starting them.
+ 	app.initServices()
+ 
+ 	// Only load templates if a view engine is specified
+ 	if app.config.Views != nil {
+ 		if err := app.config.Views.Load(); err != nil {
+ 			log.Warnf(""failed to load views: %v"", err)
+ 		}
+ 	}
+ 
+diff --git a/app_test.go b/app_test.go
+index 60232160e029885bd1215ee53e3eb05dbf40ddce..9d887d90518d801d5169bddcae0cdd64db9f5243 100644
+--- a/app_test.go
++++ b/app_test.go
+@@ -1737,50 +1737,71 @@ func Test_App_Test_timeout_empty_response(t *testing.T) {
+ 		return nil
+ 	})
+ 
+ 	_, err := app.Test(httptest.NewRequest(MethodGet, ""/"", nil), TestConfig{
+ 		Timeout:       100 * time.Millisecond,
+ 		FailOnTimeout: false,
+ 	})
+ 	require.ErrorIs(t, err, ErrTestGotEmptyResponse)
+ }
+ 
+ func Test_App_Test_drop_empty_response(t *testing.T) {
+ 	t.Parallel()
+ 
+ 	app := New()
+ 	app.Get(""/"", func(c Ctx) error {
+ 		return c.Drop()
+ 	})
+ 
+ 	_, err := app.Test(httptest.NewRequest(MethodGet, ""/"", nil), TestConfig{
+ 		Timeout:       0,
+ 		FailOnTimeout: false,
+ 	})
+ 	require.ErrorIs(t, err, ErrTestGotEmptyResponse)
+ }
+ 
++func Test_App_Test_EarlyHints(t *testing.T) {
++	t.Parallel()
++
++	app := New()
++	hints := []string{""<https://cdn.com>; rel=preload; as=script""}
++	app.Get(""/early"", func(c Ctx) error {
++		c.SendEarlyHints(hints)
++		return c.Status(StatusOK).SendString(""done"")
++	})
++
++	req := httptest.NewRequest(MethodGet, ""/early"", nil)
++	resp, err := app.Test(req)
++
++	require.NoError(t, err)
++	require.Equal(t, StatusOK, resp.StatusCode)
++	require.Equal(t, hints, resp.Header[""Link""])
++	body, err := io.ReadAll(resp.Body)
++	require.NoError(t, err)
++	require.Equal(t, ""done"", string(body))
++}
++
+ func Test_App_SetTLSHandler(t *testing.T) {
+ 	t.Parallel()
+ 	tlsHandler := &TLSHandler{clientHelloInfo: &tls.ClientHelloInfo{
+ 		ServerName: ""example.golang"",
+ 	}}
+ 
+ 	app := New()
+ 	app.SetTLSHandler(tlsHandler)
+ 
+ 	c := app.AcquireCtx(&fasthttp.RequestCtx{})
+ 	defer app.ReleaseCtx(c)
+ 
+ 	require.Equal(t, ""example.golang"", c.ClientHelloInfo().ServerName)
+ }
+ 
+ func Test_App_AddCustomRequestMethod(t *testing.T) {
+ 	t.Parallel()
+ 	methods := append(DefaultMethods, ""TEST"") //nolint:gocritic // We want a new slice here
+ 	app := New(Config{
+ 		RequestMethods: methods,
+ 	})
+ 	appMethods := app.config.RequestMethods
+ 
+ 	// method name is always uppercase - https://datatracker.ietf.org/doc/html/rfc7231#section-4.1
+ 	require.Equal(t, len(app.stack), len(appMethods))
+diff --git a/ctx_test.go b/ctx_test.go
+index 0510f7b47e27f241df7a16411e8447e8bf2b57a0..0de5eea8f4253e3961d8c8922b4b31480143286b 100644
+--- a/ctx_test.go
++++ b/ctx_test.go
+@@ -3467,62 +3467,62 @@ func Test_Ctx_Download(t *testing.T) {
+ 	}()
+ 
+ 	expect, err := io.ReadAll(f)
+ 	require.NoError(t, err)
+ 	require.Equal(t, expect, c.Response().Body())
+ 	require.Equal(t, `attachment; filename=""Awesome+File%21""`, string(c.Response().Header.Peek(HeaderContentDisposition)))
+ 
+ 	require.NoError(t, c.Res().Download(""ctx.go""))
+ 	require.Equal(t, `attachment; filename=""ctx.go""`, string(c.Response().Header.Peek(HeaderContentDisposition)))
+ 
+ 	require.NoError(t, c.Download(""ctx.go"", ""файл.txt""))
+ 	header := string(c.Response().Header.Peek(HeaderContentDisposition))
+ 	require.Contains(t, header, `filename=""файл.txt""`)
+ 	require.Contains(t, header, `filename*=UTF-8''%D1%84%D0%B0%D0%B9%D0%BB.txt`)
+ }
+ 
+ // go test -race -run Test_Ctx_SendEarlyHints
+ func Test_Ctx_SendEarlyHints(t *testing.T) {
+ 	t.Parallel()
+ 	app := New()
+ 
+ 	hints := []string{""<https://cdn.com>; rel=preload; as=script""}
+ 	app.Get(""/earlyhints"", func(c Ctx) error {
+ 		c.SendEarlyHints(hints)
+ 		c.Status(StatusBadRequest)
+-		return nil
++		return c.SendString(""fail"")
+ 	})
+ 
+ 	req := httptest.NewRequest(MethodGet, ""/earlyhints"", nil)
+ 	resp, err := app.Test(req)
+ 
+-	fmt.Println(resp.StatusCode)
+-	fmt.Println(resp.Header)
+-
+ 	require.NoError(t, err, ""app.Test(req)"")
+-	require.Equal(t, StatusEarlyHints, resp.StatusCode, ""Status code"")
++	require.Equal(t, StatusBadRequest, resp.StatusCode, ""Status code"")
+ 	require.Equal(t, hints, resp.Header[""Link""], ""Link header"")
++	body, err := io.ReadAll(resp.Body)
++	require.NoError(t, err)
++	require.Equal(t, ""fail"", string(body))
+ }
+ 
+ // go test -race -run Test_Ctx_SendFile
+ func Test_Ctx_SendFile(t *testing.T) {
+ 	t.Parallel()
+ 	app := New()
+ 
+ 	// fetch file content
+ 	f, err := os.Open(""./ctx.go"")
+ 	require.NoError(t, err)
+ 	defer func() {
+ 		require.NoError(t, f.Close())
+ 	}()
+ 	expectFileContent, err := io.ReadAll(f)
+ 	require.NoError(t, err)
+ 	// fetch file info for the not modified test case
+ 	fI, err := os.Stat(""./ctx.go"")
+ 	require.NoError(t, err)
+ 
+ 	// simple test case
+ 	c := app.AcquireCtx(&fasthttp.RequestCtx{})
+ 	err = c.SendFile(""ctx.go"")
+ 	// check expectation
+ 	require.NoError(t, err)
+ 	require.Equal(t, expectFileContent, c.Response().Body())
+
+```
+
+
+</details>
+
+",workflow,
+Okay Sir.,workflow,
+@maxonfjvipon thanks!,workflow,
+thanks!,workflow,
+@JIeJaitt I'm fixing it in a branch. It randomly broke without us updating the version,workflow,
+"@pjebs thx for the implementation , check my hints",workflow,
+@slavingia noted. added to my backlog,workflow,
+"Thanks @mert-kurttutan for the PR! Yes adding windows to the CI tests would be great, thanks :) I think we can run all tests on windows.",workflow,
+"@AndyAyersMS I rewrote `fgMoveHotJumps` to run during 3-opt. My goal wasn't to make the rewrite 1:1 in behavior, so because we're leveraging 3-opt's cost model to decide whether to shorten a jump, there are [plenty of diffs](https://dev.azure.com/dnceng-public/public/_build/results?buildId=942841&view=ms.vss-build-web.run-extensions-tab). Across most collections, we seem to be doing a decent job of keeping code compact. `benchmarks.run_pgo` on linux-x64 looks like an outlier; from it's `jit-analyze` summary:
+
+```
+Top method regressions (percentages):
+          33 (11.34 % of base) : 168132.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168300.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168368.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 177064.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 177184.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168440.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168564.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 176800.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 176896.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 177620.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 177728.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168184.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168208.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168452.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 168484.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 176788.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 177216.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 176952.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 177052.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+          33 (11.34 % of base) : 177740.dasm - System.Runtime.InteropServices.SafeHandle:InternalRelease(ubyte):this (Tier1)
+```
+
+11% size increase sounds plausible from longer branches alone, and I suspect the number of duplicate methods in this collection is partly to blame. TP impact is <0.1% across most collections.",workflow,
+Retest this please,workflow,
+"@dgirardi thanks, have merged the PR.",workflow,
+@Vardaan-Grover any update here?,workflow,
+"@JeanMeijer 
+Should we create a ZoomProvider to handle a meeting logic? Also, do we need to implement linking that meeting to a calendar event?",workflow,
+":fire: Unable to find the contents for the comment: D:\a\1\s\change-detection\results\gh-comment.md does not exist :fire
+
+[Pipeline](https://devdiv.visualstudio.com/DevDiv/_build/index?buildId=11598690&view=ms.vss-test-web.test-result-details) on Agent 
+Hash: [839eeda848e5b03d63cae6101e0823394b064c24](https://github.com/dotnet/macios/pull/22811/commits/839eeda848e5b03d63cae6101e0823394b064c24)  [PR build]
+
+[comment]: <> (This is a comment added by Azure DevOps, id: api diff)
+",workflow,
+"@howieleung, has this gone through the architect review process with @jhendrixMSFT? He'll want to take a look at it, make sure it matches our Go idioms, including the package naming.",workflow,
+@rgerhards This is ready for you again.,workflow,
+@tonykipkemboi done,workflow,
+"@creatorrr changes:
+1- added a client interceptor, so that I could override the ``start_workflow`` function, allowing us to offload the input provided with the execution creation to s3 as well.
+2- the problem was that the input args were being loaded before calling the outbound interceptors (start_activity, start_child_workflow), thus the data was being sent to inbound functions like ``execute_workflow`` and ``execute_activity`` loaded instead of offloaded, and that's where we were getting the ``BlobSizeLimitError``. Therefore, I made sure that the data was being offloaded before those functions
+3- since we're offloading the data in those functions, we don't need the ``offload_to_blob_store`` decorator, which loads the input args before calling the function, which is redundant.",workflow,
+@B-Step62 ,workflow,
+@weknowyourgame Could you please add a demo showing the before and after,workflow,
+@retrogtx I'll look and push a resolve for it!,workflow,
+"@paulmedynski Thanks. There are also many unused strings, but I am not aware of a simple and safe way to fix that.",workflow,
+@Hamper looks like one of your unit tests is failing on windows,workflow,
+This pull request has been closed due to lack of response.,workflow,
+"@Jigyasa-G , Thoughts why this can't  be an extended feature to existing Postgres MCP server - https://github.com/awslabs/mcp/blob/docs/catagorizing/src/postgres-mcp-server/awslabs/postgres_mcp_server/server.py . ",workflow,
+@shreyan-gupta: I think I addressed all your comments.  But not sure.  Especially in regards to `num_chunk_only_producer_seats`.  PTAL.,workflow,
+"Thanks, @kzrnm. We're discussing the backports and trying to balance risk. It would help us to better understand if your scenario is blocked by .NET 8 having this issue, or if backporting only to .NET 9 would unblock you. If you are targeting .NET 9, then we might backport to .NET 9 first and give the fix some more bake time there before backporting to .NET 8.
+
+Are you targeting .NET 8 or .NET 9 in your scenario? Thanks again.",workflow,
+"@MayaRainer I'm thinking of renaming `DecimalInput` to `NumberInput` and have it primarily cater to integers but also have decimal support. Do you see any issue with this? Currently, `NumberInput` just feels like a simplified version of `DecimalInput`. Not sure we need both. I'd like to simplify. Wdyt?
+
+cc: @slavingia ",workflow,
+Thank you! @anikdhabal 🙏 ,workflow,
+@nndn issue #355 might be inavalid?,workflow,
+"Thank you for your contribution to add timestamps to the output modal! This feature will definitely improve the user experience.
+
+Before we can merge this PR, I noticed a few things that need to be addressed:
+
+1. The PR description is missing our standard checklist that's required for code changes. Please update your PR description to include the checklist from our template, including your test plan.
+
+2. You mentioned `pnpm test` fails due to Supabase URL and API key requirements. Can you provide more details about your testing approach beyond the automated tests? For example, did you manually verify the timestamp display works correctly in different scenarios?
+
+3. It would be helpful to include more details about how the timestamps are implemented and displayed in the UI.
+
+Please update your PR description with these items, and we'll be able to proceed with the review process.",workflow,
+Thanks!,workflow,
+"@saketh-are Do you mean to include it in the 2.6.3 together with T1 for CVs? If so, @jancionear WDYT? ",workflow,

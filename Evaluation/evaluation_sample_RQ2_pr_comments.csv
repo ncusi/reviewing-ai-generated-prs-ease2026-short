@@ -1,0 +1,1111 @@
+text,predicted_label,gold_label
+"it was a nightmare to fix all the mistakes made by Devin, not doing this again, AI is not ready for bigger and more complex PRs",agentic_cmd,
+"@copilot we want the policy file to be placed into a directory on linux that is commonly only writeable by admins/root.  Otherwise, a non-privileged user could tamper with the policy.",agentic_cmd,
+@copilot I updated the description. Make your updates based on the required updates listed there.,agentic_cmd,
+"@copilot test 
+
+ --- 
+
+ ",agentic_cmd,
+"@copilot check the CI workflow named `integration`, you broke it with this PR",agentic_cmd,
+@coderabbitai summary,agentic_cmd,
+@copilot Please remove those unused import.,agentic_cmd,
+"@copilot revert the manual digit checking in favor of using the Char.IsDigit property function and add a temporary skip to the `Microsoft.NET.Build.Tests.EvaluatorFastPathTests.EnsureDotnetCommonProjectPropertyFunctionsOnFastPath` test so this PR passes.
+
+@KalleOlaviNiemitalo I've started a session for https://github.com/dotnet/msbuild/issues/12029 to add this fast-path, so we should be all set for p7 without needing to do temporary workarounds - especially because this repo has branched for p6 already so `main` is p7 now.",agentic_cmd,
+"@copilot the PR state is good, now please update the PR description and make it ready for review. Do NOT run the linter.",agentic_cmd,
+@claude please take this over and drive to completion,agentic_cmd,
+@copilot rebase,agentic_cmd,
+@coderabbitai review again,agentic_cmd,
+@copilot Red CI,agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+"@copilot The issue here is captured in the comment by @jkotas, https://github.com/dotnet/runtime/issues/116358#issuecomment-2953571371. The point of this test was to validate the targets of the byref are identical. However, the approach I took was incorrect for value types. Instead, the solution should be to simply compare the managed pointers instead of dereferencing them in IL. The easiest way to address this would be to remove both `ldind.ref` instructions in the method mentioned in the referenced comment above.",agentic_cmd,
+"Devin, resolve merge conflicts please",agentic_cmd,
+@copilot you say the pgn file is good but that's not what one of the comments says in #38883,agentic_cmd,
+@copilot can you run the tests for the assembly to confirm that it is quarantined?,agentic_cmd,
+"sure.. by saying: ""work on it"" I meant test the Devin job, haha 
+
+Tks for pushing it back :) ",agentic_cmd,
+"@copilot you are wrong, this PR branch is out of date with regards to main, and if you were to rebase your branch on current main you would have to fix those conflicts , I dont want to have to fix the conflicts manually, can you use the command `gh pr update-branch --rebase` to update your PR branch?",agentic_cmd,
+/gemini test failed because AI agent did not follow its instructions and called it invalidly,agentic_cmd,
+"@copilot nothing has changed. You report you updated the title and the PR description, but you didn't Make sure you did it. Once you update it, verify that it worked.",agentic_cmd,
+@copilot run `yarn change` and commit,agentic_cmd,
+@copilot review the comments that you have in this PR and ensure that they are still accurate noting that the desired value of the environment variable is false.,agentic_cmd,
+"@copilot check the `xcop` workflow, it's also broken, because we don't tolerate empty lines inside XML, whether they don't belong.",agentic_cmd,
+@copilot There is a merge conflict. Can you fix it?,agentic_cmd,
+"@claude push up a fix for the underlying cause of this test failure 
+```
+✓ X25519 key operations work [0.67ms]
+... omitted 2 tests ...
+✓ X25519 deriveBits with imported keys [1.01ms]
+ 
+103 |     keyPair1.privateKey,
+104 |     null as any,
+105 |   );
+106 |
+107 |   expect(sharedSecret).toBeInstanceOf(ArrayBuffer);
+108 |   expect(sharedSecret.byteLength).toBe(32);
+                                        ^
+error: expect(received).toBe(expected)
+ 
+Expected: 32
+Received: 0
+ 
+      at <anonymous> (/var/lib/buildkite-agent/builds/ip-172-31-15-126/bun/bun/test/x25519-derive-bits.test.ts:108:35)
+✗ X25519 deriveBits with null length [1.61ms]
+```",agentic_cmd,
+"@copilot fix pipeline issue for change file:
+Validating options and change files...
+ERROR: Disallowed change type detected in react-native-windows-7f6516a5-9717-48bd-8550-bcac993ebcee.json: ""patch""
+##[warning]POSSIBLE ERROR: Disallowed change type detected in react-native-windows-7f6516a5-9717-48bd-8550-bcac993ebcee.json: ""patch""
+
+##[error]PowerShell exited with code '1'.
+",agentic_cmd,
+@coderabbitai full review,agentic_cmd,
+"@copilot  Instead of having the util module inside the agentchat package, move it to the extension package for DSPy. 
+
+The agentchat package should not have dependency on DSPy. ",agentic_cmd,
+@copilot  Follow the instruction here: https://github.com/microsoft/typespec/blob/main/packages/http-client-java/.github/copilot-instructions.md#update-package-for-latest-dependencies,agentic_cmd,
+"@copilot This seems like a pretty expensive check. If there was a very large set of text in the textiput, this comparison would get relatively expensive. Is there not some code flow way of determining that the event is not needed?",agentic_cmd,
+@claude Please add the ./alchemy/src/polar/README.md and ./alchemy-web/docs/providers/polar/index.md,agentic_cmd,
+">I believe findSliceFiles should return an array of URL
+
+@copilot  can you fix that",agentic_cmd,
+"@claude fix the underlying cause of the test failure and push up your fixed with the MCP git tool 58 |       stderr: ""pipe"",
+59 |       env,
+60 |     });
+61 |
+62 |     const output = await new Response(stdout).text();
+63 |     expect(await new Response(stderr).text()).toBe("""");
+                                                   ^
+error: expect(received).toBe(expected)
+ 
+Expected: """"
+Received: ""error: package 'bar' not found\n""
+ 
+      at <anonymous> (/var/lib/buildkite-agent/builds/ip-172-31-19-237/bun/bun/test/cli/install/bun-pm-why.test.ts:63:47)
+✗ should explain direct dependency with bun pm why [242.40ms]",agentic_cmd,
+"@copilot can you amend the last commit to add gpg-sign and signoff  , also delete the .markdownlint.json file you added and if you add any more commits gpg-sign and sign-off them. From now on make sure any additional commits are always gpg-sign and sign-off
+",agentic_cmd,
+@copilot - The description of what needed to be changed in the spec was inaccurate earlier. Please update this PR using the corrected information here: https://github.com/microsoft/perfview/issues/2137#issuecomment-2892560078,agentic_cmd,
+@copilot fix all CI pipeline issues including build failures and linting issues.,agentic_cmd,
+"Unfortunatly this fix didn't solve the problem.
+
+But now it says its on MauiTextView
+
+![image](https://github.com/user-attachments/assets/d35947d8-8497-4f88-9236-b3232b14cf3b)
+
+Full Stacktrace
+
+
+```
+System.ObjectDisposedException: ObjectDisposed_Generic
+ObjectDisposed_ObjectName_Name, Microsoft.Maui.Platform.MauiTextView
+  ?, in void JniPeerMembers.AssertSelf(IJavaPeerable)
+  ?, in void JniInstanceMethods.InvokeVirtualVoidMethod(string, IJavaPeerable, JniArgumentValue*)
+  ?, in void View.RemoveOnAttachStateChangeListener(IOnAttachStateChangeListener)
+  ?, in void View.remove_ViewDetachedFromWindow(EventHandler<ViewDetachedFromWindowEventArgs>)+(IOnAttachStateChangeListener __v) => { } [0]
+  ?, in void EventHelper.RemoveEventHandler<IOnAttachStateChangeListener, IOnAttachStateChangeListenerImplementor>(ref WeakReference, Func<IOnAttachStateChangeListenerImplementor, bool>, Action<IOnAttachStateChangeListener>, Action<IOnAttachStateChangeListenerImplementor>)
+  ?, in void View.remove_ViewDetachedFromWindow(EventHandler<ViewDetachedFromWindowEventArgs>)
+  ?, in IDisposable ViewExtensions.OnUnloaded(View view, Action action)+() => { } [1]
+  ?, in void ActionDisposable.Dispose()
+  ?, in IDisposable ViewExtensions.OnUnloaded(View view, Action action)+() => { } [3]
+  ?, in void RunnableImplementor.Run()
+  ?, in void IRunnableInvoker.n_Run(IntPtr jnienv, IntPtr native__this)
+  ?, in void JNINativeWrapper.Wrap_JniMarshal_PP_V(_JniMarshal_PP_V callback, IntPtr jnienv, IntPtr klazz)
+```
+
+Another stacktrace related:
+
+```
+System.ObjectDisposedException: ObjectDisposed_StreamClosed
+  ?, in int MemoryStream.Read(byte[], int, int)
+  ?, in int InputStreamAdapter.Read(byte[] bytes, int offset, int length)
+  ?, in int InputStream.n_Read_arrayBII(IntPtr jnienv, IntPtr native__this, IntPtr native_b, int off, int len)
+  ?, in int JNINativeWrapper.Wrap_JniMarshal_PPLII_I(_JniMarshal_PPLII_I callback, IntPtr jnienv, IntPtr klazz, IntPtr p0, int p1, int p2)
+
+```
+
+Copilot, could you suggest a fix for System.ObjectDisposedException with MauiTextView ?
+
+",agentic_cmd,
+"@copilot, you repeat the same code in several places - make a helper function to reduce redundancy",agentic_cmd,
+Copilot run failed,agentic_cmd,
+"@copilot we should still be using the previous tokenizer. Its just that we should be suppressing the warning of type 
+```
+WARNING:autogen_core.trace:Model qwen3:latest not found. Using cl100k_base encoding.
+```",agentic_cmd,
+"@copilot Good start! Can you add some tests to https://github.com/dotnet/aspnetcore/blob/b7aa14c02e08958c79d834a96214cbd9dd413845/src/OpenApi/test/Microsoft.AspNetCore.OpenApi.Tests/Services/OpenApiDocumentService/OpenApiDocumentServiceTests.Responses.cs that validate:
+
+- Minimal APIs that call `Produces` extension with the same status code but different content-types
+- Minimal APIs that have multiple `[ProducesResponseType]` attributes with the same status code and different content-types
+- MVC Controllers that have multiple `[ProducesResponseType]` attributes with the same status code and different content-types",agentic_cmd,
+@copilot qulice (our style checker) still complains about the changes you've made to the Xmir.java file. Make sure you don't have two consecutive blank lines in the file.,agentic_cmd,
+@copilot  Use BicepUtilities in BicepProvisioner. Currently the checksum calculation logic is duplicated.,agentic_cmd,
+@copilot can fix formatting?,agentic_cmd,
+@devin can you investigate ,agentic_cmd,
+@copilot try one more time.,agentic_cmd,
+@copilot update the PR description with the latest implementation.,agentic_cmd,
+/backport to release/9.4,bot,
+/ba-g infra failures,bot,
+/backport to main,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/huppy check cla,bot,
+/azp run,bot,
+/check-enforcer override,bot,
+/azp run,bot,
+"/bump-version type=patch changelog=""Add support for multiple databases""
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/15005284829
+> ✅ Changes applied successfully. (cdb260e2012d89c1753412fea4687e7d0bf20bc6)",bot,
+/azp run runtime-coreclr crossgen2 outerloop,bot,
+/check-enforcer evaluate ,bot,
+/azp run,bot,
+/check-enforcer override,bot,
+/azp run,bot,
+/run ilverify,bot,
+/check-enforcer evaluate,bot,
+/azp run net - storage - tests,bot,
+/backport to rel/3.9,bot,
+/check-enforcer override,bot,
+/check-enforcer override,bot,
+"/format-fix
+> Format-fix job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/14064528865
+> 🟦 Job completed successfully (no changes).",bot,
+"/build-deploy-preview skip-tests=true
+",bot,
+"/build-deploy-preview skip-tests=true
+",bot,
+/build-deploy-preview,bot,
+/build-deploy-preview,bot,
+/azp run,bot,
+/rebase,bot,
+/azp run,bot,
+/check-enforcer evaluate,bot,
+/azp run,bot,
+\azp run,bot,
+/autoformat,bot,
+"/bump-version
+> Bump Version job started... [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13230880127
+> ✅ Changes applied successfully. (7fe05f9bccf2b6ab7ad53d347b9a2bc60c834a9b)",bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+/queue-release-gates,bot,
+/autoformat,bot,
+/check-enforcer override,bot,
+/azp run azure - mcp,bot,
+"/approve-regression-tests
+> [Check job output.][1]
+
+[1]: https://github.com/airbytehq/airbyte/actions/runs/13820285562
+> ✅ Approving regression tests",bot,
+@microsoft-github-policy-service rerun,bot,
+/azp run net - identity - tests,bot,
+/azp run,bot,
+/azp run,bot,
+/azp run,bot,
+Ensure that all added tests are written using FluentAssertions (don't add package),review,
+https://github.com/GlareDB/glaredb/actions/runs/15834564432,review,
+The build is still failing - please fix.,review,
+"📝 
+Based on
+https://storage.googleapis.com/coderabbit_public_assets/schema.v2.json",review,
+"fix error:
+Error: >> - extensions/applicationinsights-dependencies-js/Tests/Unit/src/ajax.tests.ts(3920,13): error TS1005: ',' expected.
+Error: >> - extensions/applicationinsights-dependencies-js/Tests/Unit/src/ajax.tests.ts(3921,21): error TS1005: ',' expected.
+Error: >> - extensions/applicationinsights-dependencies-js/Tests/Unit/src/ajax.tests.ts(3935,36): error TS1005: ',' expected.
+Error: >> - extensions/applicationinsights-dependencies-js/Tests/Unit/src/ajax.tests.ts(3937,9): error TS1005: ',' expected.
+Error: >> - extensions/applicationinsights-dependencies-js/Tests/Unit/src/ajax.tests.ts(3938,5): error TS1128: Declaration or statement expected.
+Error: >> - extensions/applicationinsights-dependencies-js/Tests/Unit/src/ajax.tests.ts(3939,1): error TS1128: Declaration or statement expected.",review,
+Remove all calls to `ConfigureApplicationParts` and all calls to configure `ClusterOptions` - they are not necessary.,review,
+"Hello guys, are there any expectations for this PR to be merged? It's really a problem in this little  LLM pinned version. ",review,
+"Please rebase the branch, take changes from main for the Unshipped files
+",review,
+"Hi,
+
+Any update here ?",review,
+I understand! Thank you for your reply!,review,
+"> This was 100% done by Codex, not sure how much we can keep.
+
+I just went through a bit. There are some interesting ideas, but in general we need to rework a lot. I think partly it could be better with the help of a better AGENTS.md",review,
+"
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_sync[grok-3-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(User(name='JASON', age=25), '_raw_response')
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_sync[grok-3-mini-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(User(name='JASON', age=25), '_raw_response')
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_async[grok-3-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(User(name='JASON', age=25), '_raw_response')
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_async[grok-3-mini-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(User(name='JASON', age=25), '_raw_response')
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_with_validator_sync[grok-3-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(UserValidated(name='JASON', age=25), '_raw_response')
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_with_validator_sync[grok-3-mini-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(UserValidated(name='JASON', age=25), '_raw_response')
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_with_validator_async[grok-3-mini-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(UserValidated(name='JASON', age=25), '_raw_response')
+FAILED tests/llm/test_xai/test_raw_response.py::test_xai_raw_response_with_validator_async[grok-3-Mode.XAI_TOOLS] - AssertionError: The raw response should be available from XAI
+assert False
+ +  where False = hasattr(UserValidated(name='JASON', age=25), '_raw_response')
+================== 8 failed, 14 passed, 30 warnings in 47.45s ==================
+
+
+
+can you fix this implemtnation, reference how others do create_with_completions. ",review,
+"> I was able to break sharing and evals with a large dataset (5000 test cases w/ base64 encoded image vars) but I believe that's unrelated.  A few small improvements requested but otherwise LGTM.
+
+How where and when did it break? @will-holley ",review,
+"Verified the fix.
+<img width=""535"" height=""771"" alt=""image"" src=""https://github.com/user-attachments/assets/83a6d8c7-834d-4a1b-8d49-f0e5667ab150"" />",review,
+"change get_constructor_by_name to to take the declaration con instead of con->get_name() as argument.
+If con->get_arity() is below 10 then don't initialize a hash-table but perform a linear scan.
+The post-condition of get_constructor_by_name is that it returns a non-null result.",review,
+"## Historical Context and Timeline(with Claude Code)
+
+Based on git history analysis, here's the background on why `projects.organization_id` was initially nullable:
+
+### Timeline of Organization Feature Implementation
+
+**April 2025** - Initial organization feature introduction:
+- Organizations were retrofitted into an existing project-based system
+- `organization_id` was intentionally made nullable for backward compatibility
+- Existing projects could continue functioning without immediate organization assignment
+
+**April 10, 2025** - Commit `d564c5f7f`: ""🐛 fix: allow access to projects with null organizationId""
+- Added RLS policies explicitly supporting projects with `NULL organization_id`
+- Shows the intentional design to support legacy projects during migration
+
+**June 2025** - System evolution:
+- Auto-organization creation implemented during user login
+- Project-independent workflows added (design sessions at organization level)
+
+### The Issue
+
+The original plan was to eventually make all projects belong to an organization, but the final migration step was incomplete:
+
+1. ✅ Added `organization_id` column as nullable (for backward compatibility)
+2. ✅ Implemented auto-organization creation
+3. ✅ Application code treated `organization_id` as required
+4. ❌ **Missing**: Migrate existing data and enforce NOT NULL constraint
+5. ❌ **Missing**: Update TypeScript types to match application logic
+
+### What This PR Resolves
+
+This PR completes the originally planned migration by:
+- Adding NOT NULL constraint to the database schema
+- Updating TypeScript types from `string | null` to `string`
+- Ensuring consistency between database schema and application code
+
+This represents the completion of technical debt from the organization feature rollout, resolving the schema/code inconsistency that existed for several months.",review,
+"> I asked for a change (already done by Copilot). PTAL @marklio.
+
+Good call @cincuranet.",review,
+### ,review,
+"## Pull Request Test Coverage Report for [Build 7212](https://coveralls.io/builds/74094154)
+
+
+### Details
+
+* **1** of **1**   **(100.0%)**  changed or added relevant line in **1** file are covered.
+* No unchanged relevant lines lost coverage.
+* Overall coverage remained the same at **93.087%**
+
+---
+
+
+
+|  Totals | [![Coverage Status](https://coveralls.io/builds/74094154/badge)](https://coveralls.io/builds/74094154) |
+| :-- | --: |
+| Change from base [Build 7210](https://coveralls.io/builds/74094092): |  0.0% |
+| Covered Lines: | 8551 |
+| Relevant Lines: | 9186 |
+
+---
+##### 💛  - [Coveralls](https://coveralls.io)
+",review,
+Whats your plan with wiring it up to the `AssistantAgent` and down to the `_call_llm`?,review,
+"> @zou3519 I'm not sure what the risk here is. `gc.freeze()` just means it won't scan the objects that were originally in the heap when doing all of the gc's during graph capture (which are likely almost all ""permanent"" anyhow). Those gc's still run and collect anything allocated/freed since capturing started.
+> 
+> So IMO the env var shouldn't be necessary but I guess also not causing any harm.
+
+Fair enough, I was being conservative. I'm fine with dropping the envvar",review,
+"Since schema.sql is prone to conflicts, we will resolve them after the review but before merging.
+Please ignore the conflicts for now.",review,
+CC @StageGuard ,review,
+Closed because it was the same as [#1489](https://github.com/liam-hq/liam/pull/1489),review,
+This is a follow-up caused by https://github.com/Azure/azure-sdk-for-net/pull/50505,review,
+Use `cargo +nightly fmt` to format,review,
+/cvt langgraph,review,
+"> ## Summary
+> 
+>     * add Shift+Command+Z accelerator for redo on macOS
+> 
+>     * show the updated shortcut in the keyboard shortcuts dialog
+> 
+> 
+> Fixes #3898
+
+Isn't CTRL+Shift+Z also valid for Windows?",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #3018
+
+## Overview
+This pull request addresses a `NoneType` error in the `convert_with_instructions` function by implementing necessary null checks and error handling when the `agent` parameter is `None`. Additionally, comprehensive test coverage is included to ensure robustness surrounding the new changes.
+
+## Positive Aspects
+- **Implemented Null Checks**: The addition of null checks prevents potential runtime errors when accessing attributes of a `None` agent.
+- **User Feedback**: The error messages provide essential details for debugging, improving user experience.
+- **Preservation of Existing Return Type**: The function signature remains consistent, which ensures compatibility with other components of the codebase.
+
+## Suggestions for Improvement
+
+### 1. Error Message Enhancement
+Presently, the error message lacks context. 
+- **Current Code:**
+  ```python
+  content=""Failed to convert text into a Pydantic model: No agent available for conversion. Using raw output instead."",
+  ```
+- **Suggested Improvement:**
+  ```python
+  content=f""Failed to convert text into a Pydantic model: No agent available for conversion. Using raw output instead. Model: {model.__name__}"",
+  ```
+  Including the model name aids in understanding the context of the failure better.
+
+### 2. Type Hinting
+Improving the specificity of type hints can enhance code readability and maintainability:
+- **Current Function Signature:**
+  ```python
+  def convert_with_instructions(
+      result: Any,
+      model: Type[BaseModel],
+      is_function_call: bool,
+      agent: Any,
+      converter_cls: Optional[Type[Converter]] = None,
+  ) -> Union[dict, BaseModel, str]:
+  ```
+- **Suggested Change:**
+  ```python
+  def convert_with_instructions(
+      result: Any,
+      model: Type[BaseModel],
+      is_function_call: bool,
+      agent: Optional[Agent],  # More specific type
+      converter_cls: Optional[Type[Converter]] = None,
+  ) -> Union[dict, BaseModel, str]:
+  ```
+
+### 3. Logging for Better Debugging
+Instead of just printing, incorporate logging for better troubleshooting:
+- **Current Structure:**
+  ```python
+  if agent is None:
+      Printer().print(...)
+      return result
+  ```
+- **Improvement Suggestion:**
+  ```python
+  if agent is None:
+      logger.warning(""Attempted conversion with None agent"")
+      Printer().print(...)
+      return result
+  ```
+  Logging can significantly enhance the traceability of errors in production environments.
+
+## Test Improvements
+
+### Enhance Test Structure
+- It might be beneficial to organize tests more methodically:
+  ```python
+  class TestConverterNoneAgent:
+      @pytest.fixture
+      def mock_printer(self):
+          with patch(""crewai.utilities.converter.Printer"") as mock:
+              yield mock
+  ```
+
+### Use Parameterized Tests
+This promotes reusability:
+```python
+@pytest.mark.parametrize(""input_data,expected"", [
+    (""Some text to convert"", ""Some text to convert""),
+    ('{""name"": ""John"", ""age"": ""invalid_age""}', '{""name"": ""John"", ""age"": ""invalid_age""}'),
+])
+```
+
+### Error Message Validation
+Implementing a test for verifying the error messages can come in handy:
+```python
+def test_error_message_format():
+    with patch(""crewai.utilities.converter.Printer"") as mock_printer:
+        convert_with_instructions(""test"", SimpleModel, False, None)
+        
+        error_message = mock_printer.return_value.print.call_args[1][""content""]
+        assert ""Failed to convert"" in error_message
+        assert ""No agent available"" in error_message
+        assert mock_printer.return_value.print.call_args[1][""color""] == ""red""
+```
+
+## General Recommendations
+1. **Documentation**: Including a detailed docstring for `convert_with_instructions` would clarify its function, especially regarding the handling of a `None` agent.
+2. **Error Handling**: Consider including debug-level logging and defining custom exceptions for various failure scenarios.
+3. **Testing**: Think about including tests for edge cases with different model types and consider performance testing for large inputs.
+4. **Type Safety**: Using `TypeGuard` and adding runtime validations could enhance type security in critical parameters.
+
+## Impact Analysis
+This PR effectively addresses issue #3017 without introducing any breaking changes. The addition of user-friendly error messages and robust test coverage establishes a strong foundation for further development.
+
+In conclusion, the changes effectively enhance the functionality while maintaining stability. After addressing the suggested improvements, particularly around type hinting and logging, this pull request can be merged confidently. Let's keep up the great work!",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# CrewAI Deployment Tools Code Review Comment
+
+## Overview
+The recent pull request enhances the CrewAI deployment capabilities by integrating standalone deployment features, including Docker containerization and configuration management, along with a REST API server. This advancement allows users to deploy workflows without relying on a CrewAI+ account. 
+
+## Positive Aspects
+- **Modular Design**: The code demonstrates a well-structured modular approach, promoting separation of concerns which is crucial for maintainability.
+- **Documentation**: Excellent comprehensive documentation is integrated, which is essential for user adoption and understanding of the deployment tools.
+- **Test Coverage**: There is substantial coverage with unit tests which bodes well for security and functionality.
+- **Type Safety**: The use of type hints throughout the code improves readability and reduces potential errors.
+- **Error Handling**: Consistency in error handling across different modules stands out.
+
+## Areas of Improvement and Suggestions
+1. **Configuration Validation**: 
+   - The current `Config` class lacks proper validation mechanisms. It is advisable to implement [Pydantic](https://pydantic-docs.helpmanual.io/) for better input validation. For instance:
+     ```python
+     from pydantic import BaseModel, Field
+     from typing import List
+
+     class DeploymentConfig(BaseModel):
+         name: str = Field(..., min_length=1)
+         port: int = Field(..., gt=0, lt=65536)
+     ```
+
+2. **Enhance Error Handling in Docker Management**:
+   - It is crucial to catch specific exceptions when dealing with Docker operations. I recommend creating custom exceptions:
+     ```python
+     class DockerError(Exception):
+         pass
+     ```
+
+3. **API Request Validation**:
+   - Adding request validation in the FastAPI server can help mitigate risks associated with malformed requests:
+     ```python
+     @app.post(""/run/crew/{crew_name}"")
+     async def run_crew(crew_name: str, request: RunRequest):
+         if crew_name not in crews:
+             raise HTTPException(status_code=404, detail=""Crew not found"")
+     ```
+
+4. **Structured Logging**:
+   - Incorporate structured logging to track and debug deployment activities more effectively:
+     ```python
+     import structlog
+
+     logger = structlog.get_logger()
+
+     logger.info(""preparing_deployment"", name=self.config.name)
+     ```
+
+5. **Implement Asynchronous Support**:
+   - For better performance on long-running tasks, adding async capabilities to Docker management is recommended:
+     ```python
+     async def build(self):
+         proc = await asyncio.create_subprocess_exec(...)
+     ```
+
+6. **Security Measures**:
+   - Ensure all input is validated against path traversal and other common vulnerabilities, and consider adding rate limiting and proper authentication mechanisms to enhance API security.
+
+## Historical Context
+The pull request builds upon earlier modifications related to deployment tools, enhancing the modularity and usability introduced in previous efforts. It's essential to keep all related documentation updated, especially as API endpoints and configurations are modified. 
+
+## Conclusion
+Overall, the PR introduces significant enhancements to the CrewAI deployment tools. Implementing the above suggestions will bolster security, maintainability, and usability, ensuring a more robust deployment experience for users. Additional testing and documentation updates should accompany these code changes to maintain cohesion and clarity.
+
+Please address these points before merging, as they are integral to maintaining high standards for code quality and security. Thank you for your hard work!",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2352
+
+## Overview
+This pull request introduces a `sanitize_collection_name` utility function to ensure collection names adhere to ChromaDB requirements. The implementation focuses on input validation and edge case handling, enhancing the code's reliability and maintainability.
+
+### General Findings
+
+The changes consist of three primary files:
+1. **src/crewai/utilities/string_utils.py** - New utility function implementation
+2. **src/crewai/agent.py** - Integration of the new utility function
+3. **tests/utilities/test_string_utils.py** - Test cases for the utility function
+
+## Specific Code Improvements
+
+### 1. `src/crewai/utilities/string_utils.py`
+
+**Positive Aspects:**
+- Comprehensive and well-documented function
+- Robust input validation and edge case handling
+
+**Suggestions for Improvement:**
+- **Add Constants for Magic Numbers:**
+  Refactor magic numbers to named constants. This will enhance maintainability and readability. For example:
+  ```python
+  MIN_LENGTH = 3
+  MAX_LENGTH = 63
+  DEFAULT_COLLECTION = ""default_collection""
+  ```
+- **Add Validation for IPv4 Patterns:**
+  Incorporate a check for IPv4 patterns as required:
+  ```python
+  def is_ipv4_pattern(name: str) -> bool:
+      ipv4_pattern = re.compile(r'^(\d{1,3}\.){3}\d{1,3}$')
+      return bool(ipv4_pattern.match(name))
+
+  def sanitize_collection_name(name: Optional[str]) -> str:
+      if not name:
+          return DEFAULT_COLLECTION
+      if is_ipv4_pattern(name):
+          name = f""ip_{name}""
+  ```
+
+### 2. `src/crewai/agent.py`
+
+**Positive Aspects:**
+- Effective integration of the new utility
+- Removed redundant regex patterns
+
+**Suggestions for Improvement:**
+- **Error Handling for Sanitization:**
+  Implement error handling to manage potential errors during sanitization:
+  ```python
+  def set_knowledge(self, crew_embedder: Optional[Dict[str, Any]] = None):
+      try:
+          from crewai.utilities import sanitize_collection_name
+          knowledge_agent_name = sanitize_collection_name(self.role)
+      except Exception as e:
+          logger.warning(f""Error sanitizing collection name: {e}"")
+          knowledge_agent_name = ""default_agent""
+  ```
+
+### 3. `tests/utilities/test_string_utils.py`
+
+**Positive Aspects:**
+- Good coverage and clear test cases
+- Tests for edge scenarios are well-defined
+
+**Suggestions for Improvement:**
+- **Expand Test Coverage:**
+  Add more test cases, particularly for edge conditions:
+  ```python
+  def test_sanitize_collection_name_ipv4_pattern(self):
+      ipv4 = ""192.168.1.1""
+      sanitized = sanitize_collection_name(ipv4)
+      self.assertTrue(sanitized.startswith(""ip_""))
+  
+  @given(st.text())
+  def test_sanitize_collection_name_properties(self, input_str):
+      result = sanitize_collection_name(input_str)
+      assert len(result) >= 3
+      assert len(result) <= 63
+      assert result[0].isalnum()
+      assert result[-1].isalnum()
+  ```
+
+## General Recommendations
+- **Documentation Improvements:**
+  A module-level docstring in `string_utils.py` explaining the purpose, along with examples in function docstrings, would be highly beneficial.
+- **Performance Considerations:**
+  Consider implementing caching for frequently used collection names and using compiled regex for efficiency.
+- **Error Handling:**
+  Introduce specific exception types for validation failures and implement logging mechanisms for better debugging.
+- **Testing Enhancements:**
+  Consider incorporating integration tests with ChromaDB and performance benchmarks for the sanitization process.
+
+## Conclusion
+The changes presented in this PR significantly enhance the sanitization of collection names, aligning with ChromaDB requirements. While the implementation is solid, addressing the suggested improvements will increase maintainability and robustness. I recommend merging this PR after making the stated enhancements, particularly focusing on error handling and expanding test coverage. Great work on laying the groundwork for ensuring data integrity through these modifications!",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+### Code Review for PR #2792 in `crewAIInc/crewAI`
+
+#### Overview
+This pull request addresses issue #2791 by modifying how task tools interact with agent tools in the `task.py` file. The primary focus is to ensure that task tools do not override agent tools but rather combine them appropriately. The changes affect several files, namely `src/crewai/task.py`, `tests/crew_test.py`, and `tests/task_test.py`.
+
+#### Detailed Analysis
+1. **Task.py Changes**
+   - The logic within the `check_tools` validator has been significantly improved. Previously, the lack of checks led to the potential overriding of task tools by agent tools. The updated version effectively combines the tools while preserving task-specific tools.
+   - **Specific Improvement Suggestions:**
+     - Implement validation for tool name formats to prevent invalid names from being added. A simple helper function like `_validate_tool_name` can be provided for this purpose.
+     - Incorporate logging for better traceability of the tool combination decisions, aiding in debugging discrepancies in tool management.
+
+   Here's an example:
+   ```python
+   import logging
+
+   @model_validator(mode=""after"")
+   def check_tools(self):
+       if self.agent and self.agent.tools:
+           existing_tool_names = {tool.name for tool in self.tools}
+           for tool in self.agent.tools:
+               if tool.name not in existing_tool_names:
+                   logging.debug(f""Adding agent tool '{tool.name}' to task tools"")
+                   self.tools.append(tool)
+   ```
+
+2. **Test Changes**
+   - The tests have been reformulated to enhance clarity and increase coverage regarding tool combinations. 
+   - **Recommendations for Improvement:**
+     - Add tests for edge cases, such as when the agent is `None` or when duplicate tool names are present. Here’s an example of a test for null agents:
+     ```python
+     def test_task_tools_with_null_agent():
+         task = Task(
+             description=""Test task"",
+             expected_output=""Test output"",
+             tools=[TestTool()],
+             agent=None
+         )
+         assert len(task.tools) == 1
+     ```
+
+3. **Performance Considerations**
+   - The switch to using a set for checking existing tool names increases performance dramatically, enhancing response time for tool management operations.
+
+4. **Documentation Needs**
+   - Clarify the `check_tools` method with detailed docstrings explaining the process for future reference. This should include a list of steps, expected behavior, and return types. 
+
+5. **Potential Issues Identified**
+   - Considerations for tool name format validation and logging were noted, as well as the need for version conflict management in future revisions.
+
+6. **Additional Recommendations**
+   - Future revisions could focus on developing an approach for validating tool origins to ensure security and integrity.
+
+### Final Verdict
+The changes introduced in this pull request enhance the code's maintainability and functionality by effectively allowing task tools to coexist with agent tools. However, additional testing and documentation will be necessary to fully capture these updates' implications and to ensure robust implementation.
+
+Links to historical context can be derived from past related PRs that emphasize improving tool handling across iterations and a growing trend of enhancing test coverage to reduce regression errors. 
+
+Overall, I approve of these changes with the suggestions above noted for future improvements.",review,
+sorry for the wait @sbichenko !,review,
+"The build is still failing:
+
+  D:\a\ebpf-for-windows\ebpf-for-windows\tests\libs\util\socket_helper.cpp(512,13): error C2248: '_server_socket::receive_message': cannot access private member declared in class '_server_socket' [D:\a\ebpf-for-windows\ebpf-for-windows\tests\libs\util\test_util.vcxproj]",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comments for PR #1818
+
+## Overview
+This pull request effectively integrates agent knowledge sources into the planning process, as evidenced by the two primary contributions: enhanced test coverage and the integration implementation in the planning handler. The improvements are significant for future-proofing and augmenting the current architecture.
+
+## Code Quality Findings
+
+### File: tests/utilities/test_knowledge_planning.py (New File)
+
+- **Test Documentation Improvement**: It’s critical to enhance clarity through better documentation. 
+  - **Current**:
+    ```python
+    """"""Test knowledge integration in planning process.""""""
+    ```
+  - **Suggested**:
+    ```python
+    """"""
+    Tests for verifying the integration of knowledge sources in the planning process.
+    This module ensures that agent knowledge is properly included during task planning.
+    """"""
+    ```
+
+- **Mock Fixture Enhancement**: Documentation in fixtures should clarify the return type to prevent misunderstandings. 
+  - **Current**: 
+    ```python
+    """"""Create a mock knowledge source with test content.""""""
+    ```
+  - **Suggested**:
+    ```python
+    """"""
+    Create a mock knowledge source with test content.
+    Returns:
+        StringKnowledgeSource: A knowledge source containing AI-related test content
+    """"""
+    ```
+
+- **Test Assertions Enhancement**: Use assertions that provide clearer context on what is being verified. 
+  - **Current Example**:
+    ```python
+    assert ""AI systems require careful training"" in task_summary
+    ```
+  - **Suggested**:
+    ```python
+    assert ""AI systems require careful training"" in task_summary, ""Knowledge content should be present in task summary""
+
+    # Additional assertions can verify the structure of knowledge sources
+    assert isinstance(task.agent.knowledge_sources, list), ""Knowledge sources should be a list""
+    ```
+
+### File: src/crewai/utilities/planning_handler.py
+
+- **Code Formatting and Type Hints**: Maintain readability and leverage Python's type hints. 
+  - **Current**:
+    ```python
+    ""agent_knowledge"": {[source.content for source in task.agent.knowledge_sources] if task.agent and task.agent.knowledge_sources else ""None""}
+    ```
+  - **Suggested**:
+    ```python
+    ""agent_knowledge"": {
+        [source.content for source in task.agent.knowledge_sources]
+        if task.agent and task.agent.knowledge_sources
+        else ""None""
+    }
+    ```
+
+- **Error Handling Enhancement**: Implement robust error handling to enhance stability and logging.
+  - **Suggested Addition**:
+    ```python
+    def _get_agent_knowledge(self, task: Task) -> List[str]:
+        """"""
+        Safely retrieve knowledge source content from task agent.
+        """"""
+        try:
+            return [source.content for source in task.agent.knowledge_sources] if task.agent and task.agent.knowledge_sources else []
+        except AttributeError:
+            logger.warning(""Error accessing agent knowledge sources"")
+            return []
+    ```
+
+## General Recommendations
+1. **Documentation**: 
+   - Ensure that all new code and integrations are well-documented, including examples of expected behavior during planning. The integration impacts should be clear to future developers.
+   
+2. **Type Hints**: 
+   - Consistently implement type hints throughout new methods for clarity and maintainability.
+
+3. **Testing**: 
+   - Expand test cases to include edge cases, such as malformed or missing knowledge sources.
+
+## Security Considerations
+- Validate knowledge source content to prevent injection and ensure content integrity.
+- Implement size limits for knowledge content to prevent potential resource abuse.
+
+## Performance Impact
+The changes should not significantly affect performance, improving the knowledge planning process while keeping operations efficient.
+
+---
+
+This comprehensive review highlights both the strengths and areas for improvement in PR #1818. By addressing the identified issues and employing the provided suggestions, the quality and maintainability of the code can be greatly enhanced for future development work in the crewAI project.",review,
+"> Provided the test passes.
+
+The PR reports all the tests are passing so unless there is some other verification needed I think we're good now.",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+# Code Review Comment for PR #2410
+
+## Overview
+This pull request addresses the `packaging.licenses` dependency issue by pinning the `setuptools` version and adding compatibility tests. Overall, the changes show a solid understanding of the issue and provide necessary fixes. However, several improvements can enhance the clarity, maintainability, and robustness of the code.
+
+## 1. Improvements to README.md
+### Analysis
+- **Strengths**:
+  - Clear troubleshooting documentation related to the `ModuleNotFoundError`.
+  - Effective instructions for resolving the packaging.licenses errors.
+
+### Suggestions for Improvement
+- **Version Information**: It would be beneficial to specify version compatibility with `uv` to aid users further.
+
+```markdown
+3. **ModuleNotFoundError: No module named 'packaging.licenses'**
+   - This error occurs when installing with `uv` (v0.1.0 and above) due to newer `setuptools` versions.
+   - Fix by downgrading setuptools: `pip install setuptools<=65.5.0`.
+   - Then install CrewAI: `uv pip install crewai`.
+   - Note: This is a temporary workaround until compatibility with `setuptools` is resolved.
+```
+
+## 2. Enhancements to pyproject.toml
+### Analysis
+- **Strengths**:
+  - Successfully pins the `setuptools` version to prevent the `packaging.licenses` issues.
+
+### Suggestions for Improvement
+- **Comment for Clarity**: Adding a comment for future maintainers elucidates why a particular version is set.
+
+```toml
+[build-system]
+# Pin setuptools version to avoid packaging.licenses dependency issues with UV
+requires = [
+    ""hatchling"",
+    ""setuptools>=64.0.0,<=65.5.0""  # Explicit version range for compatibility
+]
+build-backend = ""hatchling.build""
+```
+
+## 3. Recommendations for tests/installation/test_dependency_compatibility.py
+### Analysis
+- **Strengths**:
+  - Good overall structure and error handling in tests.
+  - Approval for using `pytest.skip` to handle CI and `UV` availability checks.
+
+### Suggestions for Improvement
+- **Documentation**: Include docstrings for better understanding of tests.
+- **Error Messages**: Comprehensive and specific error messages will enhance debugging.
+- **Cleanup Procedures**: Implement proper cleanup to avoid any environment leftovers post-testing.
+- **Test Isolation**: Ensure tests run in an isolated environment will improve reliability.
+
+```python
+""""""
+Test module for verifying dependency compatibility with different package managers.
+These tests ensure that critical dependencies can be installed without conflicts.
+""""""
+
+import subprocess
+import pytest
+import os
+import shutil
+
+# Context Manager for isolated package testing environment
+@contextmanager
+def temporary_package_environment():
+    """"""Create an isolated environment for package testing.""""""
+    # Implementation remains unchanged
+    ...
+
+# Continue with implementation
+```
+
+## General Recommendations
+1. **Documentation**:
+   - Add a changelog entry documenting the changes related to `setuptools`.
+   - Clearly document testing requirements at the top of the test file.
+
+2. **Testing Improvements**:
+   - Enhance test coverage by including diverse package manager tests.
+   - Introduce tests for `setuptools` version compatibility.
+   - Look into test parallelization to speed up the testing process.
+
+3. **Error Handling Enhancements**:
+   - Improve error messages within test assertions to include more context, aiding developers in troubleshooting.
+
+4. **Future Considerations**:
+   - Keep an eye on future `setuptools` updates for a more permanent solution to the issues addressed in this PR.
+   - Adding a CI job to verify the installation of packages using various package managers shortly after changes would be valuable.
+
+## Conclusion
+The changes proposed in PR #2410 are well-structured and address the immediate need for dependency resolution. Implementing the suggested enhancements will not only refine the quality of this PR but also improve the overall maintainability and robustness of the codebase. Thank you for your contributions!",review,
+"Here: https://deploy-preview-4139--buefy-org.netlify.app/documentation/autocomplete#async-with-custom-template 
+
+I can only navigate the two first elements with the up/down keys... depending on what I type it the search. Sometimes it works, sometimes not, which is really fishy. It looks like long lists are more likely to be buggy. The same happens with both async demos.",review,
+"> should we create an issue?
+
+about what? isn't it adding the round here?",review,
+"(aside) This Pr is blocked because this connection pool config setting is today available only for business and enterprise users and we are discussing whether to make it available to all users and what would be the consequences of it
+Ref: https://theappsmith.slack.com/archives/C040LHZN03V/p1739262773078169?thread_ts=1738938692.414539&cid=C040LHZN03V ",review,
+Its a lot funnier when an AI say it :joy:,review,
+Moved to https://github.com/microsoft/typespec/pull/8032,review,
+"# :white_check_mark: [CI Build #d7fb8f2] Build passed (Build macOS tests) :white_check_mark:
+
+
+
+
+[Pipeline](https://dev.azure.com/devdiv/DevDiv/_build/index?buildId=11939132&view=ms.vss-test-web.test-result-details) on Agent 
+Hash: [d7fb8f28b354d630f977850d38183e66805a487f](https://github.com/dotnet/macios/pull/23313/commits/d7fb8f28b354d630f977850d38183e66805a487f)  [PR build]
+
+[comment]: <> (This is a comment added by Azure DevOps, id: build Build macOS tests)
+",review,
+"> This validation prevents me from testing the webhook before subscribing to the event
+
+Yea this is valid point! Could we move this check as a warning after the response check to avoid confusion?",review,
+"Disclaimer: This review was made by a crew of AI Agents.
+
+### Code Review Comment: Enhancements to ChromaDB as Optional Dependency
+
+#### Overview
+This pull request implements significant changes to make ChromaDB an optional dependency in the crewAI project. This initiative is commendable as it enhances compatibility and installation flexibility for users who may not require ChromaDB functionalities while maintaining essential features for those who do.
+
+#### Key Changes and Suggestions:
+
+1. **Dependency Management**:
+   - The move of `chromadb` from core dependencies to optional storage in `pyproject.toml` is a wise decision, allowing users to choose their setup.
+   - Ensure to document how users can install ChromaDB: 
+     ```
+     pip install crewai[storage]
+     ```
+
+2. **Code Structure**:
+   - The introduction of try/except blocks for ChromaDB imports enhances error handling. However, the exception handling could be improved to reduce redundancy. Consider implementing a custom error class for better clarity:
+     ```python
+     class ChromaDBRequiredError(ImportError):
+         def __init__(self, feature: str):
+             super().__init__(f""ChromaDB is required for {feature} features."")
+     ```
+
+3. **Type Hinting**:
+   - The current implementation of type hints can be enhanced. For instance, employing Protocols for better type checking:
+     ```python
+     from typing import Protocol, TypeVar, Sequence
+
+     T = TypeVar('T')
+
+     class EmbeddingFunction(Protocol[T]):
+         def __call__(self, input: Sequence[str]) -> Sequence[Sequence[float]]: ...
+     ```
+
+4. **Configuration Validation**:
+   - Add a configuration validation function that checks for necessary fields based on provider types. This will catch issues early and improve user experience:
+     ```python
+     def validate_embedder_config(config: Optional[Dict[str, Any]]) -> None:
+         required_fields = { ... }  # as per your current implementation
+     ```
+
+5. **Testing Coverage**:
+   - The implemented tests in `test_optional_dependencies.py` provide a solid foundation, yet it's advisable to expand coverage to include various scenarios, ensuring that all features raise appropriate exceptions without ChromaDB.
+
+#### Recommendations:
+- **Implement the `ChromaDBRequiredError`** to unify error messages throughout your codebase.
+- **Refine type hints and ensure configuration validations** are in place to enhance code safety and maintainability.
+- **Enhance the documentation of optional dependencies, specifying installation commands and functionality limits if ChromaDB is missing.**
+- **Expand the unit tests** to cover more features, analyzing potential edge cases.
+
+### Conclusion:
+Overall, the pull request is well-constructed and thoughtfully enhances the project's flexibility regarding dependency management. By addressing the aforementioned suggestions, the code quality and user experience can be significantly improved. This PR is ready for merge with minor adjustments. Thank you for your hard work!",review,
+add the changelog line to the docs/integrations/destinations/convex.md please,review,
+"There is commented script in scripts/run_endpoints.sh that refers to babeltrace cmds. Should this be updated  or ignored or removed?
+
+Rest looks good to me.",review,
+"> @greinacker Actually, looking at the screenshots again, the design looks pretty good. It's probably just my preference of dark modes everywhere 🙂
+> 
+> I've left a few comments.
+
+Ok! I made the suggested changes. Also made a couple of tweaks to the context file tree, to make folders be dimmed, as they are in the dark theme. So now, only selected files are rendered in the dark color, as expected. New and improved screenshot:
+
+<img width=""1438"" alt=""image"" src=""https://github.com/user-attachments/assets/d1b96c4a-0438-4911-95e7-c4c1136544d0"" />
+
+",review,
+Can you continue? I think there was an error mid work before,review,
+"# :white_check_mark: [CI Build #0bd54f1] Build passed (Detect API changes) :white_check_mark:
+
+
+
+
+[Pipeline](https://dev.azure.com/devdiv/DevDiv/_build/index?buildId=11760200&view=ms.vss-test-web.test-result-details) on Agent 
+Hash: [0bd54f11433949e5f39722d8cb4e28cf501195f7](https://github.com/dotnet/macios/pull/23045/commits/0bd54f11433949e5f39722d8cb4e28cf501195f7)  [PR build]
+
+[comment]: <> (This is a comment added by Azure DevOps, id: build Detect API changes)
+",review,
+"@harupy Sorry, can you repeat my comment?",workflow,
+Can you add more tests for each function covering corner cases?,workflow,
+Please fix the CI failures.,workflow,
+"@mitelg I already tested it but the service registry from phpstan doesn't provide any information of the decorated class
+
+```
+PHPStan\Symfony\Service {#3157
+  -id: ""Shopware\Tests\DevOps\Core\DevOps\StaticAnalyse\PHPStan\Rules\data\PublicServiceDecoratorRule\DecoratorOfNonPublicService""
+  -class: null
+  -public: false
+  -synthetic: false
+  -alias: null
+  -tags: []
+}
+
+```",workflow,
+looks like your session timed out. Try again.,workflow,
+"Thank you for contributing these new video processing blocks to the platform! The PR description clearly explains the changes and additions.
+
+Before this can be merged, please update your PR description to include the standard checklist for code changes. Since you're adding new functional blocks, we need to ensure they've been properly tested. Please include:
+
+- A complete checklist indicating you've tested your changes
+- A specific test plan detailing how you've verified the functionality of both new blocks
+
+Otherwise, the PR looks good - the conventional commit format in the title is correct, and the scope of changes matches what's described. The documentation updates are also appreciated!",workflow,
+This pull request was created as a test and will now be closed. Thank you!,workflow,
+"Ok there just a couple of failures here are the errors.. why are you not finding them when building? are you following your instructions to build the sln?
+
+```
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembersAttribute' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.20348.0]
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembers' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.20348.0]
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembersAttribute' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.19041.0]
+C:\a\_work\1\s\src\Controls\tests\DeviceTests\Elements\Window\WindowTests.cs(71,79): error CS0246: The type or namespace name 'DynamicallyAccessedMembers' could not be found (are you missing a using directive or an assembly reference?) [C:\a\_work\1\s\src\Controls\tests\DeviceTests\Controls.DeviceTests.csproj::TargetFramework=net10.0-windows10.0.19041.0]
+ ```",workflow,
+"@messplay , this feels like AI generated, it wouldn't work in practice, and its parts are not integrated (e.g. the UI additions are not exposed, the positioning device invokable functions not reachable, etc.).  On top of which, there's no description, context, etc. 
+
+Did something go wrong here?",workflow,
+@foot I see we are not checking the response status code except for 204... Which status code would the usage limit error return? Should we actually have an extra check on that? It would sound more robust that returning any non-JSON string as an error.,workflow,
+Not a good solution,workflow,
+@ershad @MayaRainer @raulpopadineti should we add a note about adding unit tests for the front-end business logic?,workflow,
+Okay this is getting into a cycle. Closing. Will fix manually ;),workflow,
+"@DamianEdwards some follow ups for you. Logging logs for *every instance of the same parameter. It's nosy, if you want to log then we need to find a better place to do it.
+
+I spent some time looking at how to make yarp work and we can do it once @benjaminpetit fixes the YARP publish story",workflow,
+@cubic-dev-ai pls review,workflow,
+superseded by https://github.com/microsoft/vscode/pull/255633 so I don't have to wait for 2 reviews,workflow,
+LGTM,workflow,
+@Kitenite works on my machine,workflow,
+Resolve merge conflicts,workflow,
+fixed by jjonesz change,workflow,
+@ellipsis-dev can you review please,workflow,
+Check your solution again now that you have new instructions and environment.,workflow,
+"done on #6334 instead, sorry codex",workflow,
+@adamint @eerhardt Please review. Everyone who works on app model is on holiday 🤷,workflow,
+@ian-at-airbyte - I've set to auto-merge once tests pass again. 🚀  ,workflow,
+"Thanks AJ! The broken link checker in Docusaurus is actually notorious for being unreliable, so I'm not that surprised it wasn't working before.
+
+There's one last unintended change that I'm trying to pin down. It looks like the product badges have moved above the title instead of below them. This might be due to Devin's code changes, but it might just be a structural change that happened between versions and we need to change our plugin. Let me investigate a bit further and report back.",workflow,
+Duplicated [#2469](https://github.com/crewAIInc/crewAI/pull/2469),workflow,
+@MayaRainer Ok! Got it. I'll try that. thank you!,workflow,
+"@benfdking I created the two issues you can see above, because yesterday I was not able to find and fix them.
+Therefor I fixed the other as commented above and removed the unparsable test files, so the CI should pass.
+Should be ready to merge, *I hope*.",workflow,
+build playground-composition - it should succeed if any error then fix those,workflow,
+"Thank you for adding these new video transcription and editing blocks! This looks like a valuable addition to the platform.
+
+However, before this PR can be merged, there are a few requirements that need to be addressed:
+
+1. **Missing Checklist**: The PR description is missing the required checklist. Since you're adding new code blocks, the checklist cannot be omitted. Please update your PR description to include the standard checklist from the template, and make sure to check off all relevant items.
+
+2. **Test Plan**: As part of the checklist, please include a test plan that describes how you've tested these new blocks to ensure they work as expected.
+
+Once you've added the required checklist and test plan, we can proceed with the review of the actual code changes.",workflow,
+@MH4GF Thank you for the review! I’ll take a look!,workflow,
+The snippets failure is related to a preview feature.,workflow,
+"doesn't work
+
+closing in favor of: https://github.com/selfxyz/self/pull/814",workflow,
+"@veeam-denis I can see Enable auto-merge(squash) option for me on this PR. Not sure if it will squash automatically.
+Plus what commit message auto squashing mechanism will pick.",workflow,
+@dotnet/dotnet-diag - can someone else please review? Looks like initiator can't approve and t requires 2+ reviewers,workflow,
+Good to go.,workflow,
+@ian-at-airbyte - I've resolved the stale links. Lmk if you see any other issues.,workflow,
+@gewarren should we ignore the error https://github.com/dotnet/dotnet-api-docs/actions/runs/15761612301/job/44434593544?pr=11472? or should add the project file?,workflow,
+"@EricLBuehler - i've run with the NCCL-disable env var and without it. Currently using manual partitioning although i got the sense you fixed allocations previously, the KV caches seems to be biasing GPU0 (and some models cant be split).",workflow,
+Thanks Devin!,workflow,
+"@RickWinter, take a look at my updates. ",workflow,
+":tada: This PR is included in version 1.42.0 :tada:
+
+The release is available on [GitHub release](https://github.com/trycompai/comp/releases/tag/v1.42.0)
+
+Your **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:",workflow,
+"@salimkanoun I have the feeling I have tested with the code from the branch as well ;-) (see my screenshot with the code).
+
+@sedghi : unfortunately, there are no video samples on the netlify deployment so we can not test there :-(",workflow,
+@IEvangelist This is ready for final review.,workflow,
+"@MH4GF https://github.com/liam-hq/liam/pull/2596 Sorry in the midst of your review.The policy in this PR does not work well, so we have revised the policy in the PR above.We hope you will continue to review the above PR.",workflow,
+Thank you. I just gave it a try and see it working as expected.,workflow,
+"@AaronRobinsonMSFT, would you mind giving this a quick review?  I did some brief local testing and things look OK.",workflow,
+"@yegor256 Great job on the review! 🌟 You've earned +4 points: +12 base, -16 for no comments, +8 bonus. Your dedication is appreciated! Current balance: [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html). Keep up the excellent work!
+
+<!-- Thanks for the review! You've earned +4 points for this: +12 as a basis; -16 for absolutely no comments posted; +8 to give you at least something.  Your running balance is [+166](https://www.eolang.org/zerocracy/objectionary-vitals.html).  -->",workflow,
+"@saumyamalik I tried adding this, not tested, but would be fun to have for v2 release.",workflow,
